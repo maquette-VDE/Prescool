@@ -15,4 +15,12 @@ export class Acceuil {
     this.router.navigateByUrl('login')
   }
 
+  CreateExperts(){
+    this.router.navigateByUrl('create-expert')
+  }
+
+  CreateConsultant(){
+    this.router.navigateByUrl('create-consultant')
+  }
+
 }
