@@ -6,12 +6,15 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import frLocale from '@fullcalendar/core/locales/fr';
 
+<<<<<<< HEAD
 interface CalendarEvent {
   id: string;
   title: string;
   date: string;
   type: 'present' | 'absent' | 'late' | 'generic';
 }
+=======
+>>>>>>> 87686f962080ce4f6ad4f0bd9d1993380bdc5911
 
 @Component({
   selector: 'app-presences',
@@ -102,6 +105,10 @@ export class Presences {
   }
 
   refreshCalendar() {
+<<<<<<< HEAD
+=======
+    //lors des refresh du calendar apres ajout evenements l'evenement doit prendre tout la case avec les donne visible (ex : present et heure)
+>>>>>>> 87686f962080ce4f6ad4f0bd9d1993380bdc5911
     this.calendarOptions = {
       ...this.calendarOptions,
       events: this.events
@@ -128,6 +135,10 @@ export class Presences {
   }
 
   openCreateDialog() {
+<<<<<<< HEAD
+=======
+    //essaye plutot de creer un formulaire pour ajouter les evenements
+>>>>>>> 87686f962080ce4f6ad4f0bd9d1993380bdc5911
     const title = prompt('Titre de l’événement :');
     if (!title) return;
 
@@ -137,6 +148,10 @@ export class Presences {
     const type = prompt('Type (present / absent / late / generic) :', 'present') as any;
 
     this.addEvent(title, date, type);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87686f962080ce4f6ad4f0bd9d1993380bdc5911
   }
 
   onDateClick(info: any) {
@@ -149,6 +164,10 @@ export class Presences {
      🎯 SUPPRESSION
      ============================================================ */
   onEventClick(info: any) {
+<<<<<<< HEAD
+=======
+    //cet evenement serra inclus dans le formulaire sur un bouton pour delete l'evenement
+>>>>>>> 87686f962080ce4f6ad4f0bd9d1993380bdc5911
     const eventId = info.event.id;
     if (confirm('Supprimer cet événement ?')) {
       this.events = this.events.filter(e => e.id !== eventId);
