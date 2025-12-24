@@ -1,1 +1,112 @@
-/* You can add global styles to this file, and also import other style files */
+/* =====================================
+   FULLCALENDAR – enlever ligne date/jour
+   ===================================== */
+
+/* Supprime la ligne ENTRE la date et le jour */
+.fc .fc-timeline-slot-frame {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Garde la bordure sous le header */
+.fc .fc-scrollgrid-section-header {
+  border-bottom: 1px solid #e5e7eb;
+  /* gris clair */
+}
+
+/* Dates & jours : pas bleus, pas soulignés */
+.fc a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Horaires / slots timeline : pas bleus */
+/* ===============================
+   FULLCALENDAR – Couleur des slots
+   =============================== */
+/* Base FullCalendar */
+.fc {
+  --fc-page-text-color: #000;
+  /* texte général */
+  --fc-body-bg-color: #fff;
+  /* fond général */
+  --fc-slot-label-color: #000;
+  /* labels des slots */
+  --fc-timeline-slot-bg-color: #fff;
+  /* fond timeline blanc */
+  --fc-timeline-slot-hover-bg-color: #eee;
+  /* léger hover si tu veux */
+  --fc-highlight-color: rgba(0, 0, 0, 0.05);
+  /* highlight discret */
+}
+
+/* Timeline spécifique */
+.fc .fc-timeline-slot-cushion {
+  color: #000 !important;
+}
+
+/* Événements */
+/* .fc .fc-event {
+  color: #000 !important;
+  background-color: white;
+  border-color: red !important;
+  border: none !important;
+} */
+
+/* TimeGrid / DayGrid */
+.fc .fc-timegrid-slot,
+.fc .fc-daygrid-day {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+/* Supprime le bleu du now indicator */
+.fc .fc-now-indicator {
+  background-color: #ffeb3b !important;
+  /* jaune par exemple */
+}
+
+/* Événements : texte visible sur fond blanc */
+.fc .fc-event,
+.fc .fc-event .fc-event-main-frame,
+.fc .fc-event .fc-event-main,
+.fc .fc-event .fc-event-title {
+  color: #000 !important;
+  background-color: #fff !important;
+  border: none !important;
+  opacity: 1 !important;
+}
+
+.fc .fc-event .fc-event-main-frame {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.fc .fc-event .fc-event-main {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  min-height: 30px;
+  text-align: center;
+}
+
+/* INTERDIT (et inefficace à long terme) */
+.fc-license-message {
+  display: none;
+}
+
+/* Conteneur principal de la vue */
+/* .fc .fc-view-harness {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+} */
+
+/* Encapsule UNIQUEMENT la grille */
+.fc .fc-view-harness {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: #fff;
+}
