@@ -18,7 +18,7 @@
             </div>
           </div>
         </div>
-        <div class="form">
+        <div class="form" >
           <div class="form-group">
             <label for="email">E-mail</label>
             <input type="text" id="email"  name="username">
@@ -28,7 +28,7 @@
             <input type="password" id="password" name="password" placeholder="Mot de passe" >
           </div>
           <div class="log">
-            <button class="login">Je me connecte</button>
+            <button class="login" (click)="login()">Je me connecte</button>
             <p>Pas encore de compte? <a [routerLink]= "signupLink" class="gradient">Je m'inscris</a></p>
           </div>
         </div>
