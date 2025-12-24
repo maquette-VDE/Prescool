@@ -48,11 +48,11 @@ export class Login {
     });
   }
 
-  login() {
+  onLogin() {
      if (this.role === UserRole.CONSULTANT) {
-        this.signupLink = '/presences';
+            this.router.navigateByUrl('presences');
       } else if (this.role === UserRole.EXPERT) {
-        this.signupLink = '/presences';
+        this.router.navigateByUrl('presences');
       } 
   }
 
