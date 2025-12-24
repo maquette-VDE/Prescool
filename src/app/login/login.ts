@@ -38,7 +38,6 @@ export class Login {
       } 
   });
   
-  
 }
   switchRole(role: UserRole) {
     this.role = role;
@@ -49,7 +48,12 @@ export class Login {
     });
   }
 
-
-
+  login() {
+     if (this.role === UserRole.CONSULTANT) {
+        this.signupLink = '/presences';
+      } else if (this.role === UserRole.EXPERT) {
+        this.signupLink = '/presences';
+      } 
+  }
 
 }
