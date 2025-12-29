@@ -8,36 +8,32 @@ import { tap } from "rxjs";
 })
 
 export class AuthService {
-  private token !: string; 
-  private refreshToken !: string;
   constructor(
     private http: HttpClient,
     private apiConfig: ApiConfigService,
   ) {}
   
   login(username: string, password: string) {
-    return this.http.post<any>(this.apiConfig.buildUrl('auth/login'),
-      { username, password }
+    return this.http.post<any>(this.apiConfig.buildUrl('auth/token'),
+      {"username": username, "password": password }
     ).pipe(
       tap(response => {
-        this.token = response.access_token;
-        this.refreshToken = response.refresh_token;
-        //localStorage.setItem('access_token', response.access_token);
-        //localStorage.setItem('refresh_token', response.refresh_token);
-        
+        console.log('Access Token:', response.access_token);
+        console.log('Refresh Token:', response.refresh_token);
+        localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('refresh_token', response.refresh_token);
       })
     );
     
     
   }
   getToken(): string {
-    return this.token;
-    //return localStorage.getItem('access_token') || '';
+    return localStorage.getItem('access_token') || '';
   }
 
-  /* logout() {
-    this.token = '';
-    this.refreshToken = '';
+   logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     localStorage.clear();
-  } */
+  }
 }

@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://prez-cool-staging.appsolutions224.com/'
+  apiBaseUrl: 'https://prez-cool-staging.appsolutions224.com/api/v1/'
 };
