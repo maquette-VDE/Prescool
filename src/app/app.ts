@@ -5,7 +5,7 @@ import { SideNav } from './side-nav/side-nav';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Acceuil, SideNav],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

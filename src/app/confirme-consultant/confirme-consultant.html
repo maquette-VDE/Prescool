@@ -1,0 +1,42 @@
+<div class="fond-ecran">
+  <div class="connexion">
+      <h4>Creer votre compte</h4>
+      <p class="paragraphe">En tant que consultant</p>
+      <div class="form">
+        <div class="form-group">
+          <label for="email">Nom</label>
+          <input type="text" id="name"  name="username">
+        </div>
+        <div class="form-group">
+          <label for="password">Prenom</label>
+          <input type="text" id="prenom" name="prenom">
+        </div>
+        <div class="form-group">
+          <label for="password">Code</label>
+          <input type="text" id="code" name="code">
+        </div>
+        <div class="warning">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 9 20 20"  width="18px">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/>
+              </svg>
+              <p>  Entre le code que le Village de l'Emploi t'a attribué</p>
+          </div>
+        <div class="form-group">
+          <label for="password">Date d'arrivée</label>
+          <input type="text" id="diplome" name="arrivée">
+        </div>
+      </div>
+      <div class="complement"> 
+          <label class="inline-checkbox">
+          <input type="checkbox"/>Je suis déja parti en mission</label>
+          <div class="log">
+            <button class="inscription">Je m'inscris</button>
+            <p>Deja un compte? <a (click)="login()" class="gradient">Je me connecte</a></p>
+          </div>
+      </div>
+      <button class="back" (click)="retour()"> < Retour</button>      
+  </div>
+</div>
+
+
+

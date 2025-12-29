@@ -1,1 +1,92 @@
-<p>Présences</p>
+<div class="presences-wrapper">
+
+  <!-- =======================================================
+       SECTION : Header (Titre + Sous-titre)
+       ======================================================= -->
+  <header class="presences-page-header">
+    <div class="presences-page-header-main">
+      <h1 class="presences-title">Présences</h1>
+      <p class="presences-subtitle">
+        Gérez et consultez votre présentiel.
+      </p>
+    </div>
+  </header>
+
+
+  <!-- =======================================================
+       SECTION : Toolbar (Date + Filtre + Recherche + Actions)
+       ======================================================= -->
+  <section class="presences-toolbar">
+
+    <!-- ---------- PARTIE GAUCHE : DATE + FILTRE ---------- -->
+    <div class="presences-toolbar-left">
+
+      <!-- Pilule : Date principale (statique, tu pourras lier plus tard) -->
+      <button class="pill pill-date-main" type="button">
+        <span class="pill-date-day">21</span>
+        <span class="pill-date-meta">
+          <span class="pill-date-month">novembre 2025</span>
+          <span class="pill-date-range">17 nov 2025 – 19 déc 2025</span>
+        </span>
+      </button>
+
+      <!-- Pilule : Filtre (statique pour l'instant) -->
+      <button class="pill pill-filter" type="button">
+        Présent(e) / Absent(e)
+        <span class="pill-chevron">▾</span>
+      </button>
+
+    </div>
+
+
+    <!-- ---------- PARTIE CENTRALE : RECHERCHE ---------- -->
+    <div class="presences-toolbar-center">
+      <div class="search-input">
+        <span class="search-icon">🔍</span>
+
+        <input
+          class="search-field"
+          type="text"
+          placeholder="Rechercher un événement..."
+          (input)="onSearchChanged($event.target.value)"
+        />
+      </div>
+    </div>
+
+
+    <!-- ---------- PARTIE DROITE : ACTIONS ---------- -->
+    <div class="presences-toolbar-right">
+      <button class="btn-secondary" type="button">
+        Aujourd’hui
+      </button>
+
+      <!-- 🔥 ACTION : Ajouter un événement -->
+      <button class="btn-primary" type="button" (click)="openCreateDialog()">
+        + Ajouter un événement
+      </button>
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       SECTION : Calendrier (carte + FullCalendar)
+       ======================================================= -->
+  <section class="presences-calendar-container">
+    <div class="calendar-card">
+
+      <!-- 🔥 FullCalendar Angular
+           IMPORTANT :
+           - #calendar : permet à Angular d'accéder au composant
+           - deepChangeDetection="true" : recommandé par la doc
+      -->
+      <full-calendar
+        #calendar
+        [options]="calendarOptions"
+        [deepChangeDetection]="true"
+      ></full-calendar>
+
+    </div>
+  </section>
+
+</div>

@@ -1,8 +1,9 @@
+
 .background {
     margin: 0;       
     padding: 0;      
-    height: 100vh;   
-    width: 100vw;
+    min-height: 100vh;   
+    width: 100%;
     background-image: url('/dessin-vde.jpg');
     background-size: cover;
     background-position: center;
@@ -12,77 +13,237 @@
 }
 
 .cercle {
-    width: 40%;
-    height: 80%;
-    background: rgba(255, 255, 255, 0.7);
+    width: 700px;
+    height: 650px;
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    position: relative;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+.choix-container {
+    width: 100%;
+}
+
+.choix {
+    display: flex;
+    flex-direction: column;
+}
+
 
 .logo {
     width: 134px;
-    height: 158px;
-    position: relative;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -100%);
-    mix-blend-mode : darken   
+    height: auto;
+    mix-blend-mode: darken;
+    margin: 20px;
 }
-.choix-container {
-    position: absolute;
-    top: 55%;                         
-    left: 50%;
-    transform: translate(-50%, -50%);
 
+.choix h3, .choix h4 {
+    margin: 0; 
+    font-size: 20px; 
 }
+
+.choix p{
+    height: 54px;
+    font-size: 15px;
+    margin: 30px 0 30px 0;
+}
+
+
+.consultant {
+    color: #C94B91;
+    height: 54px;
+}
+
+.expert {
+    color: #57E4EB;
+    height: 54px;
+}
+
+
+.button1, .button2, .button3, .button4 {
+    width: 160px;
+    height: 38px;
+    border-radius: 2em;
+    color: #fff;
+    border: none;
+    font-weight: 500;
+}
+
+.button1 { background-color: #C94B91; margin-bottom: 20px; }
+.button2 { background-color: #F19937; }
+.button3 { background-color: #57E4EB; margin-bottom: 20px; }
+.button4 { background-color: #6BB346; }
+
+@media (max-width: 1199px) {
+
+    .background {
+        height: auto;
+        padding: 20px 0;
+    }
+
+    .cercle {
+        width: 90vw;
+        height: auto;     
+        padding: 20px;
+        border-radius: 50%;  
+
+    .choix-container {
+        text-align: center;
+    }
+
+    .row {
+        flex-direction: column !important;
+        align-items: center;
+    }
+
+    .choix {
+        text-align: center !important;
+        align-items: center;
+    }
+
+    .choix p {
+        margin: 15px 0;
+        height: auto;
+    }
+
+    .button1, .button2, .button3, .button4 {
+        width: 50%;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .logo {
+        width: 100px;
+        margin-bottom: 20px;
+    }}
+}
+
+
+.background {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100%;
+    background-image: url('/dessin-vde.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Cercle responsive */
+.cercle {
+    width: 60vw;
+    max-width: 700px;
+    aspect-ratio: 1 / 1;               /* garde un cercle parfait */
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    padding: 3vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Logo responsive */
+.logo {
+    width: 15vw;
+    max-width: 130px;
+    height: auto;
+    mix-blend-mode: darken;
+    margin: 20px 0;
+}
+
+.choix-container {
+    width: 100%;
+}
+
 .choix {
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
 }
-.consultant{
-    color: #C94B91
+
+.choix h3, .choix h4 {
+    margin: 0;
+    font-size: 20px;
 }
-.expert{
+
+.choix p {
+    height: auto;
+    font-size: 15px;
+    margin: 20px 0;
+}
+
+.consultant {
+    color: #C94B91;
+}
+
+.expert {
     color: #57E4EB;
 }
-.button1{
-    background-color: #C94B91;
-    Width :160px;
-    Height:38px;
-    Top :631px;
-    Left :514px;
-    border-radius: 2em;
-    color: #fff;
-    margin-bottom: 28px;
-}
-.button2{
-    background-color: #F19937;
-    Width :160px;
-    Height:38px;
-    Top :631px;
-    Left :514px;
-    border-radius: 2em;
-    color: #fff;
-}
-.button3{
-    background-color: #57E4EB;
-    Width :160px;
-    Height:38px;
-    Top :631px;
-    Left :514px;
-    border-radius: 2em;
-    color: #fff;
-    margin-bottom: 28px;
-}
-.button4{
-    background-color: #6BB346;
-    Width :160px;
-    Height:38px;
-    Top :631px;
-    Left :514px;
-    border-radius: 2em;
-    color: #fff;
 
+/* Boutons responsives */
+.button1, .button2, .button3, .button4 {
+    width: 40%;
+    min-width: 140px;
+    height: 40px;
+    border-radius: 2em;
+    color: #fff;
+    border: none;
+    font-weight: 500;
 }
 
+.button1 { background-color: #C94B91; margin-bottom: 15px; }
+.button2 { background-color: #F19937; }
+.button3 { background-color: #57E4EB; margin-bottom: 15px; }
+.button4 { background-color: #6BB346; }
+
+/* ----------- RESPONSIVE < 1199px ----------- */
+@media (max-width: 1199px) {
+
+    .cercle {
+        width: 85vw;
+        aspect-ratio: auto;
+        border-radius: 30px;
+        padding: 20px;
+    }
+
+    .row {
+        flex-direction: column !important;
+        align-items: center;
+    }
+
+    .choix {
+        text-align: center !important;
+        align-items: center;
+    }
+
+    .button1, .button2, .button3, .button4 {
+        width: 60%;
+    }
+
+    .logo {
+        width: 25vw;
+        max-width: 120px;
+        margin-bottom: 20px;
+    }
+}
+
+/* ----------- RESPONSIVE MOBILE < 600px ----------- */
+@media (max-width: 600px) {
+
+    .button1, .button2, .button3, .button4 {
+        width: 80%;
+    }
+
+    .choix h3, .choix h4 {
+        font-size: 18px;
+    }
+
+    .choix p {
+        font-size: 14px;
+    }
+}

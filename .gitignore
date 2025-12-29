@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Angular build and cache
 dist/
 build/
@@ -29,3 +30,7 @@ Thumbs.db
 coverage/
 cypress/screenshots/
 cypress/videos/
+=======
+node_modules/
+.angular/
+>>>>>>> b82b074b7af096115df695579ed74f2fce4bcc5c

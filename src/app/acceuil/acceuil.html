@@ -2,27 +2,27 @@
     <div class="cercle">
         <img src="vde-logo.png" class="logo" alt="">
         <div class="container choix-container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="choix">
-                        <div class="consultant">
+            <div class="row ">
+                <div class="col-12 col-md-6 mb-3 justify-content-end">
+                    <div class="choix text-end">
+                        <div class="consultant" >
                             <h4>Consultant</h4>
-                            <span>En attente d'une mission</span>
+                            <span>en attente d'une mission</span>
                         </div>
                         <p>Tenez au courant le Village de l'emploi de votre disponibilité</p>
-                        <button class="button1">Je me connecte</button>
-                        <button class="button2">Je m'inscris</button>
+                        <button class="button1 ms-auto" (click)="login(UserRole.CONSULTANT)">Je me connecte</button>
+                        <button class="button2 ms-auto" (click)="CreateConsultant()">Je m'inscris</button>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="choix">
-                        <div class="expert">
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="choix text-start">
+                        <div class="expert" >
                             <h3>Experts</h3>
-                            <span>En recrutement</span>
+                            <span>en recrutement</span>
                         </div>
                         <p>Consulter la liste de présence des consultants</p>
-                        <button class="button3">Je me connecte</button>
-                        <button class="button4">Je m'inscris</button>
+                        <button class="button3" (click)="login(UserRole.EXPERT)">Je me connecte</button>
+                        <button class="button4" (click)="CreateExperts()">Je m'inscris</button>
                     </div>
                 </div>
             </div>

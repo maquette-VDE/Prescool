@@ -1,0 +1,348 @@
+/* ============================================================
+   🎯 SECTION 1 — LAYOUT GLOBAL DU PANNEAU DE DROITE
+   ============================================================ */
+
+.presences-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  height: 100%;
+  background: #fff;
+}
+
+
+
+/* ============================================================
+   🎯 SECTION 2 — HEADER (Titre + Sous-titre)
+   ============================================================ */
+
+.presences-page-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.presences-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.presences-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+
+
+/* ============================================================
+   🎯 SECTION 3 — TOOLBAR PRINCIPALE
+      (date sélectionnée + filtres + recherche + actions)
+   ============================================================ */
+
+.presences-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+
+
+/* ---------- 3.1 Partie gauche : pilules (date + filtres) ---------- */
+
+.presences-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* 🔵 Style générique d’une pilule */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #e5e5e5;
+  background-color: #ffffff;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+/* Pilule “Date principale” */
+.pill-date-main {
+  padding: 0.4rem 1rem;
+}
+
+.pill-date-day {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.pill-date-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.pill-date-month {
+  font-size: 0.8rem;
+  color: #333;
+}
+
+.pill-date-range {
+  font-size: 0.7rem;
+  color: #777;
+}
+
+/* Pilule filtre */
+.pill-filter {
+  font-size: 0.8rem;
+}
+
+.pill-chevron {
+  font-size: 0.7rem;
+}
+
+
+
+/* ---------- 3.2 Barre de recherche (au centre) ---------- */
+
+.presences-toolbar-center {
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  background-color: #f5f5f5;
+  padding: 0.35rem 0.9rem;
+}
+
+.search-icon {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.search-field {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+
+
+/* ---------- 3.3 Partie droite : Boutons Actions ---------- */
+
+.presences-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Bouton secondaire : "Aujourd’hui" */
+.btn-secondary {
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-secondary:hover {
+  background-color: #f5f5f5;
+}
+
+/* Bouton principal : "+ Ajouter un événement" */
+.btn-primary {
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.8rem;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.btn-primary:hover {
+  background-color: #111111;
+}
+
+
+
+/* ============================================================
+   🎯 SECTION 4 — CALENDRIER (Bloc contenant FullCalendar)
+   ============================================================ */
+
+.presences-calendar-container {
+  flex: 1;
+  min-height: 0;
+}
+
+.calendar-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+  padding: 1rem;
+}
+
+
+
+/* ============================================================
+   🎯 SECTION 5 — FULLCALENDAR : STRUCTURE GÉNÉRALE
+   ============================================================ */
+
+.fc {
+  font-family: inherit;
+  font-size: 0.8rem;
+}
+
+/* Barre “Mois – Semaine – Jour” */
+.fc .fc-toolbar {
+  margin-bottom: 1rem;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Boutons de la toolbar FullCalendar */
+.fc .fc-button {
+  border-radius: 999px;
+  border: 1px solid #d4d4d4;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+}
+
+.fc .fc-button:hover {
+  background-color: #f3f3f3;
+}
+
+
+
+/* ============================================================
+   🎯 SECTION 6 — FULLCALENDAR : TABLE & EN-TÊTES
+   ============================================================ */
+
+.fc-theme-standard th,
+.fc-theme-standard td {
+  border-color: #e5e5e5;
+}
+
+.fc .fc-col-header-cell {
+  padding: 0.35rem 0;
+  background-color: #fafafa;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: #555555;
+}
+
+
+
+/* ============================================================
+   🎯 SECTION 7 — FULLCALENDAR : CASES JOUR
+   ============================================================ */
+
+.fc-daygrid-day-number {
+  padding: 0.25rem 0.35rem;
+  font-size: 0.75rem;
+  color: #333;
+}
+
+.fc-daygrid-day.fc-day-today {
+  background-color: #f9fafb;
+}
+
+
+
+/* ============================================================
+   🎯 SECTION 8 — FULLCALENDAR : ÉVÉNEMENTS COLORÉS
+   ============================================================ */
+
+/* Empêcher la couleur bleue des liens */
+.fc a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+/* Empêcher texte blanc par défaut */
+.fc .fc-event-main,
+.fc .fc-event-title {
+  color: inherit !important;
+}
+
+/* Style général des événements */
+.fc-daygrid-event {
+  border: none;
+  border-radius: 999px;
+  padding: 0 0.6rem;
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+/* Présence */
+.fc-daygrid-event.event-present,
+.fc-daygrid-event.event-present .fc-event-main {
+  background-color: rgba(107, 179, 70, 0.25) !important;
+  color: #6BB346 !important;
+}
+
+/* Absence */
+.fc-daygrid-event.event-absent,
+.fc-daygrid-event.event-absent .fc-event-main {
+  background-color: rgba(179, 31, 36, 0.25) !important;
+  color: #B31F24 !important;
+}
+
+/* Retard */
+.fc-daygrid-event.event-late,
+.fc-daygrid-event.event-late .fc-event-main {
+  background-color: rgba(241, 153, 55, 0.25) !important;
+  color: #F19937 !important;
+}
+
+/* Générique */
+.fc-daygrid-event.event-generic {
+  background-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+
+
+
+/* ============================================================
+   🎯 SECTION 9 — FULLCALENDAR : RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .presences-wrapper {
+    padding: 1rem;
+  }
+
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Presences } from './presences';
 
 describe('Presences', () => {
@@ -8,16 +7,15 @@ describe('Presences', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Presences]
-    })
-    .compileComponents();
+      imports: [Presences], // composant standalone
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Presences);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('devrait être créé', () => {
     expect(component).toBeTruthy();
   });
 });
