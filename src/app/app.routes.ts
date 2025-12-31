@@ -9,21 +9,25 @@ import { Presences } from './presences/presences';
 import { SideNav } from './side-nav/side-nav';
 import { Planning } from './planning/planning';
 import { planningResolver } from './resolvers/planning/planning-resolver';
+import { roleGuard } from './guards/role-guard';
 
 export const routes: Routes = [
   { path: '', component: Acceuil },
   { path: 'login', component: Login },
-
+  { path: 'create-expert', component: CreateExpert },
+  { path: 'confirme-expert', component: ConfirmeExpert },
+  { path: 'create-consultant', component: CreateConsultant },
+  { path: 'confirme-consultant', component: ConfirmeConsultant },
   {
-    path: '', // AppShell parent
+    path: 'sidenav',
     component: SideNav,
     children: [
-      { path: 'create-expert', component: CreateExpert },
-      { path: 'confirme-expert', component: ConfirmeExpert },
-      { path: 'create-consultant', component: CreateConsultant },
-      { path: 'confirme-consultant', component: ConfirmeConsultant },
-      { path: 'presences', component: Presences },
-      // { path: 'presences', component: Planning, resolve: { profiles: planningResolver } }
+      { path: 'presences', component: Presences, canActivate: [roleGuard] },
+      {
+        path: 'planning',
+        component: Planning,
+        resolve: { profiles: planningResolver },
+      },
     ],
   },
 ];
