@@ -20,12 +20,24 @@
         </div>
         <div class="form">
           <div class="form-group">
+            <label for="name">Nom</label>
+            <input type="text" id="name"  name="username" formControlName="nom">
+          </div>
+          <div class="form-group">
+            <label for="prenom">Prenom</label>
+            <input type="text" id="prenom" name="prenom" formControlName="prenom">
+          </div>
+          <div class="form-group">
             <label for="email">E-mail</label>
-            <input type="text" id="email"  name="username">
+            <input type="text" id="email"  name="email" formControlName="email">
           </div>
           <div class="form-group">
             <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password" placeholder="Mot de passe" >
+            <input type="password" id="password" name="password" formControlName="password" placeholder="Mot de passe" >
+          </div>
+          <div class="form-group">
+            <label for="phone">Téléphone</label>
+            <input type="text" id="phone" name="phone" formControlName="phone">
           </div>
           <div class="warning">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 9 20 20"  width="18px">
@@ -35,10 +47,10 @@
           </div>
           <div class="form-group">
             <label for="password">Confirmation</label>
-            <input type="password" id="password" name="password" placeholder="Confirmer mot de passe" >
+            <input type="password" id="password" name="password" placeholder="Confirmer mot de passe" formControlName="confirmPassword">
           </div>
           <div class="log">
-            <button class="login" (click)="suivant()">Suivant</button>
+            <button class="login" (click)="suivant()" [disabled]="userForm.invalid">Suivant</button>
             <p>déja un compte? <a (click)="login()"  class="gradient">Je me connecte</a></p>
           </div>
         </div>
