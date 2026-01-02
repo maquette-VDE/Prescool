@@ -70,6 +70,7 @@ export class Presences {
   currentWeek = {
     dayOfMonth: 0,
     monthName: '',
+    monthAbbr: '',
     yearName: 0,
     startDate: '',
     endDate: '',
@@ -149,9 +150,12 @@ export class Presences {
     // Options pour le formatage de la date
     const monthNames = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
                         'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    const monthAbbrv = ['JAN', 'FÉV', 'MAR', 'AVR', 'MAI', 'JUI',
+                        'JUI', 'AOU', 'SEP', 'OCT', 'NOV', 'DÉC'];
     
     const dayOfMonth = targetDate.getDate();
     const monthName = monthNames[targetDate.getMonth()];
+    const monthAbbr = monthAbbrv[targetDate.getMonth()];
     const yearName = targetDate.getFullYear();
     
     // Format des dates: "17 nov 2025 – 19 déc 2025"
@@ -161,6 +165,7 @@ export class Presences {
     this.currentWeek = {
       dayOfMonth,
       monthName,
+      monthAbbr,
       yearName,
       startDate: startDateStr,
       endDate: endDateStr,

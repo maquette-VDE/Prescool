@@ -21,11 +21,14 @@
     <!-- ---------- PARTIE GAUCHE : DATE + FILTRE ---------- -->
     <div class="presences-toolbar-left">
 
-      <!-- Pilule : Date principale (statique, tu pourras lier plus tard) -->
+      <!-- Pilule : Date principale (dynamique) -->
       <button class="pill pill-date-main" type="button">
-        <span class="pill-date-day">{{ currentWeek.dayOfMonth }}</span>
+        <div class="pill-date-box">
+          <span class="pill-date-month-abbr">{{ currentWeek.monthAbbr }}</span>
+          <span class="pill-date-day">{{ currentWeek.dayOfMonth }}</span>
+        </div>
         <span class="pill-date-meta">
-          <span class="pill-date-month">{{ currentWeek.monthName }} {{ currentWeek.yearName }}</span>
+          <span class="pill-date-month">{{ currentWeek.dayOfMonth }} {{ currentWeek.monthName }} {{ currentWeek.yearName }}</span>
           <span class="pill-date-range">{{ currentWeek.startDate }} – {{ currentWeek.endDate }}</span>
         </span>
       </button>
