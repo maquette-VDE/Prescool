@@ -15,6 +15,8 @@ interface CalendarEvent {
   type: 'present' | 'absent' | 'late' | 'generic';
   lateTime?: string; // Heure d'arrivée si en retard
   reason?: string;   // Raison (maladie, etc.)
+  startTime?: string; // Heure de début (ex: 09:00)
+  endTime?: string;   // Heure de fin (ex: 17:00)
 }
 
 interface StatusModalState {
@@ -40,8 +42,11 @@ export class Presences {
      ============================================================ */
   events: CalendarEvent[] = [
     { id: crypto.randomUUID(), title: 'Absent(e) - "maladie"', date: '2025-11-17', type: 'absent', reason: 'maladie' },
-    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-21', type: 'present' },
-    { id: crypto.randomUUID(), title: 'En retard - "Rendez-vous France Travail"', date: '2025-11-25', type: 'late', reason: 'Rendez-vous France Travail', lateTime: '09:30' }
+    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-18', type: 'present', startTime: '09:00', endTime: '18:00' },
+    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-19', type: 'present', startTime: '09:30', endTime: '17:00' },
+    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-20', type: 'present', startTime: '09:00', endTime: '18:00' },
+    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-21', type: 'present', startTime: '09:30' },
+    { id: crypto.randomUUID(), title: 'En retard - "on doit aller chercher mes enfants"', date: '2025-11-26', type: 'late', reason: 'on doit aller chercher mes enfants', lateTime: '17:30' }
   ];
 
   searchQuery = '';
@@ -59,6 +64,15 @@ export class Presences {
     isOpen: false,
     eventId: '' as string,
     eventTitle: '' as string,
+  };
+
+  // Propriété pour la semaine actuelle
+  currentWeek = {
+    dayOfMonth: 0,
+    monthName: '',
+    yearName: 0,
+    startDate: '',
+    endDate: '',
   };
 
 
@@ -91,6 +105,11 @@ export class Presences {
       });
     },
 
+    // Événement quand les dates affichées changent
+    datesSet: (info) => {
+      this.onDatesChanged(info.start);
+    },
+
     displayEventTime: false,
     eventDisplay: 'block',
     height: 'auto',
@@ -107,7 +126,50 @@ export class Presences {
 
 
   constructor() {
+    this.updateCurrentWeek();
     this.refreshCalendar();
+  }
+
+  /* ============================================================
+     🎯 CALCUL DE LA SEMAINE ACTUELLE
+     ============================================================ */
+  updateCurrentWeek(date?: Date) {
+    const targetDate = date || new Date();
+    const dayOfWeek = targetDate.getDay(); // 0 = dimanche, 1 = lundi, etc.
+    
+    // Calculer le lundi de la semaine en cours
+    const mondayDate = new Date(targetDate);
+    const diff = targetDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Ajuster si dimanche
+    mondayDate.setDate(diff);
+    
+    // Calculer le vendredi de la semaine en cours
+    const fridayDate = new Date(mondayDate);
+    fridayDate.setDate(mondayDate.getDate() + 4);
+
+    // Options pour le formatage de la date
+    const monthNames = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    
+    const dayOfMonth = targetDate.getDate();
+    const monthName = monthNames[targetDate.getMonth()];
+    const yearName = targetDate.getFullYear();
+    
+    // Format des dates: "17 nov 2025 – 19 déc 2025"
+    const startDateStr = `${mondayDate.getDate()} ${monthNames[mondayDate.getMonth()].substring(0, 3)} ${mondayDate.getFullYear()}`;
+    const endDateStr = `${fridayDate.getDate()} ${monthNames[fridayDate.getMonth()].substring(0, 3)} ${fridayDate.getFullYear()}`;
+    
+    this.currentWeek = {
+      dayOfMonth,
+      monthName,
+      yearName,
+      startDate: startDateStr,
+      endDate: endDateStr,
+    };
+  }
+
+  onDatesChanged(date: Date) {
+    // Met à jour la semaine quand les dates du calendrier changent
+    this.updateCurrentWeek(date);
   }
 
 
@@ -124,13 +186,31 @@ export class Presences {
     }[e.type];
 
     // Afficher différent selon le type
-    let displayTitle = e.title;
-    if (e.type === 'late' && e.lateTime) {
-      displayTitle = `En retard ${e.lateTime}`;
-    } else if (e.type === 'present') {
+    let displayTitle = '';
+    
+    if (e.type === 'present') {
       displayTitle = 'Présent(e)';
+      if (e.startTime && e.endTime) {
+        displayTitle += ` ${e.startTime} - ${e.endTime}`;
+      } else if (e.startTime) {
+        displayTitle += ` ${e.startTime}`;
+      }
     } else if (e.type === 'absent') {
-      displayTitle = 'Absent(e)';
+      if (e.reason) {
+        displayTitle = `Absent(e): "${e.reason}"`;
+      } else {
+        displayTitle = 'Absent(e)';
+      }
+    } else if (e.type === 'late') {
+      if (e.reason && e.lateTime) {
+        displayTitle = `Retard : "${e.reason}" ${e.lateTime}`;
+      } else if (e.reason) {
+        displayTitle = `Retard : "${e.reason}"`;
+      } else if (e.lateTime) {
+        displayTitle = `En retard ${e.lateTime}`;
+      } else {
+        displayTitle = 'En retard';
+      }
     }
 
     return {
