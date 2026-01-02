@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { UserRole } from '../models/enum';
+import { UserRole } from '../models/userRole';
 
 @Component({
   selector: 'app-creation-expert',

@@ -1,22 +1,36 @@
+import { UserService } from './../services/user.service';
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { UserRole } from '../models/enum';
+import { Router } from '@angular/router';
+import { UserRole } from '../models/userRole';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { passwordMatchValidator } from '../validators/confirm-password.validator';
 
 @Component({
   selector: 'app-create-consultant',
-  imports: [],
+  imports: [
+    ReactiveFormsModule
+  ],
   templateUrl: './create-consultant.html',
   styleUrl: './create-consultant.css',
 })
 export class CreateConsultant {
-
+  userForm!: FormGroup;
   role: UserRole | null = null; 
   userRole = UserRole;
-
-   constructor(private router : Router){}
+  constructor(private router : Router, private formBuilder: FormBuilder, private userService: UserService){}
 
   suivant(){
-    this.router.navigateByUrl('confirme-consultant')
+    if (this.userForm.valid) {
+      this.router.navigateByUrl('confirme-consultant');
+      this.userService.setUserData({
+        nom: this.userForm.value.nom,
+        prenom: this.userForm.value.prenom,
+        email: this.userForm.value.email,
+        password: this.userForm.value.password,
+        phone: this.userForm.value.phone,
+        role: UserRole.CONSULTANT
+      });
+    }
   }
 
   toExpert(){
@@ -28,6 +42,14 @@ export class CreateConsultant {
   }
 
   ngOnInit() {
+  this.userForm = this.formBuilder.group({
+      nom: ['', Validators.required],
+      prenom: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required,Validators.minLength(6), Validators.maxLength(20),Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$')]],
+      confirmPassword: ['', Validators.required],
+      phone: [''],
+  }, { validators: passwordMatchValidator, updateOn: 'blur' });
 
   const path = this.router.url; 
   if (path.includes('consultant')) {
@@ -48,7 +70,6 @@ export class CreateConsultant {
     { queryParams: {role: this.role } }
     );
   }
-
 
 }
 

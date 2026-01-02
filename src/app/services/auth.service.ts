@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ApiConfigService } from "./api-config.service";
 import { tap } from "rxjs";
+import { HttpHeaders, HttpParams } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'//enregistre à la racine de l'application
@@ -13,9 +14,22 @@ export class AuthService {
     private apiConfig: ApiConfigService,
   ) {}
   
+
+
+  
   login(username: string, password: string) {
+
+    const body = new HttpParams()
+    .set('grant_type', 'password')   
+    .set('username', username)
+    .set('password', password);
+
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Accept': 'application/json'
+  });
     return this.http.post<any>(this.apiConfig.buildUrl('auth/token'),
-      {"username": username, "password": password }
+      body.toString(),{ headers }
     ).pipe(
       tap(response => {
         console.log('Access Token:', response.access_token);

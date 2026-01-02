@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserRole } from '../models/enum';
+import { UserRole } from '../models/userRole';
 
 @Component({
   selector: 'app-confirme-expert',
@@ -12,6 +12,7 @@ export class ConfirmeExpert {
 
   role: UserRole | null = null; 
   userRole = UserRole;
+  subscriptionService: any;
   constructor(private router : Router){}
 
   retour(){
@@ -38,5 +39,12 @@ export class ConfirmeExpert {
       ['login'],
       { queryParams: {role: this.role } }
       );
+    }
+
+    inscription() {
+      if (!this.role) {
+        return; 
+      }
+      this.subscriptionService.inscription({      });
     }
 }
