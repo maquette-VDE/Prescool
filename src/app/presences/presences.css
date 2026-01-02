@@ -593,3 +593,147 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ============================================================
+   🎯 SECTION 11 — MODAL SUPPRESSION D'ÉVÉNEMENT
+   ============================================================ */
+
+/* Overlay du modal */
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Contenu du modal */
+.delete-modal-content {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* En-tête du modal */
+.delete-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #fafafa;
+}
+
+.delete-modal-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #B31F24;
+}
+
+.delete-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-modal-close:hover {
+  color: #111;
+}
+
+/* Corps du modal */
+.delete-modal-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.delete-modal-message {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.delete-modal-event-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #fafafa;
+  border-radius: 8px;
+  border-left: 3px solid #B31F24;
+}
+
+.delete-modal-event-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.delete-modal-event-title {
+  font-size: 0.95rem;
+  color: #111;
+  font-weight: 600;
+}
+
+/* Pied de page du modal */
+.delete-modal-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e5e5;
+  background-color: #f9f9f9;
+}
+
+.delete-modal-btn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #e5e5e5;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.delete-modal-btn-cancel {
+  background-color: #ffffff;
+  color: #333;
+}
+
+.delete-modal-btn-cancel:hover {
+  background-color: #f5f5f5;
+  border-color: #d4d4d4;
+}
+
+.delete-modal-btn-confirm {
+  background-color: #B31F24;
+  color: #ffffff;
+  border-color: #B31F24;
+}
+
+.delete-modal-btn-confirm:hover {
+  background-color: #8b1619;
+  border-color: #8b1619;
+}
+

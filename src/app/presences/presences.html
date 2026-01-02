@@ -196,4 +196,49 @@
 
     </div>
   </div>
+
+  <!-- =======================================================
+       SECTION : Modal Suppression d'Événement
+       ======================================================= -->
+  <div class="delete-modal-overlay" *ngIf="deleteModal.isOpen" (click)="closeDeleteModal()">
+    <div class="delete-modal-content" (click)="$event.stopPropagation()">
+      
+      <!-- En-tête du modal -->
+      <div class="delete-modal-header">
+        <h2 class="delete-modal-title">Supprimer l'événement</h2>
+        <button class="delete-modal-close" type="button" (click)="closeDeleteModal()">✕</button>
+      </div>
+
+      <!-- Corps du modal -->
+      <div class="delete-modal-body">
+        <p class="delete-modal-message">
+          Êtes-vous sûr(e) de vouloir supprimer cet événement ?
+        </p>
+        <div class="delete-modal-event-info">
+          <span class="delete-modal-event-label">Événement :</span>
+          <span class="delete-modal-event-title">{{ deleteModal.eventTitle }}</span>
+        </div>
+      </div>
+
+      <!-- Pied de page du modal -->
+      <div class="delete-modal-footer">
+        <button 
+          class="delete-modal-btn delete-modal-btn-cancel" 
+          type="button" 
+          (click)="closeDeleteModal()"
+        >
+          Annuler
+        </button>
+        <button 
+          class="delete-modal-btn delete-modal-btn-confirm" 
+          type="button" 
+          (click)="confirmDelete()"
+        >
+          Supprimer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </div>

@@ -54,6 +54,13 @@ export class Presences {
   };
   isFilterMode = false;
 
+  // Modal de suppression
+  deleteModal = {
+    isOpen: false,
+    eventId: '' as string,
+    eventTitle: '' as string,
+  };
+
 
 
   /* ============================================================
@@ -250,12 +257,29 @@ export class Presences {
      🎯 SUPPRESSION
      ============================================================ */
   onEventClick(info: any) {
-    //cet evenement serra inclus dans le formulaire sur un bouton pour delete l'evenement
-    const eventId = info.event.id;
-    if (confirm('Supprimer cet événement ?')) {
-      this.events = this.events.filter(e => e.id !== eventId);
-      this.refreshCalendar();
+    // Ouvrir la modal de suppression au lieu d'utiliser confirm()
+    const event = this.events.find(e => e.id === info.event.id);
+    if (event) {
+      this.openDeleteModal(info.event.id, event.title);
     }
+  }
+
+  openDeleteModal(eventId: string, eventTitle: string) {
+    this.deleteModal = {
+      isOpen: true,
+      eventId,
+      eventTitle,
+    };
+  }
+
+  closeDeleteModal() {
+    this.deleteModal.isOpen = false;
+  }
+
+  confirmDelete() {
+    this.events = this.events.filter(e => e.id !== this.deleteModal.eventId);
+    this.refreshCalendar();
+    this.closeDeleteModal();
   }
 
 
