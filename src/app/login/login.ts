@@ -34,9 +34,9 @@ export class Login {
     }
 
     if (this.role === UserRole.CONSULTANT) {
-        this.signupLink = '/create-consultant';
+        this.signupLink = '/create-user';
       } else if (this.role === UserRole.EXPERT) {
-        this.signupLink = '/create-expert';
+        this.signupLink = '/create-user';
       } 
   });
   

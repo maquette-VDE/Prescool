@@ -3,14 +3,14 @@ import { UserRole } from "./userRole";
 
 export interface Consultant extends User {
   code: string;
-  arrivedAt: Date;
+  dateArrivee: Date;
   
 }
 
 export class Consultant extends User implements Consultant {
   constructor(
     code: string,
-    arrivedAt: Date,
+    dateArrivee: Date,
 
     email: string,
     nom: string,
@@ -18,11 +18,11 @@ export class Consultant extends User implements Consultant {
     password: string,
     role: UserRole,
     phone?: string,
-    id?: number,
+    id?: string,
     
     ) {
         super(email, nom, prenom, password, role, phone, id);
         this.code = code;
-        this.arrivedAt = arrivedAt;
+        this.dateArrivee = dateArrivee;
     }
 }

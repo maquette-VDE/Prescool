@@ -10,7 +10,7 @@ import { Expert } from "../models/expert";
   providedIn: 'root'//enregistre à la racine de l'application
 })
 
-export class AuthService {
+export class SubscribeService {
   constructor(
     private http: HttpClient,
     private apiConfig: ApiConfigService,

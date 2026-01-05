@@ -15,7 +15,7 @@ export class Expert extends User implements Expert {
         password: string,
         role: UserRole,
         phone?: string,
-        id?: number,
+        id?: string,
     ) {
         super(email, nom, prenom, password, role, phone, id);
         this.diplome = diplome;

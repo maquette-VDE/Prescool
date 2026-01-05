@@ -22,11 +22,11 @@ export class Acceuil {
   }
 
   CreateExperts(){
-    this.router.navigateByUrl('create-expert')
+    this.router.navigateByUrl('create-user')
   }
 
   CreateConsultant(){
-    this.router.navigateByUrl('create-consultant')
+    this.router.navigateByUrl('create-user')
   }
 
 
