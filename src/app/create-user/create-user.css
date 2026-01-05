@@ -1,38 +1,40 @@
-.fond-ecran{
+.fond-ecran {
     background-color: #54545440;
-    background-size: cover;
-    min-height: 100vh;   
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
     display: flex;
-    justify-content: center;  
+    justify-content: center;
     align-items: center;
 }
 
-.connexion{
+.connexion {
     width: 625px;
-    height: 680px;
-    border-radius: 30px ;
+    height: auto;
+    border-radius: 30px;
     background-color: #F5F5F5;
+    position: relative;
 }
 
-.connexion h4{
+.connexion h4 {
     font-weight: bold;
     margin-left: 20px;
     margin-top: 20px;
-
 }
+
 .paragraphe {
     margin-top: 15px;
     margin-bottom: 10px;
     margin-left: 20px;
 }
 
-.consultant{
+.consultant {
     background-color: #FFFFFF;
     border-radius: 15px;
     width: 278px;
-    height: 110px ;
+    height: 110px;
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    border: 2px solid #C94B91;
 }
 
 .row h6 {
@@ -47,15 +49,25 @@
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
     border: 2px solid #57C4EB
 }
-.form{
-    margin: 20px 0px 5px 20px;
+
+.disabled {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    width: 278px;
+    height: 110px;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
 }
 
-.form label{
+.form {
+    margin: 20px 0 5px 20px;
+}
+
+.form label {
     display: block;
 }
 
-.form input{
+.form input {
     width: 570px;
     height: 59px;
     border-radius: 10px;
@@ -64,11 +76,11 @@
     padding-left: 20px;
 }
 
-.form-group{
+.form-group {
     margin-bottom: 15px;
 }
 
-.login{
+.login {
     width: 570px;
     height: 60px;
     border-radius: 15px;
@@ -77,21 +89,32 @@
     color: white;
     margin-bottom: 20px;
 }
+.login:disabled {
+            background: linear-gradient(90deg, #3e3e3e, #c2c2c2);
+            color: white;
+        }        
 
-.gradient{
-    color: #57C4EB;
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.gradient {
+    color: #C94B91;
     cursor: pointer;
     pointer-events: auto;
     background-clip: text;
     font-weight: bold;
     text-decoration: none;
 }
+
 .gradient:hover,
 .gradient:visited {
     text-decoration: none;
 }
 
-.warning{
+.warning {
     display: flex;
     gap: 6px;
 }
