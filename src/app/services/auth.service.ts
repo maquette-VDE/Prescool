@@ -14,9 +14,6 @@ export class AuthService {
     private apiConfig: ApiConfigService,
   ) {}
   
-
-
-  
   login(username: string, password: string) {
 
     const body = new HttpParams()
@@ -37,15 +34,17 @@ export class AuthService {
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('refresh_token', response.refresh_token);
       })
-    );
-    
-    
+    ); 
   }
   getToken(): string {
     return localStorage.getItem('access_token') || '';
   }
 
-   logout() {
+  getRefreshToken(): string {
+    return localStorage.getItem('refresh_token') || '';
+  }
+
+  logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.clear();
