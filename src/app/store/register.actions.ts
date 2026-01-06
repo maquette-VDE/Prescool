@@ -4,7 +4,6 @@ import { UserRole } from '../models/userRole';
 export const registerUser = createAction(
   '[Register] Register User step 1',
   props<{  
-      id?: string;
       email: string;
       nom: string;
       prenom: string; 
@@ -20,7 +19,7 @@ export const actualRole = createAction(
 
 export const registerConsultant = createAction(
   '[Register] Register User step 2 Consultant',
-  props<{ code: string; dateArrivee: Date }>()
+  props<{ code: string; dateArrivee: Date; euMission:boolean }>()
 );
 
 export const registerExpert = createAction(

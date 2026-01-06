@@ -1,7 +1,6 @@
 import {UserRole} from './userRole';
 
 export interface User {
-  id?: string;
   nom: string;
   prenom: string;
   email: string;
@@ -18,7 +17,6 @@ export class User implements User {
     password: string,
     role: UserRole,
     phone?: string,
-    id?: string,
     ) {
         this.email = email;
         this.nom = nom;
@@ -26,6 +24,5 @@ export class User implements User {
         this.password = password;
         this.role = role;
         this.phone = phone;
-        this.id = id;
     }
 }

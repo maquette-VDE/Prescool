@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideStore({
-      UserDataState: registerReducer
+      userData : registerReducer
     }),
   ]
 };

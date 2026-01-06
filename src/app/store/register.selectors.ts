@@ -8,7 +8,6 @@ export const selectUserDataState =
 export const selectStep1User = createSelector(
   selectUserDataState,
   (state) => ({ 
-                id: state.id || '',
                 nom: state.nom, 
                 prenom: state.prenom, 
                 phone: state.phone, 
@@ -21,7 +20,8 @@ export const selectStep2Consultant = createSelector(
   selectUserDataState,
   (state) => ({ 
                 code: state.code,
-                dateArrivee: state.dateArrivee
+                dateArrivee: state.dateArrivee,
+                euMission: state.euMission
             })
 );
 
