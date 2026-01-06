@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserRole } from '../models/userRole';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, Form } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Consultant } from '../models/consultant';
 import { Store } from '@ngrx/store';
-import { selectRole, selectStep1User, selectStep2Consultant } from '../store/register.selectors';
-import { SubscribeService } from '../services/subscribe.service';
+import { selectRole, selectStep2Consultant } from '../store/register.selectors';
 import { actualRole, registerConsultant } from '../store/register.actions';
+import { User } from '../models/user';
+import { RegisterService } from '../services/register.service';
 
 @Component({
   selector: 'app-confirme-consultant',
@@ -24,17 +25,18 @@ export class ConfirmeConsultant {
               private formBuilder: FormBuilder,
               private auth: AuthService,
               private store: Store,
-              private subscriptionService: SubscribeService
+              private subscriptionService: RegisterService
   ){}
 
   role: UserRole | null = null; 
   consultantForm!: FormGroup;  
-  user$!: any;
-
+  user: User = new User('','','','',UserRole.CONSULTANT);
+  consultant: Consultant = new Consultant('',new Date(),false,'','','','',UserRole.CONSULTANT);
+  mission: boolean = false;
   ngOnInit() {
     this.store.select(selectStep2Consultant).subscribe(userData => {
-      this.user$.code = userData.code || '';
-      this.user$.dateArrivee = userData.dateArrivee || '';
+      this.consultant.code = userData.code || '';
+      this.consultant.dateArrivee = userData.dateArrivee || new Date();
     });
     
     this.store.select(selectRole).subscribe(role => {
@@ -42,8 +44,9 @@ export class ConfirmeConsultant {
     });
 
     this.consultantForm = this.formBuilder.group({
-      code: [this.user$.code, Validators.required],
-      dateArrivee: [this.user$.dateArrivee, Validators.required]
+      code: [this.consultant.code, Validators.required],
+      dateArrivee: [this.consultant.dateArrivee, [Validators.required, Validators.pattern(`^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$`)]],
+      mission: [false]
     }); 
   }
 
@@ -51,7 +54,8 @@ export class ConfirmeConsultant {
   retour(){
     this.store.dispatch(registerConsultant({ 
       code: this.consultantForm.value.code || '',
-      dateArrivee: this.consultantForm.value.dateArrivee || ''
+      dateArrivee: this.consultantForm.value.dateArrivee || '',
+      euMission: this.consultantForm.value.euMission || false
     }));
     this.store.dispatch(actualRole({ role: UserRole.CONSULTANT }));
     this.router.navigateByUrl('create-user');
@@ -73,24 +77,28 @@ export class ConfirmeConsultant {
       console.error('Role is not defined');
       return; 
     }
-    this.store.select(selectStep1User).subscribe(userData => {
-      this.user$.id = userData.id || '';
-      this.user$.nom = userData.nom ;
-      this.user$.prenom = userData.prenom ;
-      this.user$.email = userData.email ;
-      this.user$.password = userData.password;
-      this.user$.phone = userData.phone || '';
-      this.user$.role = this.role;
+    console.log('Inscription for role : ', this.role);
+
+    this.consultant = this.subscriptionService.initialize(
+      this.consultant, 
+      this.store, 
+      this.role, 
+      this.consultantForm) as Consultant;
+    
+    this.subscriptionService.inscription( this.consultant ).subscribe({
+      next: () => {
+        console.log('Consultant data for inscription:', this.consultant);
+        
+        this.auth.login(this.consultant.email, this.consultant.password).subscribe({
+          next: () => this.router.navigateByUrl('presences'),
+          error: (err) => {
+            console.error('inscription to Login failed', err.error);
+          }
+        });
+      }, 
+      error: (err1) => console.error('Inscription failed', err1.error)
     });
-    this.subscriptionService.inscription( this.user$ as Consultant ).subscribe({
-      next: () => console.log('Consultant data for inscription:', this.user$),
-      error: (err1) => console.error('Inscription failed',err1)
-    });
-    this.auth.login(this.user$.email, this.user$.password).subscribe({
-      next: () => this.router.navigateByUrl('presences'),
-      error: (err) => console.error('inscription to Login failed', err)
-    });
-    this.router.navigateByUrl('login?role=consultant');
+
   }
 
   hasError(controlName: string, error: string) {

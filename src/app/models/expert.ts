@@ -8,16 +8,15 @@ export interface Expert extends User {
 export class Expert extends User implements Expert {
     constructor(
         diplome: string,
-
+        
         email: string,
         nom: string,
         prenom: string,
         password: string,
         role: UserRole,
         phone?: string,
-        id?: string,
     ) {
-        super(email, nom, prenom, password, role, phone, id);
+        super(email, nom, prenom, password, role, phone);
         this.diplome = diplome;
     }
 }

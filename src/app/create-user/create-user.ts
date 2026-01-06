@@ -7,6 +7,7 @@ import { NgClass } from '@angular/common';
 import { select, Store } from '@ngrx/store';
 import { selectRole, selectStep1User, selectUserDataState } from '../store/register.selectors';
 import { actualRole, registerUser } from '../store/register.actions';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-create-user',
@@ -18,14 +19,18 @@ import { actualRole, registerUser } from '../store/register.actions';
 })
 
 export class CreateUser {
-  userForm!: FormGroup;
-  role: UserRole | null = null; 
-  isConsultant : boolean = true;
+
   constructor(
     private router : Router, 
     private formBuilder: FormBuilder, 
     private store: Store
   ){}
+
+  userForm!: FormGroup;
+  role: UserRole | null = null; 
+  isConsultant : boolean = true;
+  user$ : any = {};
+  user : User = new User('','','','',UserRole.CONSULTANT);
 
   toExpert(){
     this.role = UserRole.EXPERT;
@@ -38,35 +43,37 @@ export class CreateUser {
   }
 
   ngOnInit() {
+    
+    this.store.pipe(select(selectStep1User)).subscribe(userData => {
+      this.user.nom = userData.nom ||'';
+      this.user.prenom = userData.prenom||'';
+      this.user.email = userData.email ||'';
+      this.user.phone = userData.phone ||'';
+      
+    });
 
     this.userForm = this.formBuilder.group({
-      nom: ['', Validators.required],
-      prenom: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      nom: [ this.user.nom, Validators.required],
+      prenom: [ this.user.prenom, Validators.required],
+      email: [ this.user.email, [Validators.required, Validators.email]],
       password: ['', [Validators.required,Validators.minLength(6), Validators.maxLength(20)]],
       confirmPassword: ['', Validators.required],
-      phone: ['',],
+      phone: [ this.user.phone],
     }, { validators: passwordMatchValidator, updateOn: 'blur' });
 
-    this.store.pipe(select(selectStep1User)).subscribe(userData => {
-      this.userForm.patchValue({
-        nom: userData.nom,
-        prenom: userData.prenom,
-        email: userData.email,
-        phone: userData.phone || '',
-        password: userData.password
-      });
-    });
-
     this.store.pipe( select(selectRole) ).subscribe(role => {
-      this.role = role;
+      this.role = role || UserRole.CONSULTANT;
     });
-
+    
     if (this.role === UserRole.CONSULTANT) {
       this.toConsultant();
     } else if (this.role === UserRole.EXPERT) {
       this.toExpert();
     } 
+
+    console.log('Current role : ', this.role);
+    console.log(' user is : ', this.user$);
+    
   }
 
   login() {
@@ -89,7 +96,6 @@ export class CreateUser {
     if (this.userForm.valid) {
 
       this.store.dispatch(registerUser({
-        id:'',
         nom: this.userForm.value.nom,
         prenom: this.userForm.value.prenom,
         email: this.userForm.value.email,

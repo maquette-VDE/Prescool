@@ -1,7 +1,6 @@
 import { UserRole } from "../models/userRole";
 
 export interface UserDataState {
-    id?: string;
     email: string;
     password: string;
     nom: string;
@@ -11,11 +10,11 @@ export interface UserDataState {
     diplome?: string;
     code?: string;
     dateArrivee?: Date;
+    euMission?: boolean;
     step: number;
 }
 
 export const initialUserDataState: UserDataState = {
-    id: undefined,
     email: '',
     password: '',
     nom: '',
@@ -25,5 +24,6 @@ export const initialUserDataState: UserDataState = {
     diplome: undefined,
     code: undefined,
     dateArrivee: undefined,
+    euMission: false,
     step: 1,
 };
