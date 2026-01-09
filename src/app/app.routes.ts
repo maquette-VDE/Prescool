@@ -9,6 +9,8 @@ import { SideNav } from './side-nav/side-nav';
 import { Planning } from './planning/planning';
 import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
+import { AttenteConfirmation } from './attente-confirmation/attente-confirmation';
+import { ValiderUser } from './valider-user/valider-user';
 
 export const routes: Routes = [
   {path : '', component : Acceuil},
@@ -17,6 +19,9 @@ export const routes: Routes = [
     {path : 'confirme-expert', component : ConfirmeExpert},
     {path : 'confirme-consultant', component : ConfirmeConsultant},
     {path : 'presences', component : Presences},
+    {path : 'attente-confirmation', component : AttenteConfirmation},
+    {path : 'presences', component : Presences},
+    {path : 'valider-user', component : ValiderUser},
   {
     path: 'sidenav',
     component: SideNav,

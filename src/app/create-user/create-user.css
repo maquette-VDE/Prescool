@@ -98,7 +98,7 @@
     margin-bottom: 20px;
 }
 .login:disabled {
-            background: linear-gradient(90deg, #3e3e3e, #c2c2c2);
+            background: #3e3e3e;
             color: white;
         }        
 

@@ -32,6 +32,7 @@ export class RefreshInterceptor implements HttpInterceptor {
                         }
                         else{
                             this.http.post<any>(this.apiConfig.buildUrl('auth/refresh'),'').pipe();
+                            return next.handle(req);
                         }
                     })
                 );

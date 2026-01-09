@@ -52,6 +52,29 @@
     border-radius: 15px;
     background: linear-gradient(90deg, #C94B91, #57C4EB);
     color: white;
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+
+.inscription:disabled {
+    background: #888888;
+    color: white;
+}
+
+.gradient{
+    color: #57C4EB;
+    background-clip: text;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.gradient:hover,
+.gradient:visited {
+    text-decoration: none;
+}
+
+.back{
     border: none;
 }
 

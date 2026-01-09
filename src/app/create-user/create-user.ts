@@ -8,6 +8,7 @@ import { select, Store } from '@ngrx/store';
 import { selectRole, selectStep1User, selectUserDataState } from '../store/register.selectors';
 import { actualRole, registerUser } from '../store/register.actions';
 import { User } from '../models/user';
+import RegisterTrialService from '../services/registerTrial.service';
 
 @Component({
   selector: 'app-create-user',
@@ -23,7 +24,8 @@ export class CreateUser {
   constructor(
     private router : Router, 
     private formBuilder: FormBuilder, 
-    private store: Store
+    private store: Store,
+    private userService: RegisterTrialService
   ){}
 
   userForm!: FormGroup;
@@ -31,6 +33,7 @@ export class CreateUser {
   isConsultant : boolean = true;
   user$ : any = {};
   user : User = new User('','','','',UserRole.CONSULTANT);
+  emailNotUnique: boolean= false;
 
   toExpert(){
     this.role = UserRole.EXPERT;
@@ -93,6 +96,9 @@ export class CreateUser {
   }
   
   suivant(){
+    if (!this.userService.verifyUniqueEmail(this.user.email)) {
+        this.emailNotUnique = true;
+    } else
     if (this.userForm.valid) {
 
       this.store.dispatch(registerUser({
