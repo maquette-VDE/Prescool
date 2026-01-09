@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ApiConfigService } from "./api-config.service";
-import { tap } from "rxjs";
+import { map, Observable, tap } from "rxjs";
 import { HttpHeaders, HttpParams } from "@angular/common/http";
 
 @Injectable({
@@ -41,8 +41,27 @@ export class AuthService {
     
     
   }
+  refreshToken(): Observable<{ accessToken: string }> {
+    const refreshToken = localStorage.getItem('refresh_token');
+
+    return this.http.post<{ accessToken: string }>('auth/refresh', 
+      { refreshToken },
+      { observe: 'response' }
+    ).pipe(
+      map(response => {
+        const newAccessToken = response.body!.accessToken;
+        localStorage.setItem('accessToken', newAccessToken);
+        return response.body!;
+      })
+    );
+  }
+  
   getToken(): string {
     return localStorage.getItem('access_token') || '';
+  }
+
+  getRefreshToken(): string {
+    return localStorage.getItem('refresh_token') || '';
   }
 
    logout() {
