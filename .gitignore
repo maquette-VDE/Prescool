@@ -1,2 +1,36 @@
+<<<<<<< HEAD
+# Angular build and cache
+dist/
+build/
+.angular/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Compiled Typescript
+*.tsbuildinfo
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Testing
+coverage/
+cypress/screenshots/
+cypress/videos/
+=======
 node_modules/
 .angular/
+>>>>>>> b82b074b7af096115df695579ed74f2fce4bcc5c

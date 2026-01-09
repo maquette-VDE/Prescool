@@ -1,97 +1,98 @@
-.fond-ecran{
+.fond-ecran {
     background-color: #54545440;
-    background-size: cover;
-    min-height: 100vh;   
-    width: 100%;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;  
+    justify-content: center;
     align-items: center;
+    padding: 15px;
 }
 
-.connexion{
-    width: 625px;
-    height: 680px;
-    border-radius: 30px ;
+/* Carte principale */
+.connexion {
     background-color: #F5F5F5;
+    border-radius: 30px;
+    max-width: 650px;
+    width: 100%;
+    padding: 20px;
 }
 
-.connexion h4{
+/* Titres */
+.connexion h4 {
     font-weight: bold;
-    margin-left: 20px;
-    margin-top: 20px;
-
 }
+
 .paragraphe {
-    margin-top: 15px;
-    margin-bottom: 10px;
-    margin-left: 20px;
+    margin-bottom: 15px;
 }
 
-.consultant{
+/* Cartes */
+.consultant,
+.expert {
     background-color: #FFFFFF;
     border-radius: 15px;
-    width: 278px;
-    height: 110px ;
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
+    min-height: 110px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.consultant:hover,
+.expert:hover {
+    transform: scale(1.02);
+}
+
+.expert {
+    border: 2px solid #57C4EB;
 }
 
 .row h6 {
     font-weight: bold;
 }
 
-.expert{
-    background-color: #FFFFFF;
-    border-radius: 15px;
-    width: 278px;
-    height: 110px ;
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
-    border: 2px solid #57C4EB
-}
-.form{
-    margin: 20px 0px 5px 20px;
-}
-
-.form label{
-    display: block;
-}
-
-.form input{
-    width: 570px;
-    height: 59px;
+/* Inputs */
+.form-control {
+    height: 55px;
     border-radius: 10px;
     border: none;
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
-    padding-left: 20px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-.form-group{
-    margin-bottom: 15px;
+/* Warning */
+.warning {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+    color: #6c757d;
 }
 
-.login{
-    width: 570px;
+/* Bouton */
+.login {
     height: 60px;
     border-radius: 15px;
-    border: none;
     background: linear-gradient(90deg, #C94B91, #57C4EB);
     color: white;
-    margin-bottom: 20px;
+    border: none;
 }
 
-.gradient{
+/* Lien */
+.gradient {
     color: #57C4EB;
-    cursor: pointer;
-    pointer-events: auto;
-    background-clip: text;
     font-weight: bold;
-    text-decoration: none;
-}
-.gradient:hover,
-.gradient:visited {
+    cursor: pointer;
     text-decoration: none;
 }
 
-.warning{
-    display: flex;
-    gap: 6px;
+/* Mobile */
+@media (max-width: 576px) {
+    .connexion {
+        padding: 15px;
+    }
+
+    .login {
+        height: 50px;
+    }
+
+    .warning {
+        font-size: 13px;
+    }
 }

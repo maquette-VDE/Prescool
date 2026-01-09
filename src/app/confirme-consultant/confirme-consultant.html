@@ -1,42 +1,53 @@
 <div class="fond-ecran">
-  <div class="connexion">
-      <h4>Creer votre compte</h4>
-      <p class="paragraphe">En tant que consultant</p>
-      <div class="form">
-        <div class="form-group">
-          <label for="email">Nom</label>
-          <input type="text" id="name"  name="username">
-        </div>
-        <div class="form-group">
-          <label for="password">Prenom</label>
-          <input type="text" id="prenom" name="prenom">
-        </div>
-        <div class="form-group">
-          <label for="password">Code</label>
-          <input type="text" id="code" name="code">
-        </div>
-        <div class="warning">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 9 20 20"  width="18px">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/>
-              </svg>
-              <p>  Entre le code que le Village de l'Emploi t'a attribué</p>
-          </div>
-        <div class="form-group">
-          <label for="password">Date d'arrivée</label>
-          <input type="text" id="diplome" name="arrivée">
-        </div>
+  <div class="connexion container position-relative">
+
+    <h4 class="text-center text-md-start mt-3">Créer votre compte</h4>
+    <p class="paragraphe text-center text-md-start">En tant que consultant</p>
+
+    <form class="form">
+
+      <div class="mb-3">
+        <label class="form-label">Nom</label>
+        <input type="text" class="form-control" id="name" name="username" placeholder="Votre nom">
       </div>
-      <div class="complement"> 
-          <label class="inline-checkbox">
-          <input type="checkbox"/>Je suis déja parti en mission</label>
-          <div class="log">
-            <button class="inscription">Je m'inscris</button>
-            <p>Deja un compte? <a (click)="login()" class="gradient">Je me connecte</a></p>
-          </div>
+
+      <div class="mb-3">
+        <label class="form-label">Prénom</label>
+        <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Votre prénom">
       </div>
-      <button class="back" (click)="retour()"> < Retour</button>      
+
+      <div class="mb-3">
+        <label class="form-label">Code</label>
+        <input type="text" class="form-control" id="code" name="code" placeholder="Code attribué">
+      </div>
+
+      <div class="warning mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 9 20 20">
+          <path fill-rule="evenodd"
+            d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/>
+        </svg>
+        <p>Entre le code que le Village de l'Emploi t'a attribué</p>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Date d'arrivée</label>
+        <input type="date" class="form-control" id="diplome" name="arrivée">
+      </div>
+
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="mission">
+        <label class="form-check-label" for="mission">Je suis déjà parti en mission</label>
+      </div>
+
+      <button class="btn inscription w-100 mb-3">Je m'inscris</button>
+
+      <p class="text-center">
+        Déjà un compte ? <a (click)="login()" class="gradient">Je me connecte</a>
+      </p>
+
+    </form>
+
+    <button class="back btn btn-link" (click)="retour()">&lt; Retour</button>
+
   </div>
 </div>
-
-
-

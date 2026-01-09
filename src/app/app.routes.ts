@@ -6,13 +6,28 @@ import { ConfirmeExpert } from './confirme-expert/confirme-expert';
 import { CreateConsultant } from './create-consultant/create-consultant';
 import { ConfirmeConsultant } from './confirme-consultant/confirme-consultant';
 import { Presences } from './presences/presences';
+import { SideNav } from './side-nav/side-nav';
+import { Planning } from './planning/planning';
+import { planningResolver } from './resolvers/planning/planning-resolver';
+import { roleGuard } from './guards/role-guard';
 
 export const routes: Routes = [
-    {path : '', component : Acceuil},
-    {path : 'login', component : Login},
-    {path : 'create-expert', component : CreateExpert},
-    {path : 'create-consultant', component : CreateConsultant},
-    {path : 'confirme-expert', component : ConfirmeExpert},
-    {path : 'confirme-consultant', component : ConfirmeConsultant},
-    {path : 'presences', component : Presences}
+  { path: '', component: Acceuil },
+  { path: 'login', component: Login },
+  { path: 'create-expert', component: CreateExpert },
+  { path: 'confirme-expert', component: ConfirmeExpert },
+  { path: 'create-consultant', component: CreateConsultant },
+  { path: 'confirme-consultant', component: ConfirmeConsultant },
+  {
+    path: 'sidenav',
+    component: SideNav,
+    children: [
+      { path: 'presences', component: Presences, canActivate: [roleGuard] },
+      {
+        path: 'planning',
+        component: Planning,
+        resolve: { profiles: planningResolver },
+      },
+    ],
+  },
 ];
