@@ -47,6 +47,11 @@
             Email obligatoire
           </div>
         }
+        @if (emailNotUnique) {
+          <div class="error">
+            Cet email est deja en attente de confirmation
+          </div>
+        }
         @if (hasError('email', 'email')) {
           <div class="error">
             L'email n'est pas valide

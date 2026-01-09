@@ -1,3 +1,4 @@
+import RegisterTrialService from '../services/registerTrial.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserRole } from '../models/userRole';
@@ -20,12 +21,12 @@ import { RegisterService } from '../services/register.service';
 })
 
 export class ConfirmeConsultant {
+  codeNotUnique: boolean= false;
   
   constructor(private router : Router,
               private formBuilder: FormBuilder,
-              private auth: AuthService,
               private store: Store,
-              private subscriptionService: RegisterService
+              private userService: RegisterTrialService,
   ){}
 
   role: UserRole | null = null; 
@@ -79,12 +80,18 @@ export class ConfirmeConsultant {
     }
     console.log('Inscription for role : ', this.role);
 
-    this.consultant = this.subscriptionService.initialize(
+    this.consultant = this.userService.initialize(
       this.consultant, 
       this.store, 
       this.role, 
       this.consultantForm) as Consultant;
-    
+    if (!this.userService.verifyUniqueCode(this.consultant.code)) {
+        this.codeNotUnique = true;
+    } else {
+      this.userService.tryToRegister(this.consultant);
+      this.router.navigateByUrl('attente-confirmation');
+    }
+      /*
     this.subscriptionService.inscription( this.consultant ).subscribe({
       next: () => {
         console.log('Consultant data for inscription:', this.consultant);
@@ -98,7 +105,7 @@ export class ConfirmeConsultant {
       }, 
       error: (err1) => console.error('Inscription failed', err1.error)
     });
-
+    */
   }
 
   hasError(controlName: string, error: string) {

@@ -5,7 +5,7 @@ import { UserRole } from '../models/userRole';
 import { Store } from '@ngrx/store';
 import { selectRole, selectStep1User } from '../store/register.selectors';
 import { Expert } from '../models/expert';
-import { RegisterService } from '../services/register.service';
+import RegisterTrialService from '../services/registerTrial.service';
 
 @Component({
   selector: 'app-confirme-expert',
@@ -19,7 +19,7 @@ export class ConfirmeExpert {
 
   constructor(
     private router : Router,
-    private subscriptionService: RegisterService,
+    private userService: RegisterTrialService,
     private store: Store,
     private formBuilder: FormBuilder
   ){}
@@ -56,18 +56,6 @@ export class ConfirmeExpert {
       );
     }
 
-    initializeExpertData() {
-      this.store.select(selectStep1User).subscribe(userData => {
-        this.expert.nom = userData.nom;
-        this.expert.prenom = userData.prenom;
-        this.expert.email = userData.email;
-        this.expert.phone = userData.phone || '';
-        this.expert.password = userData.password;
-      });
-      this.expert.diplome = this.expertForm.value.diplome || '';
-      this.expert.role = this.role || UserRole.EXPERT;
-    }
-
     inscription() {
       if (!this.role) {
         console.error('Role is not defined');
@@ -76,16 +64,22 @@ export class ConfirmeExpert {
       console.log('Inscription for role : ', this.role);
       // this.initializeExpertData();
 
-      this.expert = this.subscriptionService.initialize(
+      this.expert = this.userService.initialize(
         this.expert, 
         this.store, 
         this.role, 
         this.expertForm
       ) as Expert;
+
+      this.userService.tryToRegister(this.expert);
+      this.router.navigateByUrl('attente-confirmation');
+
+      /*
       this.subscriptionService.inscription( this.expert as Expert ).subscribe({
         next: () => console.log('Expert data for inscription:', this.expert),
         error: (err1) => console.error('Inscription failed',err1)
       });
+      */
       this.router.navigateByUrl('accueil');
     }
 }
