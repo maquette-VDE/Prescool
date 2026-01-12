@@ -1,0 +1,83 @@
+<div class="d-flex">
+    <!--SideNav-->
+    <div id="sideBarMenu" class="min-vh-100 p-3 border-end border-1" style="width: 250px;">
+        <div class="d-flex gap-1">
+            <img src="logo-vde-sans-texte.png" alt="logo" class="w-25 h-25">
+            <div class="d-flex flex-column">
+                <span class="fw-bold fs-5 text-muted">VILLAGE</span>
+                <span class="fw-bold fs-12 text-muted">DE L'EMPLOI</span>
+            </div>
+        </div>
+        <div class="menuContainer">
+            <h5 class="fs-14 mt-4">Menu Principal</h5>
+            <div class="">
+                <div class="">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="dashboard"
+                            routerLinkActive="active-link">
+                                <i class="bi bi-ui-radios-grid"></i>
+                                <span>Tableau de bord</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="consultants"
+                            routerLinkActive="active-link">
+                                <i class="bi bi-person"></i>
+                                <span>Consultant</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="presences"
+                            routerLinkActive="active-link">
+                                <i class="bi bi-calendar2-week"></i>
+                                <span>Présences</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="statistics"
+                            routerLinkActive="active-link">
+                                <i class="bi bi-file-bar-graph"></i>
+                                <span>Statistiques</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="annonces"
+                            routerLinkActive="active-link">
+                                <i class="bi bi-chat-right-dots"></i>
+                                <span>Annonces</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="help"
+                            routerLinkActive="active-link">
+                                <i class="bi bi-question-circle"></i>
+                                <span>Aide</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="settings"
+                            routerLinkActive="active-link">
+                                <i class="bi bi-gear"></i>
+                                <span>Paramètres</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="logout"
+                            routerLinkActive="active-link">
+                                <i class="bi bi-box-arrow-left"></i>
+                                <span>Se déconnecter</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="flex-grow-1 p-4">
+        <router-outlet></router-outlet>
+    </div>
+</div>

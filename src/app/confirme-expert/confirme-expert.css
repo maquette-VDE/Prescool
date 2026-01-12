@@ -1,79 +1,55 @@
-.fond-ecran{
+.fond-ecran {
     background-color: #54545440;
-    background-size: cover;
-    min-height: 100vh;   
-    width: 100%;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;  
+    justify-content: center;
     align-items: center;
+    padding: 15px;
 }
 
-.connexion{
-    width: 625px;
-    height: 670px;
-    border-radius: 30px ;
+/* Carte principale */
+.connexion {
     background-color: #F5F5F5;
+    border-radius: 30px;
+    max-width: 650px;
+    width: 100%;
+    padding: 20px;
     position: relative;
 }
 
-.connexion h4{
+/* Titres */
+.connexion h4 {
     font-weight: bold;
-    margin-left: 20px;
-    margin-top: 20px;
-    font-size: 36px;
-
-
+    font-size: 32px;
 }
+
 .paragraphe {
-    margin-bottom: 10px;
-    margin-left: 20px;
-    font-size: 20px;
+    margin-bottom: 15px;
+    font-size: 18px;
     color: #545454;
 }
 
-.form{
-    margin: 20px 0px 5px 20px;
-}
-
-.complement{
-    margin: 20px 0px 5px 20px;
-}
-
-.warning{
-    display: flex;
-    gap: 6px;
-}
-
-.form label{
-    display: block;
-}
-
-.form input{
-    width: 570px;
-    height: 3rem;
+/* Inputs */
+.form-control {
+    height: 55px;
     border-radius: 10px;
     border: none;
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
-    padding-left: 20px;
+    box-shadow: 0px 1px 4px rgba(0,0,0,0.15);
+    padding-left: 15px;
 }
 
-.inline-checkbox {
-  display: flex;
-  align-items: center; 
-  gap: 8px;
+/* Warning */
+.warning {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+    color: #6c757d;
 }
 
-
-
-.form-group{
-    margin-bottom: 15px;
-}
-
-.inscription{
-    width: 570px;
+/* Bouton inscription */
+.inscription {
     height: 60px;
     border-radius: 15px;
-    border: none;
     background: linear-gradient(90deg, #C94B91, #57C4EB);
     color: white;
     margin-bottom: 20px;
@@ -100,11 +76,45 @@
 
 .back{
     border: none;
+}
+
+/* Lien gradient */
+.gradient {
+    color: #57C4EB;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* Bouton retour */
+.back {
     position: absolute;
-    top: 20px; 
-    right: 20px;
-    width: 81px;
-    height: 49px;
+    top: 20px;
+    left: 20px;
+    border: none;
     background: none;
-    
+    font-size: 16px;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .connexion {
+        padding: 15px;
+    }
+
+    .inscription {
+        height: 50px;
+    }
+
+    .warning {
+        font-size: 13px;
+    }
+
+    .connexion h4 {
+        font-size: 26px;
+    }
+
+    .paragraphe {
+        font-size: 16px;
+    }
 }

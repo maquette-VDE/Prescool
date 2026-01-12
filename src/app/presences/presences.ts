@@ -5,18 +5,32 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import frLocale from '@fullcalendar/core/locales/fr';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 interface CalendarEvent {
   id: string;
   title: string;
   date: string;
   type: 'present' | 'absent' | 'late' | 'generic';
+  lateTime?: string; // Heure d'arrivée si en retard
+  reason?: string;   // Raison (maladie, etc.)
+  startTime?: string; // Heure de début (ex: 09:00)
+  endTime?: string;   // Heure de fin (ex: 17:00)
+}
+
+interface StatusModalState {
+  isOpen: boolean;
+  selectedDate: string | null;
+  selectedStatus: 'present' | 'absent' | 'late' | null;
+  reason: string;
+  lateTime: string;
 }
 
 @Component({
   selector: 'app-presences',
   standalone: true,
-  imports: [FullCalendarModule],
+  imports: [FullCalendarModule, CommonModule, FormsModule],
   templateUrl: './presences.html',
   styleUrl: './presences.css',
   encapsulation: ViewEncapsulation.None,
@@ -27,12 +41,40 @@ export class Presences {
      🎯 DONNÉES (non connectées au backend pour l’instant)
      ============================================================ */
   events: CalendarEvent[] = [
-    { id: crypto.randomUUID(), title: 'Absent(e) - "maladie"', date: '2025-11-17', type: 'absent' },
-    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-21', type: 'present' },
-    { id: crypto.randomUUID(), title: 'Retard - "Rendez-vous France Travail"', date: '2025-11-25', type: 'late' }
+    { id: crypto.randomUUID(), title: 'Absent(e) - "maladie"', date: '2025-11-17', type: 'absent', reason: 'maladie' },
+    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-18', type: 'present', startTime: '09:00', endTime: '18:00' },
+    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-19', type: 'present', startTime: '09:30', endTime: '17:00' },
+    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-20', type: 'present', startTime: '09:00', endTime: '18:00' },
+    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-21', type: 'present', startTime: '09:30' },
+    { id: crypto.randomUUID(), title: 'En retard - "on doit aller chercher mes enfants"', date: '2025-11-26', type: 'late', reason: 'on doit aller chercher mes enfants', lateTime: '17:30' }
   ];
 
   searchQuery = '';
+  statusModal: StatusModalState = {
+    isOpen: false,
+    selectedDate: null,
+    selectedStatus: null,
+    reason: '',
+    lateTime: '09:00',
+  };
+  isFilterMode = false;
+
+  // Modal de suppression
+  deleteModal = {
+    isOpen: false,
+    eventId: '' as string,
+    eventTitle: '' as string,
+  };
+
+  // Propriété pour la semaine actuelle
+  currentWeek = {
+    dayOfMonth: 0,
+    monthName: '',
+    monthAbbr: '',
+    yearName: 0,
+    startDate: '',
+    endDate: '',
+  };
 
 
 
@@ -64,9 +106,17 @@ export class Presences {
       });
     },
 
+    // Événement quand les dates affichées changent
+    datesSet: (info) => {
+      this.onDatesChanged(info.start);
+    },
+
     displayEventTime: false,
     eventDisplay: 'block',
     height: 'auto',
+
+    // Masquer le samedi (6) et le dimanche (0)
+    hiddenDays: [0, 6],
 
     // Noms complets des jours
     dayHeaderContent: (args) => {
@@ -77,7 +127,54 @@ export class Presences {
 
 
   constructor() {
+    this.updateCurrentWeek();
     this.refreshCalendar();
+  }
+
+  /* ============================================================
+     🎯 CALCUL DE LA SEMAINE ACTUELLE
+     ============================================================ */
+  updateCurrentWeek(date?: Date) {
+    const targetDate = date || new Date();
+    const dayOfWeek = targetDate.getDay(); // 0 = dimanche, 1 = lundi, etc.
+    
+    // Calculer le lundi de la semaine en cours
+    const mondayDate = new Date(targetDate);
+    const diff = targetDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Ajuster si dimanche
+    mondayDate.setDate(diff);
+    
+    // Calculer le vendredi de la semaine en cours
+    const fridayDate = new Date(mondayDate);
+    fridayDate.setDate(mondayDate.getDate() + 4);
+
+    // Options pour le formatage de la date
+    const monthNames = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    const monthAbbrv = ['JAN', 'FÉV', 'MAR', 'AVR', 'MAI', 'JUI',
+                        'JUI', 'AOU', 'SEP', 'OCT', 'NOV', 'DÉC'];
+    
+    const dayOfMonth = targetDate.getDate();
+    const monthName = monthNames[targetDate.getMonth()];
+    const monthAbbr = monthAbbrv[targetDate.getMonth()];
+    const yearName = targetDate.getFullYear();
+    
+    // Format des dates: "17 nov 2025 – 19 déc 2025"
+    const startDateStr = `${mondayDate.getDate()} ${monthNames[mondayDate.getMonth()].substring(0, 3)} ${mondayDate.getFullYear()}`;
+    const endDateStr = `${fridayDate.getDate()} ${monthNames[fridayDate.getMonth()].substring(0, 3)} ${fridayDate.getFullYear()}`;
+    
+    this.currentWeek = {
+      dayOfMonth,
+      monthName,
+      monthAbbr,
+      yearName,
+      startDate: startDateStr,
+      endDate: endDateStr,
+    };
+  }
+
+  onDatesChanged(date: Date) {
+    // Met à jour la semaine quand les dates du calendrier changent
+    this.updateCurrentWeek(date);
   }
 
 
@@ -93,9 +190,37 @@ export class Presences {
       generic: 'event-generic',
     }[e.type];
 
+    // Afficher différent selon le type
+    let displayTitle = '';
+    
+    if (e.type === 'present') {
+      displayTitle = 'Présent(e)';
+      if (e.startTime && e.endTime) {
+        displayTitle += ` ${e.startTime} - ${e.endTime}`;
+      } else if (e.startTime) {
+        displayTitle += ` ${e.startTime}`;
+      }
+    } else if (e.type === 'absent') {
+      if (e.reason) {
+        displayTitle = `Absent(e): "${e.reason}"`;
+      } else {
+        displayTitle = 'Absent(e)';
+      }
+    } else if (e.type === 'late') {
+      if (e.reason && e.lateTime) {
+        displayTitle = `Retard : "${e.reason}" ${e.lateTime}`;
+      } else if (e.reason) {
+        displayTitle = `Retard : "${e.reason}"`;
+      } else if (e.lateTime) {
+        displayTitle = `En retard ${e.lateTime}`;
+      } else {
+        displayTitle = 'En retard';
+      }
+    }
+
     return {
       id: e.id,
-      title: e.title,
+      title: displayTitle,
       start: e.date,
       className: css,
     };
@@ -118,31 +243,97 @@ export class Presences {
   /* ============================================================
      🎯 CRÉATION
      ============================================================ */
-  addEvent(title: string, date: string, type: CalendarEvent['type']) {
-    this.events.push({
-      id: crypto.randomUUID(),
-      title,
-      date,
-      type,
-    });
-    this.refreshCalendar();
-  }
-
   openCreateDialog() {
-    //essaye plutot de creer un formulaire pour ajouter les evenements
-    const title = prompt('Titre de l’événement :');
-    if (!title) return;
-
-    const date = prompt('Date (AAAA-MM-JJ) :');
-    if (!date) return;
-
-    const type = prompt('Type (present / absent / late / generic) :', 'present') as any;
-
-    this.addEvent(title, date, type);
+    // Ouvre le modal avec la date d'aujourd'hui
+    const today = new Date().toISOString().split('T')[0];
+    this.openStatusModal(today);
   }
 
+  /* ============================================================
+     🎯 GESTION DU MODAL DE STATUT
+     ============================================================ */
   onDateClick(info: any) {
-    this.openCreateDialog();
+    this.openStatusModal(info.dateStr);
+  }
+
+  openStatusModal(dateStr: string | null) {
+    this.isFilterMode = dateStr === null;
+    this.statusModal = {
+      isOpen: true,
+      selectedDate: dateStr,
+      selectedStatus: null,
+      reason: '',
+      lateTime: '09:00',
+    };
+  }
+
+  closeStatusModal() {
+    this.statusModal.isOpen = false;
+  }
+
+  selectStatus(status: 'present' | 'absent' | 'late') {
+    this.statusModal.selectedStatus = status;
+  }
+
+  confirmStatus() {
+    if (!this.statusModal.selectedStatus) {
+      return;
+    }
+
+    // Mode filtre: on ne crée pas d'événement, on ferme juste le modal
+    if (this.isFilterMode) {
+      this.closeStatusModal();
+      return;
+    }
+
+    // Mode création d'événement
+    if (!this.statusModal.selectedDate) {
+      return;
+    }
+
+    const status = this.statusModal.selectedStatus;
+    let title = '';
+
+    switch (status) {
+      case 'present':
+        title = 'Présent(e)';
+        break;
+      case 'absent':
+        title = this.statusModal.reason
+          ? `Absent(e) - "${this.statusModal.reason}"`
+          : 'Absent(e)';
+        break;
+      case 'late':
+        title = this.statusModal.reason
+          ? `En retard - "${this.statusModal.reason}"`
+          : 'En retard';
+        break;
+    }
+
+    // Vérifier si un événement existe déjà pour cette date
+    const existingEventIndex = this.events.findIndex(
+      e => e.date === this.statusModal.selectedDate
+    );
+
+    const newEvent: CalendarEvent = {
+      id: existingEventIndex >= 0
+        ? this.events[existingEventIndex].id
+        : crypto.randomUUID(),
+      title,
+      date: this.statusModal.selectedDate!,
+      type: status,
+      reason: this.statusModal.reason || undefined,
+      lateTime: status === 'late' ? this.statusModal.lateTime : undefined,
+    };
+
+    if (existingEventIndex >= 0) {
+      this.events[existingEventIndex] = newEvent;
+    } else {
+      this.events.push(newEvent);
+    }
+
+    this.refreshCalendar();
+    this.closeStatusModal();
   }
 
 
@@ -151,12 +342,29 @@ export class Presences {
      🎯 SUPPRESSION
      ============================================================ */
   onEventClick(info: any) {
-    //cet evenement serra inclus dans le formulaire sur un bouton pour delete l'evenement
-    const eventId = info.event.id;
-    if (confirm('Supprimer cet événement ?')) {
-      this.events = this.events.filter(e => e.id !== eventId);
-      this.refreshCalendar();
+    // Ouvrir la modal de suppression au lieu d'utiliser confirm()
+    const event = this.events.find(e => e.id === info.event.id);
+    if (event) {
+      this.openDeleteModal(info.event.id, event.title);
     }
+  }
+
+  openDeleteModal(eventId: string, eventTitle: string) {
+    this.deleteModal = {
+      isOpen: true,
+      eventId,
+      eventTitle,
+    };
+  }
+
+  closeDeleteModal() {
+    this.deleteModal.isOpen = false;
+  }
+
+  confirmDelete() {
+    this.events = this.events.filter(e => e.id !== this.deleteModal.eventId);
+    this.refreshCalendar();
+    this.closeDeleteModal();
   }
 
 

@@ -21,17 +21,20 @@
     <!-- ---------- PARTIE GAUCHE : DATE + FILTRE ---------- -->
     <div class="presences-toolbar-left">
 
-      <!-- Pilule : Date principale (statique, tu pourras lier plus tard) -->
+      <!-- Pilule : Date principale (dynamique) -->
       <button class="pill pill-date-main" type="button">
-        <span class="pill-date-day">21</span>
+        <div class="pill-date-box">
+          <span class="pill-date-month-abbr">{{ currentWeek.monthAbbr }}</span>
+          <span class="pill-date-day">{{ currentWeek.dayOfMonth }}</span>
+        </div>
         <span class="pill-date-meta">
-          <span class="pill-date-month">novembre 2025</span>
-          <span class="pill-date-range">17 nov 2025 – 19 déc 2025</span>
+          <span class="pill-date-month">{{ currentWeek.dayOfMonth }} {{ currentWeek.monthName }} {{ currentWeek.yearName }}</span>
+          <span class="pill-date-range">{{ currentWeek.startDate }} – {{ currentWeek.endDate }}</span>
         </span>
       </button>
 
       <!-- Pilule : Filtre (statique pour l'instant) -->
-      <button class="pill pill-filter" type="button">
+      <button class="pill pill-filter" type="button" (click)="openStatusModal(null)">
         Présent(e) / Absent(e)
         <span class="pill-chevron">▾</span>
       </button>
@@ -88,5 +91,157 @@
 
     </div>
   </section>
+  <!-- =======================================================
+       SECTION : Modal Statut de Présence
+       ======================================================= -->
+  <div class="status-modal-overlay" *ngIf="statusModal.isOpen" (click)="closeStatusModal()">
+    <div class="status-modal-content" (click)="$event.stopPropagation()">
+      
+      <!-- En-tête du modal -->
+      <div class="status-modal-header">
+        <h2 class="status-modal-title">
+          {{ isFilterMode ? 'Filtrer les présences' : 'Statut de présence' }}
+        </h2>
+        <button class="status-modal-close" type="button" (click)="closeStatusModal()">✕</button>
+      </div>
+
+      <!-- Corps du modal -->
+      <div class="status-modal-body">
+        
+        <!-- Boutons de sélection du statut -->
+        <div class="status-buttons-group">
+          
+          <!-- Bouton Présent(e) -->
+          <button 
+            class="status-button status-button-present"
+            [class.active]="statusModal.selectedStatus === 'present'"
+            (click)="selectStatus('present')"
+            type="button"
+          >
+            <span class="status-icon">✓</span>
+            <span class="status-label">Présent(e)</span>
+          </button>
+
+          <!-- Bouton En retard -->
+          <button 
+            class="status-button status-button-late"
+            [class.active]="statusModal.selectedStatus === 'late'"
+            (click)="selectStatus('late')"
+            type="button"
+          >
+            <span class="status-icon">⏱</span>
+            <span class="status-label">En retard</span>
+          </button>
+
+          <!-- Bouton Absent(e) -->
+          <button 
+            class="status-button status-button-absent"
+            [class.active]="statusModal.selectedStatus === 'absent'"
+            (click)="selectStatus('absent')"
+            type="button"
+          >
+            <span class="status-icon">✕</span>
+            <span class="status-label">Absent(e)</span>
+          </button>
+
+        </div>
+
+        <!-- Champs supplémentaires selon le statut -->
+        <div class="status-modal-fields" *ngIf="statusModal.selectedStatus">
+          
+          <!-- Pour "En retard" : champ heure d'arrivée -->
+          <div *ngIf="statusModal.selectedStatus === 'late'" class="status-field">
+            <label class="status-field-label">Heure d'arrivée</label>
+            <input 
+              type="time" 
+              class="status-field-input" 
+              [(ngModel)]="statusModal.lateTime"
+              placeholder="09:00"
+            />
+          </div>
+
+          <!-- Pour "Absent(e)" et "En retard" : champ raison -->
+          <div *ngIf="statusModal.selectedStatus === 'absent' || statusModal.selectedStatus === 'late'" class="status-field">
+            <label class="status-field-label">
+              {{ statusModal.selectedStatus === 'absent' ? 'Raison de mon absence' : 'Raison de mon retard' }}
+            </label>
+            <input 
+              type="text" 
+              class="status-field-input" 
+              [(ngModel)]="statusModal.reason"
+              [placeholder]="statusModal.selectedStatus === 'absent' ? 'ex: maladie' : 'ex: rendez-vous'"
+            />
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Pied de page du modal -->
+      <div class="status-modal-footer">
+        <button 
+          class="status-modal-btn status-modal-btn-cancel" 
+          type="button" 
+          (click)="closeStatusModal()"
+        >
+          Annuler
+        </button>
+        <button 
+          class="status-modal-btn status-modal-btn-confirm"
+          [class.disabled]="!statusModal.selectedStatus"
+          type="button" 
+          (click)="confirmStatus()"
+          [disabled]="!statusModal.selectedStatus"
+        >
+          Terminer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =======================================================
+       SECTION : Modal Suppression d'Événement
+       ======================================================= -->
+  <div class="delete-modal-overlay" *ngIf="deleteModal.isOpen" (click)="closeDeleteModal()">
+    <div class="delete-modal-content" (click)="$event.stopPropagation()">
+      
+      <!-- En-tête du modal -->
+      <div class="delete-modal-header">
+        <h2 class="delete-modal-title">Supprimer l'événement</h2>
+        <button class="delete-modal-close" type="button" (click)="closeDeleteModal()">✕</button>
+      </div>
+
+      <!-- Corps du modal -->
+      <div class="delete-modal-body">
+        <p class="delete-modal-message">
+          Êtes-vous sûr(e) de vouloir supprimer cet événement ?
+        </p>
+        <div class="delete-modal-event-info">
+          <span class="delete-modal-event-label">Événement :</span>
+          <span class="delete-modal-event-title">{{ deleteModal.eventTitle }}</span>
+        </div>
+      </div>
+
+      <!-- Pied de page du modal -->
+      <div class="delete-modal-footer">
+        <button 
+          class="delete-modal-btn delete-modal-btn-cancel" 
+          type="button" 
+          (click)="closeDeleteModal()"
+        >
+          Annuler
+        </button>
+        <button 
+          class="delete-modal-btn delete-modal-btn-confirm" 
+          type="button" 
+          (click)="confirmDelete()"
+        >
+          Supprimer
+        </button>
+      </div>
+
+    </div>
+  </div>
 
 </div>
