@@ -5,7 +5,8 @@ import { UserRole } from '../models/userRole';
 import { Store } from '@ngrx/store';
 import { selectRole, selectStep1User } from '../store/register.selectors';
 import { Expert } from '../models/expert';
-import RegisterTrialService from '../services/registerTrial.service';
+import { RegisterService } from '../services/auth/register.service';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-confirme-expert',
@@ -19,9 +20,10 @@ export class ConfirmeExpert {
 
   constructor(
     private router : Router,
-    private userService: RegisterTrialService,
     private store: Store,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private subscriptionService: RegisterService,
+    private auth: AuthService
   ){}
 
   user$!: any;
@@ -64,22 +66,19 @@ export class ConfirmeExpert {
       console.log('Inscription for role : ', this.role);
       // this.initializeExpertData();
 
-      this.expert = this.userService.initialize(
+      this.expert = this.subscriptionService.initialize(
         this.expert, 
         this.store, 
         this.role, 
         this.expertForm
       ) as Expert;
 
-      this.userService.tryToRegister(this.expert);
-      this.router.navigateByUrl('attente-confirmation');
-
-      /*
       this.subscriptionService.inscription( this.expert as Expert ).subscribe({
-        next: () => console.log('Expert data for inscription:', this.expert),
+        next: () => {
+          console.log('Expert data for inscription:', this.expert);
+          this.router.navigateByUrl('attente-confirmation');
+          },
         error: (err1) => console.error('Inscription failed',err1)
       });
-      */
-      this.router.navigateByUrl('accueil');
     }
 }

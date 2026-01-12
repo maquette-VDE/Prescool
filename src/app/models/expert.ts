@@ -10,13 +10,13 @@ export class Expert extends User implements Expert {
         diplome: string,
         
         email: string,
-        nom: string,
-        prenom: string,
+        first_name: string,
+        last_name: string,
         password: string,
         role: UserRole,
         phone?: string,
     ) {
-        super(email, nom, prenom, password, role, phone);
+        super(email, first_name, last_name, password, role, phone);
         this.diplome = diplome;
     }
 }

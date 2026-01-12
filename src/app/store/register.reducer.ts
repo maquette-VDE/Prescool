@@ -5,9 +5,9 @@ import * as RegisterActions from './register.actions';
 export const registerReducer = createReducer(
     initialUserDataState,
 
-    on(RegisterActions.registerUser, (state, { nom, prenom, email, phone, password }) => ({
+    on(RegisterActions.registerUser, (state, { last_name, first_name, email, phone, password }) => ({
         ...state,
-        nom, prenom, email, phone, password,
+        last_name, first_name, email, phone, password,
         step: 2,
     })),
 
@@ -16,11 +16,11 @@ export const registerReducer = createReducer(
         role,
     })),
 
-    on(RegisterActions.registerConsultant, (state, { code, dateArrivee, euMission }) => ({
+    on(RegisterActions.registerConsultant, (state, { code, arrivedAt, gotMission }) => ({
         ...state,
         code,
-        dateArrivee,
-        euMission,
+        arrivedAt,
+        gotMission,
         step: 3,
     })),
 

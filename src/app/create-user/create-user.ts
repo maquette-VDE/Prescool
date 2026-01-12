@@ -8,7 +8,6 @@ import { select, Store } from '@ngrx/store';
 import { selectRole, selectStep1User, selectUserDataState } from '../store/register.selectors';
 import { actualRole, registerUser } from '../store/register.actions';
 import { User } from '../models/user';
-import RegisterTrialService from '../services/registerTrial.service';
 
 @Component({
   selector: 'app-create-user',
@@ -25,7 +24,6 @@ export class CreateUser {
     private router : Router, 
     private formBuilder: FormBuilder, 
     private store: Store,
-    private userService: RegisterTrialService
   ){}
 
   userForm!: FormGroup;
@@ -33,7 +31,6 @@ export class CreateUser {
   isConsultant : boolean = true;
   user$ : any = {};
   user : User = new User('','','','',UserRole.CONSULTANT);
-  emailNotUnique: boolean= false;
 
   toExpert(){
     this.role = UserRole.EXPERT;
@@ -48,16 +45,16 @@ export class CreateUser {
   ngOnInit() {
     
     this.store.pipe(select(selectStep1User)).subscribe(userData => {
-      this.user.nom = userData.nom ||'';
-      this.user.prenom = userData.prenom||'';
+      this.user.last_name = userData.last_name ||'';
+      this.user.first_name = userData.first_name ||'';
       this.user.email = userData.email ||'';
       this.user.phone = userData.phone ||'';
       
     });
 
     this.userForm = this.formBuilder.group({
-      nom: [ this.user.nom, Validators.required],
-      prenom: [ this.user.prenom, Validators.required],
+      last_name: [ this.user.last_name, Validators.required],
+      first_name: [ this.user.first_name, Validators.required],
       email: [ this.user.email, [Validators.required, Validators.email]],
       password: ['', [Validators.required,Validators.minLength(6), Validators.maxLength(20)]],
       confirmPassword: ['', Validators.required],
@@ -96,14 +93,11 @@ export class CreateUser {
   }
   
   suivant(){
-    if (!this.userService.verifyUniqueEmail(this.user.email)) {
-        this.emailNotUnique = true;
-    } else
     if (this.userForm.valid) {
 
       this.store.dispatch(registerUser({
-        nom: this.userForm.value.nom,
-        prenom: this.userForm.value.prenom,
+        last_name: this.userForm.value.last_name,
+        first_name: this.userForm.value.first_name,
         email: this.userForm.value.email,
         phone: this.userForm.value.phone,
         password: this.userForm.value.password

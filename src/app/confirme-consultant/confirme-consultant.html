@@ -1,7 +1,7 @@
-<div class="fond-ecran">
+<div class="bg-screen">
   <div class="connexion">
       <h4>Creer votre compte</h4>
-      <p class="paragraphe">En tant que consultant</p>
+      <p class="paragraph">En tant que consultant</p>
       <form [formGroup]="consultantForm" (ngSubmit)="inscription()">
         <div class="form">
           <div class="form-group">
@@ -22,15 +22,15 @@
             </div>
           }
           <div class="form-group">
-            <label for="arrivee">Date d'arrivée</label>
-            <input type="date" id="arrivee" name="arrivee" formControlName="dateArrivee">
+            <label for="arrivedAt">Date d'arrivée</label>
+            <input type="date" id="arrivedAt" name="arrivedAt" formControlName="arrivedAt">
           </div>
-          @if (hasError('dateArrivee', 'required')) {
+          @if (hasError('arrivedAt', 'required')) {
             <div class="error">
               La date d'arrivée est obligatoire
             </div>
           }
-          @if (hasError('dateArrivee', 'pattern')) {
+          @if (hasError('arrivedAt', 'pattern')) {
             <div class="error">
               Votre date n'est pas conforme au format
             </div>
@@ -38,9 +38,9 @@
         </div>
         <div class="complement"> 
             <label class="inline-checkbox">
-            <input type="checkbox" id="mission" formControlName="mission"/>Je suis déja parti en mission</label>
+            <input type="checkbox" id="gotMission" formControlName="gotMission"/>Je suis déja parti en mission</label>
             <div class="log">
-              <button class="inscription" type="submit" [disabled]="!consultantForm.valid">Je m'inscris</button>
+              <button class="subscribe" type="submit" [disabled]="!consultantForm.valid">Je m'inscris</button>
               <p>Deja un compte? <a (click)="login()" class="gradient">Je me connecte</a></p>
             </div>
         </div>

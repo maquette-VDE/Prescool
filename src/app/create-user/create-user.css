@@ -1,4 +1,4 @@
-.fond-ecran {
+.bg-screen {
     background-color: #54545440;
     min-height: 100vh;
     display: flex;
@@ -21,7 +21,7 @@
     font-weight: bold;
 }
 
-.paragraphe {
+.paragraph {
     margin-bottom: 15px;
 }
 
@@ -108,6 +108,8 @@
     margin-top: 5px;
 }
 
+
+/* Lien */
 .gradient {
     color: #C94B91;
     cursor: pointer;
@@ -120,6 +122,8 @@
 .gradient:hover,
 .gradient:visited {
     text-decoration: none;
+}
+
 /* Inputs */
 .form-control {
     height: 55px;
@@ -145,13 +149,6 @@
     border: none;
 }
 
-/* Lien */
-.gradient {
-    color: #C94B91;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-}
 
 /* Mobile */
 @media (max-width: 576px) {

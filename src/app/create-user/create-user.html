@@ -1,7 +1,7 @@
-<div class="fond-ecran" >
+<div class="bg-screen">
   <div class="connexion">
     <h4>Creez votre compte </h4>
-    <p class="paragraphe">type d'inscription</p>
+    <p class="paragraph">type d'inscription</p>
     <div class="container">
       <div class="row">
         <div class="col-md-6">
@@ -21,19 +21,19 @@
     <div class="form">
       <form [formGroup]="userForm" (ngSubmit)="suivant()">
         <div class="form-group">
-          <label for="nom">Nom</label>
-          <input type="text" id="nom"  name="nom" formControlName="nom">
+          <label for="last_name">Nom</label>
+          <input type="text" id="last_name"  name="last_name" formControlName="last_name">
         </div>
-        @if (hasError('nom', 'required')) {
+        @if (hasError('last_name', 'required')) {
           <div class="error">
             Nom et prénom obligatoires
           </div>
         }
         <div class="form-group">
-          <label for="prenom">Prenom</label>
-          <input type="text" id="prenom" name="prenom" formControlName="prenom">
+          <label for="first_name">Prénom</label>
+          <input type="text" id="first_name" name="first_name" formControlName="first_name">
         </div>
-        @if (hasError('prenom', 'required')) {
+        @if (hasError('first_name', 'required')) {
           <div class="error">
             Nom et prénom obligatoires
           </div>
@@ -45,11 +45,6 @@
         @if (hasError('email', 'required')) {
           <div class="error">
             Email obligatoire
-          </div>
-        }
-        @if (emailNotUnique) {
-          <div class="error">
-            Cet email est deja en attente de confirmation
           </div>
         }
         @if (hasError('email', 'email')) {
