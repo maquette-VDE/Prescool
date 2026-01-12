@@ -28,6 +28,7 @@ export class AuthService {
     'Content-Type': 'application/x-www-form-urlencoded',
     'Accept': 'application/json'
   });
+    console.log('Attempting login with username:', username);
     return this.http.post<any>(this.apiConfig.buildUrl('auth/token'),
       body.toString(),{ headers }
     ).pipe(

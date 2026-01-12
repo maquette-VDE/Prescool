@@ -13,9 +13,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class Login {
 
-  constructor(private router : Router, private route : ActivatedRoute ,private auth : AuthService){}
+  constructor(
+    private router : Router, 
+    private route : ActivatedRoute ,
+    private auth : AuthService){}
 
-  
   role: UserRole | null = null; 
   userRole = UserRole;
   signupLink : string | null = null
@@ -54,13 +56,13 @@ export class Login {
      if (this.role === UserRole.CONSULTANT) {
           this.auth.login(this.email, this.password).subscribe({
           next: () => this.router.navigateByUrl('presences'),
-          error: (err) => console.error('Login failed', err)
+          error: (err) => console.error('Login failed', err.error)
         });
   
       } else if (this.role === UserRole.EXPERT) {
           this.auth.login(this.email, this.password).subscribe({
           next: () => this.router.navigateByUrl('presences'),
-          error: (err) => console.error('Login failed', err)
+          error: (err) => console.error('Login failed', err.error)
         });
       } 
   }
