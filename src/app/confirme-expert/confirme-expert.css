@@ -1,4 +1,4 @@
-.fond-ecran {
+.bg-screen {
     background-color: #54545440;
     min-height: 100vh;
     display: flex;
@@ -23,7 +23,7 @@
     font-size: 32px;
 }
 
-.paragraphe {
+.paragraph {
     margin-bottom: 15px;
     font-size: 18px;
     color: #545454;

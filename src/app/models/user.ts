@@ -1,8 +1,8 @@
 import {UserRole} from './userRole';
 
 export interface User {
-  nom: string;
-  prenom: string;
+  last_name: string;
+  first_name: string;
   email: string;
   password: string;
   phone?: string;
@@ -12,15 +12,15 @@ export interface User {
 export class User implements User {
   constructor(
     email: string,
-    nom: string,
-    prenom: string,
+    last_name: string,
+    first_name: string,
     password: string,
     role: UserRole,
     phone?: string,
     ) {
         this.email = email;
-        this.nom = nom;
-        this.prenom = prenom;
+        this.last_name = last_name;
+        this.first_name = first_name;
         this.password = password;
         this.role = role;
         this.phone = phone;

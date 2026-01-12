@@ -5,8 +5,8 @@ export const registerUser = createAction(
   '[Register] Register User step 1',
   props<{  
       email: string;
-      nom: string;
-      prenom: string; 
+      last_name: string;
+      first_name: string; 
       phone?: string;
       password: string;
  }>()
@@ -19,7 +19,7 @@ export const actualRole = createAction(
 
 export const registerConsultant = createAction(
   '[Register] Register User step 2 Consultant',
-  props<{ code: string; dateArrivee: Date; euMission:boolean }>()
+  props<{ code: string; arrivedAt: Date; gotMission:boolean }>()
 );
 
 export const registerExpert = createAction(

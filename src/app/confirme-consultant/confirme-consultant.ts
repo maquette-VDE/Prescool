@@ -1,15 +1,14 @@
-import RegisterTrialService from '../services/registerTrial.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserRole } from '../models/userRole';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 import { Consultant } from '../models/consultant';
 import { Store } from '@ngrx/store';
 import { selectRole, selectStep2Consultant } from '../store/register.selectors';
 import { actualRole, registerConsultant } from '../store/register.actions';
 import { User } from '../models/user';
-import { RegisterService } from '../services/register.service';
+import { RegisterService } from '../services/auth/register.service';
 
 @Component({
   selector: 'app-confirme-consultant',
@@ -26,7 +25,8 @@ export class ConfirmeConsultant {
   constructor(private router : Router,
               private formBuilder: FormBuilder,
               private store: Store,
-              private userService: RegisterTrialService,
+              private subscriptionService: RegisterService,
+              private auth: AuthService
   ){}
 
   role: UserRole | null = null; 
@@ -37,7 +37,7 @@ export class ConfirmeConsultant {
   ngOnInit() {
     this.store.select(selectStep2Consultant).subscribe(userData => {
       this.consultant.code = userData.code || '';
-      this.consultant.dateArrivee = userData.dateArrivee || new Date();
+      this.consultant.arrivedAt = userData.arrivedAt || new Date();
     });
     
     this.store.select(selectRole).subscribe(role => {
@@ -46,8 +46,8 @@ export class ConfirmeConsultant {
 
     this.consultantForm = this.formBuilder.group({
       code: [this.consultant.code, Validators.required],
-      dateArrivee: [this.consultant.dateArrivee, [Validators.required, Validators.pattern(`^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$`)]],
-      mission: [false]
+      arrivedAt: [this.consultant.arrivedAt, [Validators.required, Validators.pattern(`^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$`)]],
+      gotMission: [false]
     }); 
   }
 
@@ -55,8 +55,8 @@ export class ConfirmeConsultant {
   retour(){
     this.store.dispatch(registerConsultant({ 
       code: this.consultantForm.value.code || '',
-      dateArrivee: this.consultantForm.value.dateArrivee || '',
-      euMission: this.consultantForm.value.euMission || false
+      arrivedAt: this.consultantForm.value.arrivedAt || '',
+      gotMission: this.consultantForm.value.gotMission || false
     }));
     this.store.dispatch(actualRole({ role: UserRole.CONSULTANT }));
     this.router.navigateByUrl('create-user');
@@ -80,32 +80,20 @@ export class ConfirmeConsultant {
     }
     console.log('Inscription for role : ', this.role);
 
-    this.consultant = this.userService.initialize(
+    this.consultant = this.subscriptionService.initialize(
       this.consultant, 
       this.store, 
       this.role, 
       this.consultantForm) as Consultant;
-    if (!this.userService.verifyUniqueCode(this.consultant.code)) {
-        this.codeNotUnique = true;
-    } else {
-      this.userService.tryToRegister(this.consultant);
-      this.router.navigateByUrl('attente-confirmation');
-    }
-      /*
+      
     this.subscriptionService.inscription( this.consultant ).subscribe({
       next: () => {
         console.log('Consultant data for inscription:', this.consultant);
-        
-        this.auth.login(this.consultant.email, this.consultant.password).subscribe({
-          next: () => this.router.navigateByUrl('presences'),
-          error: (err) => {
-            console.error('inscription to Login failed', err.error);
-          }
-        });
+        this.router.navigateByUrl('attente-confirmation');
       }, 
-      error: (err1) => console.error('Inscription failed', err1.error)
+        error: (err1) => console.error('Inscription failed', err1.error)
     });
-    */
+    
   }
 
   hasError(controlName: string, error: string) {

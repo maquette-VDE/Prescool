@@ -8,8 +8,8 @@ export const selectUserDataState =
 export const selectStep1User = createSelector(
   selectUserDataState,
   (state) => ({ 
-                nom: state.nom, 
-                prenom: state.prenom, 
+                last_name: state.last_name, 
+                first_name: state.first_name, 
                 phone: state.phone, 
                 email: state.email, 
                 password: state.password 
@@ -20,8 +20,8 @@ export const selectStep2Consultant = createSelector(
   selectUserDataState,
   (state) => ({ 
                 code: state.code,
-                dateArrivee: state.dateArrivee,
-                euMission: state.euMission
+                arrivedAt: state.arrivedAt,
+                gotMission: state.gotMission
             })
 );
 

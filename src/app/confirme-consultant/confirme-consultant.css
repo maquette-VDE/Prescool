@@ -1,4 +1,4 @@
-.fond-ecran {
+.bg-screen {
     background-color: #54545440;
     min-height: 100vh;
     display: flex;
@@ -22,7 +22,7 @@
     font-size: 32px;
 }
 
-.paragraphe {
+.paragraph {
     margin-bottom: 15px;
     font-size: 18px;
     color: #545454;
@@ -46,7 +46,7 @@
 }
 
 /* Bouton inscription */
-.inscription {
+.subscribe {
     height: 60px;
     border-radius: 15px;
     background: linear-gradient(90deg, #C94B91, #57C4EB);
@@ -54,7 +54,7 @@
     margin-bottom: 20px;
     margin-top: 15px;
 }
-.inscription:disabled {
+.subscribe:disabled {
     background: #888888;
     color: white;
 }
@@ -100,7 +100,7 @@
         padding: 15px;
     }
 
-    .inscription {
+    .subscribe {
         height: 50px;
     }
 
@@ -112,7 +112,7 @@
         font-size: 26px;
     }
 
-    .paragraphe {
+    .paragraph {
         font-size: 16px;
     }
 }
