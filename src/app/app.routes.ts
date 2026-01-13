@@ -10,18 +10,15 @@ import { Planning } from './planning/planning';
 import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
-import { ValiderUser } from './validate-user/validate-user';
 
 export const routes: Routes = [
     {path : '', component : Acceuil},
     {path : 'login', component : Login},
     {path : 'create-user', component : CreateUser},
-    {path : 'confirme-expert', component : ConfirmeExpert},
-    {path : 'confirme-consultant', component : ConfirmeConsultant},
+    {path : 'confirm-expert', component : ConfirmeExpert},
+    {path : 'confirm-consultant', component : ConfirmeConsultant},
+    {path : 'wait-confirmation', component : WaitConfirmation},
     {path : 'presences', component : Presences},
-    {path : 'attente-confirmation', component : WaitConfirmation},
-    {path : 'presences', component : Presences},
-    {path : 'valider-user', component : ValiderUser},
   {
     path: 'sidenav',
     component: SideNav,
@@ -33,5 +30,5 @@ export const routes: Routes = [
         resolve: { profiles: planningResolver },
       },
     ],
-  },
+  }
 ];
