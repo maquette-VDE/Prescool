@@ -106,9 +106,9 @@ export class CreateUser {
       this.store.dispatch(actualRole({ role: this.role as UserRole }));
 
       if (this.role === UserRole.CONSULTANT) {
-        this.router.navigateByUrl('confirme-consultant');
+        this.router.navigateByUrl('confirm-consultant');
       } else if (this.role === UserRole.EXPERT) {
-        this.router.navigateByUrl('confirme-expert');
+        this.router.navigateByUrl('confirm-expert');
       }
     }
   }

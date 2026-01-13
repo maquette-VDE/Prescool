@@ -26,7 +26,6 @@ export class ConfirmeConsultant {
               private formBuilder: FormBuilder,
               private store: Store,
               private subscriptionService: RegisterService,
-              private auth: AuthService
   ){}
 
   role: UserRole | null = null; 
@@ -46,7 +45,7 @@ export class ConfirmeConsultant {
 
     this.consultantForm = this.formBuilder.group({
       code: [this.consultant.code, Validators.required],
-      arrivedAt: [this.consultant.arrivedAt, [Validators.required, Validators.pattern(`^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$`)]],
+      arrivedAt: [this.consultant.arrivedAt, [Validators.required]],
       gotMission: [false]
     }); 
   }
@@ -89,7 +88,7 @@ export class ConfirmeConsultant {
     this.subscriptionService.inscription( this.consultant ).subscribe({
       next: () => {
         console.log('Consultant data for inscription:', this.consultant);
-        this.router.navigateByUrl('attente-confirmation');
+        this.router.navigateByUrl('wait-confirmation');
       }, 
         error: (err1) => console.error('Inscription failed', err1.error)
     });
