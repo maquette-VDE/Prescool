@@ -23,7 +23,6 @@ export class ConfirmeExpert {
     private store: Store,
     private formBuilder: FormBuilder,
     private subscriptionService: RegisterService,
-    private auth: AuthService
   ){}
 
   user$!: any;
@@ -63,8 +62,6 @@ export class ConfirmeExpert {
         console.error('Role is not defined');
         return; 
       }
-      console.log('Inscription for role : ', this.role);
-      // this.initializeExpertData();
 
       this.expert = this.subscriptionService.initialize(
         this.expert, 
@@ -76,7 +73,7 @@ export class ConfirmeExpert {
       this.subscriptionService.inscription( this.expert as Expert ).subscribe({
         next: () => {
           console.log('Expert data for inscription:', this.expert);
-          this.router.navigateByUrl('attente-confirmation');
+          this.router.navigateByUrl('wait-confirmation');
           },
         error: (err1) => console.error('Inscription failed',err1)
       });
