@@ -1,23 +1,7 @@
 <div class="bg-screen">
   <div class="connexion container">
     <h4 class="text-center text-md-start mt-3">Connectez-vous à votre compte</h4>
-    <p class="paragraph text-center text-md-start">En tant que</p>
     <div class="row g-3 mb-4">
-      <div class="col-12 d-md-flex gap-3">
-        <div class="consultant p-3 text-center"
-             (click)="switchRole(userRole.CONSULTANT)"
-             [ngClass]="{ 'selected': role === userRole.CONSULTANT }">
-          <h6>Consultant</h6>
-          <p>J'ai terminé ma formation et j'attends de partir en mission</p>
-        </div>
-        <div class="expert p-3 text-center"
-             (click)="switchRole(userRole.EXPERT)"
-             [ngClass]="{ 'selected': role === userRole.EXPERT }">
-          <h6>Expert</h6>
-          <p>Je mets en relation les consultants avec les clients</p>
-        </div>
-      </div>
-
       <div class="form" >
         <div class="form-group">
           <label for="email" >E-mail</label>

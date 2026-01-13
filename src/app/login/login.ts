@@ -4,6 +4,7 @@ import { UserRole } from '../models/userRole';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
+import { RoleService } from '../services/role.servcice';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class Login {
   constructor(
     private router : Router, 
     private route : ActivatedRoute ,
-    private auth : AuthService){}
+    private auth : AuthService
+  ){}
 
   role: UserRole | null = null; 
   userRole = UserRole;
@@ -34,12 +36,7 @@ export class Login {
     } else {
       this.role = null;  
     }
-
-    if (this.role === UserRole.CONSULTANT) {
-        this.signupLink = '/create-user';
-      } else if (this.role === UserRole.EXPERT) {
-        this.signupLink = '/create-user';
-      } 
+    this.signupLink = '/create-user'; 
   });
   
 }
@@ -53,18 +50,10 @@ export class Login {
   }
 
   onLogin() {
-     if (this.role === UserRole.CONSULTANT) {
-          this.auth.login(this.email, this.password).subscribe({
-          next: () => this.router.navigateByUrl('presences'),
-          error: (err) => console.error('Login failed', err.error)
-        });
-  
-      } else if (this.role === UserRole.EXPERT) {
-          this.auth.login(this.email, this.password).subscribe({
-          next: () => this.router.navigateByUrl('presences'),
-          error: (err) => console.error('Login failed', err.error)
-        });
-      } 
+    this.auth.login(this.email, this.password).subscribe({
+      next: () => this.router.navigateByUrl('presences'),
+      error: (err) => console.error('Login failed', err.error)
+    });
   }
 
 }
