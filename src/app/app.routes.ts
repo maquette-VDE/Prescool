@@ -6,6 +6,7 @@ import { CreateUser } from './create-user/create-user';
 import { ConfirmeConsultant } from './confirme-consultant/confirme-consultant';
 import { Presences } from './presences/presences';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
+import { ValidateUsers } from './validate-users/validate-users';
 
 export const routes: Routes = [
     {path : '', component : Acceuil},
@@ -15,4 +16,5 @@ export const routes: Routes = [
     {path : 'confirm-consultant', component : ConfirmeConsultant},
     {path : 'wait-confirmation', component : WaitConfirmation},
     {path : 'presences', component : Presences},
+    {path : 'validate-users', component : ValidateUsers},
 ];

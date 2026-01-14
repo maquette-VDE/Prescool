@@ -93,6 +93,7 @@
 /* Texte gradient */
 .gradient {
     background: linear-gradient(90deg, #C94B91, #57C4EB);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;

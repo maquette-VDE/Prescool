@@ -107,6 +107,7 @@ export class CreateUser {
 
       if (this.role === UserRole.CONSULTANT) {
         this.router.navigateByUrl('confirm-consultant');
+        
       } else if (this.role === UserRole.EXPERT) {
         this.router.navigateByUrl('confirm-expert');
       }
