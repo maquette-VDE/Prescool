@@ -14,19 +14,16 @@ export class AuthService {
     private apiConfig: ApiConfigService,
   ) {}
   
-  login(username: string, password: string) {
+  login(code: string, password: string, scope: string = 'read write') {
 
-    const body = new HttpParams()
-    .set('grant_type', 'password')   
-    .set('username', username)
-    .set('password', password);
+    const body = { code, password, scope };
 
   const headers = new HttpHeaders({
-    'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Type': 'application/json',
     'Accept': 'application/json'
   });
     return this.http.post<any>(this.apiConfig.buildUrl('auth/token'),
-      body.toString(),{ headers }
+      body,{ headers }
     ).pipe(
       tap(response => {
         console.log('Access Token:', response.access_token);
