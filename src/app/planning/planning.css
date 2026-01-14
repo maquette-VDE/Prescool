@@ -1,0 +1,133 @@
+::ng-deep  .rounded_corner_inner::before {
+    content: "Consultants"; 
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-weight: bold;
+    color: #333;
+    z-index: 10;
+}
+
+.week-selector {
+  min-width: 200px;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+::ng-deep .rounded_timeheadercol_inner,
+::ng-deep .rounded_timeheader_cell_inner {
+    display: flex !important;
+    align-items: center !important;    /* Centrage vertical */
+    justify-content: center !important; /* Centrage horizontal */
+    text-align: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-top: 1px solid #e0e0e0 !important;
+}
+
+::ng-deep .rounded_rowheader_inner {
+
+    display: flex !important;
+    align-items: center !important; 
+    height: 100% !important;
+    padding: 0 !important;
+}
+
+/* Assure que la div interne générée par votre code prend toute la largeur */
+::ng-deep .rounded_rowheader_inner > div {
+    width: 100%;
+}
+
+.week-selector button {
+  border: none;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.week-selector button:hover {
+  opacity: 0.7;
+}
+
+::ng-deep .rounded_rowheader_inner > div,
+::ng-deep .rounded_rowheader_inner_text {
+    height: 100% !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important; /* C'est ici que le centrage vertical final se joue */
+}
+
+::ng-deep .rounded_timeheader_float {
+    display: flex !important;
+    align-items: center !important;    /* Centrage vertical */
+    justify-content: center !important; /* Centrage horizontal */
+}
+
+/* Cible la div interne qui contient directement le texte */
+::ng-deep .rounded_timeheader_float_inner {
+    width: 100% !important;
+    text-align: center !important;
+    display: block !important;
+}
+
+/* Pour s'assurer que le titre "Consultants" reste aussi centré */
+::ng-deep .rounded_corner_inner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: bold !important;
+}
+
+/* 3. On s'assure que votre contenu HTML injecté s'étire aussi */
+::ng-deep .rounded_rowheader_inner_text > div {
+    width: 100%;
+}
+
+
+/* On s'assure que le scheduler prend bien toute la largeur */
+.scheduler_white_main {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+::ng-deep .rounded_event_inner{
+  border: 1px solid!important;
+}
+
+::ng-deep .rounded_corner_inner {
+
+    border: 1px solid #e0e0e0;
+}
+::ng-deep .rounded_divider_horizontal {
+    border-top: 0px solid #e0e0e0 !important;
+}
+::ng-deep .rounded_cell {
+    background-color: #ffffff !important;
+    border-right: 1px solid #ececec !important; 
+    border-bottom: 1px solid #ececec !important;
+}
+
+::ng-deep .rounded_rowheader {
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+::ng-deep .rounded_rowheader_inner {
+    display: flex;
+    align-items: center;
+    padding-left: 10px !important;
+    font-weight: 500;
+}
+
+::ng-deep .rounded_timeheader_cell {
+    background-color: #fcfcfc !important;
+    border-right: 1px solid #ececec !important;
+    border-bottom: 1px solid #ececec !important;
+    color: #666;
+}
+::ng-deep .rounded_event_inner {
+    border: 1px solid !important;
+    border-radius: inherit !important; /* Utilise le rounded-3 de Bootstrap */
+    margin-inline: 5px !important;
+    height: 100% !important;
+}

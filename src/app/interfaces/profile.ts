@@ -3,5 +3,5 @@ import { Ressource } from "./ressource";
 
 export interface Profile {
   ressource: Ressource;
-  events: Events;
+  events: Events[];
 }

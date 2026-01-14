@@ -1,110 +1,100 @@
-import { Component, ViewChild, AfterViewInit, signal, inject, OnInit, OnDestroy } from '@angular/core';
-import { DayPilot, DayPilotModule, DayPilotSchedulerComponent } from '@daypilot/daypilot-lite-angular';
+import {
+  Component,
+  ViewChild,
+  AfterViewInit,
+  signal,
+  inject,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
+import {
+  DayPilot,
+  DayPilotModule,
+  DayPilotSchedulerComponent,
+} from '@daypilot/daypilot-lite-angular';
 import { Profile } from '../interfaces/profile';
 import { ActivatedRoute } from '@angular/router';
 import { map, takeUntil, Subject } from 'rxjs';
+import { PlanningService } from '../services/planning/planning-service';
 
 @Component({
   selector: 'app-planning',
   standalone: true,
   imports: [DayPilotModule],
-  template: `<daypilot-scheduler [config]="config()" #scheduler></daypilot-scheduler>`,
-  styles: [`
-
-  ::ng-deep  .rounded_corner_inner::before {
-    content: "Consultants"; 
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    font-weight: bold;
-    color: #333;
-    z-index: 10;
-}
-
-::ng-deep .rounded_corner_inner {
-
-    border: 1px solid #e0e0e0;
-}
-::ng-deep .rounded_divider_horizontal {
-    border-top: 0px solid #e0e0e0 !important;
-}
-::ng-deep .rounded_cell {
-    background-color: #ffffff !important;
-    border-right: 1px solid #ececec !important; 
-    border-bottom: 1px solid #ececec !important;
-}
-
-::ng-deep .rounded_rowheader {
-    background-color: #ffffff !important;
-    border: 1px solid #e0e0e0 !important;
-}
-
-::ng-deep .rounded_rowheader_inner {
-    display: flex;
-    align-items: center;
-    padding-left: 10px !important;
-    font-weight: 500;
-}
-
-::ng-deep .rounded_timeheader_cell {
-    background-color: #fcfcfc !important;
-    border-right: 1px solid #ececec !important;
-    border-bottom: 1px solid #ececec !important;
-    color: #666;
-}
-::ng-deep .rounded_event_inner {
-    border: none !important;
-    border-radius: inherit !important; /* Utilise le rounded-3 de Bootstrap */
-    padding: 0 !important;
-    height: 100% !important;
-}
-  `]
+  templateUrl: './planning.html',
+  styleUrls: ['./planning.css'],
 })
 export class Planning implements OnInit, AfterViewInit, OnDestroy {
   private route = inject(ActivatedRoute);
+  private planningService = inject(PlanningService);
   private destroy$ = new Subject<void>();
+
+  today = new DayPilot.Date();
 
   @ViewChild('scheduler') scheduler!: DayPilotSchedulerComponent;
 
   eventTypes = [
-    { name: "Présent", id: "presence", color: "#93c47d" },
-    { name: "Absent", id: "absence", color: "#6fa8dc" },
-    { name: "En retard", id: "retard", color: "#f6b26b" }
+    { name: 'Présent', id: 'presence', color: '#6BB346', textColor: '#3CAA04' },
+    { name: 'Absent', id: 'absence', color: '#B31F24', textColor: '#B31F24' },
+    { name: 'En retard', id: 'retard', color: '#F78404', textColor: '#F78404' },
   ];
+  goToPreviousWeek(): void {
+    const currentStart = new DayPilot.Date(this.config().startDate);
+    this.config.update((prev) => ({
+      ...prev,
+      startDate: currentStart.addDays(-7),
+    }));
+  }
 
-  contextMenu = new DayPilot.Menu({
-    items: [
-      { text: "Modifier", onClick: args => this.editEvent(args.source) },
-      { text: "-" },
-      { text: "Supprimer", onClick: args => this.scheduler.control.events.remove(args.source) }
-    ]
-  });
+  translateDateToFr(date: DayPilot.Date, format: string): string {
+    return date.toString(format, 'fr-fr');
+  }
+
+  goToNextWeek(): void {
+    const currentStart = new DayPilot.Date(this.config().startDate);
+    this.config.update((prev) => ({
+      ...prev,
+      startDate: currentStart.addDays(7),
+    }));
+  }
+
+  getWeekRange(): string {
+    let start = new DayPilot.Date(this.config().startDate);
+    const end = start.addDays(4);
+
+    const format = 'd MMM';
+    return `${start.toString(format, 'fr-fr')} - ${end.toString(
+      format,
+      'fr-fr'
+    )}`;
+  }
 
   config = signal<DayPilot.SchedulerConfig>({
-    timeHeaders: [
-      { groupBy: "Day", format: "dddd d" }
-    ],
-    scale: "Day",
-    startDate: DayPilot.Date.today(),
-    days: 365,
-    heightSpec: "Max",
+    timeHeaders: [{ groupBy: 'Day', format: 'dddd d', height: 50 }],
+    scale: 'Day',
+    startDate: DayPilot.Date.today().firstDayOfWeek(1),
+    days: 5,
+    locale: 'fr-fr',
+    heightSpec: 'Max',
     height: 400,
-    rowMarginTop: 2,
-    rowMarginBottom: 2,
-    rowHeaderWidth: 180,
-    eventHeight: 100,
-    theme: "rounded",
-    cellWidth: 200,
-   
+    rowMarginTop: 10,
+    rowMarginBottom: 10,
+    rowHeaderWidth: 200,
+
+    eventHeight: 80,
+    theme: 'rounded',
+    cellWidth: 220,
+
+    headerHeight: 50,
+
     onTimeRangeSelected: async (args) => {
       const data = {
         start: args.start,
         end: args.end,
         resource: args.resource,
         id: DayPilot.guid(),
-        text: "Nouvelle présence",
-        tags: { type: "presence" }
+        text: 'Nouvelle présence',
+        tags: { type: 'presence' },
       };
       const result = await this.openModal(data);
       args.control.clearSelection();
@@ -118,54 +108,51 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
     },
 
     onBeforeEventRender: (args) => {
-      const type = this.eventTypes.find(t => t.id === args.data.tags?.type) ?? this.eventTypes[0];
-      
-      args.data.backColor = type.color;
-      args.data.fontColor = "#ffffff";
-      args.data.cssClass = "rounded-2 shadow-sm border-0";
-      const durationText = args.data.start.toString().slice(11,16) + " - " + args.data.end.toString().slice(11,16);
+      const type =
+        this.eventTypes.find((t) => t.id === args.data.tags?.type) ??
+        this.eventTypes[0];
 
+      args.data.backColor = `${type.color}45`;
+      args.data.borderColor = type.textColor;
+      args.data.fontColor = type.textColor;
+      args.data.cssClass = 'border-1 rounded-3 shadow-none';
+
+      const start = new DayPilot.Date(args.data.start).toString('HH:mm');
+      const end = new DayPilot.Date(args.data.end).toString('HH:mm');
+      const status = args.data.tags?.type;
+      const note = args.data.text;
+
+      // Contenu HTML d'une cellule
       args.data.html = `
-        <div class="d-flex align-items-center pt-1 px-2 fw-semibold" style="font-size: 0.65rem;">
-          <span class="ms-auto">${args.data.start.toString().split("T")[1] + " - " + args.data.end.toString().split("T")[1]}</span>
-        </div>
-      `;
+    <div class="d-flex flex-column align-items-center justify-content-center h-100 w-100 text-center" style="font-size: 0.85rem; line-height: 1.2; padding:2px;">
+      <div class="fw-bold">
+        ${status === 'absence' ? 'Absent' : `${start} - ${end}`}
+      </div>
 
-      // Zones interactives (Icone Menu à droite)
-      // args.data.areas = [
-      //   {
-      //     right: 5,
-      //     top: 15,
-      //     width: 20,
-      //     height: 20,
-      //     style: "cursor:pointer;",
-      //     backColor: "rgba(255,255,255,0.3)",
-      //     borderRadius: "50%",
-      //     text: "⋮",
-      //     fontColor: "#ffffff",
-      //     horizontalAlignment: "center",
-      //     action: "ContextMenu",
-      //     menu: this.contextMenu
-      //   }
-      // ];
+      ${note && note !== ''
+          ? `
+        <div class="fst-italic mt-1" style="font-size: 0.75rem; opacity: 0.9;">
+          "${note}"
+        </div>`
+          : ''
+        }
+    </div>
+  `;
     },
 
     onBeforeRowHeaderRender: (args) => {
-    const profile = args.row.data; 
-  
-    args.row.html = `
+      args.row.html = `
       <div class="d-flex align-items-center p-2">
-        <div class="rounded-circle bg-light me-3" style="width: 35px; height: 35px; border: 0px solid #F1F1F1;"></div>
-        <div class="d-flex flex-column" style="margin-right: 10px;">
+        <div class="rounded-circle me-3" style="width: 35px; height: 35px; border: 0px solid; background-color: #F1F1F1;"></div>
+        <div class="d-flex flex-column">
           <span class="fw-bold text-dark" style="font-size: 0.9rem;">${args.row.name}</span>
           <span class="text-muted" style="font-size: 0.7rem;">${args.row.id}</span>
         </div>
-        <i class="bi bi-phone text-success ms-auto" style="font-size: 1.2rem;"></i>
+        <i class="bi bi-phone-vibrate text-success ms-auto" style="font-size: 1.2rem;"></i>
       </div>
     `;
-  }
+    },
   });
-
 
   async editEvent(e: DayPilot.Event) {
     const result = await this.openModal(e.data);
@@ -176,24 +163,28 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
 
   async openModal(data: any) {
     const form = [
-      { name: "Titre", id: "text", type: "text" },
-      { name: "Type", id: "tags.type", type: "select", options: this.eventTypes.map(t => ({ name: t.name, id: t.id })) },
-      { name: "Début", id: "start", type: "datetime" },
-      { name: "Fin", id: "end", type: "datetime" }
+      { name: 'Titre', id: 'text', type: 'text' },
+      {
+        name: 'Type',
+        id: 'tags.type',
+        type: 'select',
+        options: this.eventTypes.map((t) => ({ name: t.name, id: t.id })),
+      },
+      { name: 'Début', id: 'start', type: 'datetime' },
+      { name: 'Fin', id: 'end', type: 'datetime' },
     ];
 
     const modal = await DayPilot.Modal.form(form, data);
     return modal.canceled ? null : modal.result;
   }
 
-
   ngOnInit(): void {
     this.route.data
       .pipe(
-        map(data => data['profiles'] as Profile[]),
+        map((data) => data['profiles'] as Profile[]),
         takeUntil(this.destroy$)
       )
-      .subscribe(profiles => {
+      .subscribe((profiles) => {
         if (profiles) this.updateScheduler(profiles);
       });
   }
@@ -204,25 +195,18 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateScheduler(profiles: Profile[]): void {
-    const resources = profiles.map(p => ({
+    const resources = profiles.map((p) => ({
       id: p.ressource.id,
-      name: p.ressource.title
+      name: p.ressource.title,
     }));
 
-    const events = profiles.map(p => ({
-      id: DayPilot.guid(),
-      resource: p.events.resource,
-      start: p.events.start.length === 16 ? p.events.start  : p.events.start,
-      end: p.events.end.length === 16 ? p.events.end  : p.events.end,
-      text: p.events.type.charAt(0).toUpperCase()+p.events.type.slice(1) ,
-      tags: { type: p.events?.type ?? "presence" }
-    }));
+    this.planningService.getEvents().subscribe((events) => {
+      this.scheduler.control.update({ resources, events });
 
-    this.scheduler.control.update({ resources, events });
-
-    if (events.length > 0) {
-      this.scheduler.control.scrollTo(events[0].start);
-    }
+      if (events.length > 0) {
+        this.scheduler.control.scrollTo(events[0].start);
+      }
+    });
   }
 
   ngOnDestroy(): void {

@@ -10,64 +10,103 @@ import { Profile } from '../../interfaces/profile';
 export class PlanningService {
   app = {
     barColor: (i: string) => {
-      const colors: { [key: string]: string } = { 'presence': '#93c47d', 'retard': '#f6b26b', 'absence': '#e06666', 'autre': '#8e7cc3' };
+      const colors: { [key: string]: string } = { 'presence': '#93c47d', 'retard': '#f6b26b', 'absence': '#e06666'};
       return colors[i] || colors['presence'];
     },
     barBackColor: (i: string) => {
-      const colors: { [key: string]: string } = { 'presence': '#d9ead3', 'retard': '#fce5cd', 'absence': '#f4cccc', 'autre': '#ead1dc' };
+      const colors: { [key: string]: string } = { 'presence': '#d9ead3', 'retard': '#fce5cd', 'absence': '#f4cccc' };
       return colors[i] || colors['presence'];
     }
   }
-  private profiles: Profile[] = [
-    {
-      ressource: { id: 'NJE132', title: 'Aly' },
-      events: {
-        resource: 'NJE132',
-        start: '2026-01-15T08:00:00',
-        end: '2026-01-15T18:00:00',
-        type: 'presence',
-        title: '8h00-18h00',
-        barColor: this.app.barColor('presence'),
-        barBackColor: this.app.barBackColor('presence')
-      },
+  private profiles: Profile[] =
+[
+  // Aly
+  {
+    ressource: { id: 'NJE132', title: 'Aly' },
+    events: [{
+      resource: 'NJE132',
+      start_time: '2026-01-12T08:00:00',
+      end_time: '2026-01-12T18:00:00',
+      event_type: 'presence',
+      id: 101
     },
     {
-      ressource: { id: 'NJE405', title: 'Emilie' },
-      events: {
-        resource: 'NJE405',
-        start: '2026-01-15T08:30:00',
-        end: '2026-01-15T18:00:00',
-        type: 'presence',
-        barColor: this.app.barColor('presence'),
-        barBackColor: this.app.barBackColor('presence'),
-        title: '8h30-18h00',
-      },
+      resource: 'NJE132',
+      start_time: '2026-01-13T08:00:00',
+      end_time: '2026-01-13T18:00:00',
+      event_type: 'presence',
+      id: 102
+    }
+  ]
+  },
+
+  // Emilie - Avec une absence
+  {
+    ressource: { id: 'NJE405', title: 'Emilie' },
+    events: [{
+      resource: 'NJE405',
+      start_time: '2026-01-12T09:00:00',
+      end_time: '2026-01-12T17:30:00',
+      event_type: 'absence',
+      notes: 'Rendez-vous médical',
+      id: 201
+    },
+     {
+      resource: 'NJE405',
+      start_time: '2026-01-14T08:00:00',
+      end_time: '2026-01-14T18:00:00',
+      event_type: 'absence',
+      notes: 'Rendez-vous médical',
+      id: 202
+    }]
+  },
+
+  // Feriel - Avec un retard
+  {
+    ressource: { id: 'NJE235', title: 'Feriel' },
+    events: [{
+      resource: 'NJE235',
+      start_time: '2026-01-15T10:30:00',
+      end_time: '2026-01-15T19:00:00',
+      event_type: 'retard',
+      notes: 'Problème de transport',
+      id: 301
+    }]
+  },
+  // Ibrahima
+  {
+    ressource: { id: 'NJE212', title: 'Ibrahima' },
+    events: [{
+      resource: 'NJE212',
+      start_time: '2026-01-12T08:30:00',
+      end_time: '2026-01-12T17:00:00',
+      event_type: 'presence',
+      id: 401
+    }]
+  },
+  // Camille
+  {
+    ressource: { id: 'NJE215', title: 'Camille' },
+    events: [{
+      resource: 'NJE215',
+      start_time: '2026-01-12T08:30:00',
+      end_time: '2026-01-12T17:00:00',
+      event_type: 'presence',
+      id: 408
     },
     {
-      ressource: { id: 'NJE235', title: 'Feriel' },
-      events: {
-        resource: 'NJE235',
-        start: '2026-01-15T08:00:00',
-        end: '2026-01-15T17:00:00',
-        type: 'absence',
-        title: '8h00-17h00',
-        barColor: this.app.barColor('absence'),
-        barBackColor: this.app.barBackColor('absence')
-      },
-    },
-    {
-      ressource: { id: 'NJE212', title: 'Ibrahima' },
-      events: {
-        resource: 'NJE212',
-        start: '2026-01-15T09:30:00',
-        end: '2026-01-15T17:30:00',
-        type: 'retard',
-        title: '9h30-17h30',
-        barColor: this.app.barColor('retard'),
-        barBackColor: this.app.barBackColor('retard')
-      },
-    },
-  ];
+      resource: 'NJE215',
+      start_time: '2026-01-13T08:30:00',
+      end_time: '2026-01-13T17:00:00',
+      event_type: 'presence',
+      id: 409
+    }
+
+  ]
+  },
+
+
+];
 
   constructor(private http: HttpClient) {}
 
@@ -86,15 +125,20 @@ export class PlanningService {
     });
   }
 
-  getEvents(from: DayPilot.Date, to: DayPilot.Date): Observable<DayPilot.EventData[]> {
-    const events: DayPilot.EventData[] = this.profiles.map((p) => ({
-      id: p.ressource.id + '_event',
-      start: new DayPilot.Date(p.events.start),
-      end: new DayPilot.Date(p.events.end),
-      resource: p.events.resource,
-      text: p.events.title,
-      barColor: '#3c78d8',
-    }));
+  getEvents(): Observable<DayPilot.EventData[]> {
+   const events: DayPilot.EventData[] = this.profiles.flatMap((p) => 
+  p.events.map((e) => ({
+    id: e.id || DayPilot.guid(), // Sécurité si l'ID est manquant
+    resource: p.ressource.id,    // On utilise l'ID de la ressource du profil
+    start: e.start_time,
+    end: e.end_time,
+    text: e.notes ?? '',
+    tags: { 
+      type: e.event_type ?? "presence",
+      comment: e.notes ?? "" 
+    }
+  }))
+);
 
     return new Observable((observer) => {
       setTimeout(() => {

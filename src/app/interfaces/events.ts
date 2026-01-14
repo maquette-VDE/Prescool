@@ -1,9 +1,8 @@
 export interface Events {
+  id: number;
   resource: string;
-  start: string;
-  end: string;
-  type: string;
-  title: string;
-  barColor: string;
-  barBackColor: string;
+  start_time: string;
+  end_time: string;
+  event_type: string;
+  notes?: string;
 }
