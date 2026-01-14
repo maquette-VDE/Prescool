@@ -17,7 +17,8 @@ export class Login {
   constructor(
     private router : Router, 
     private route : ActivatedRoute ,
-    private auth : AuthService
+    private auth : AuthService,
+    private roleService : RoleService,
   ){}
 
   role: UserRole | null = null; 
@@ -51,7 +52,15 @@ export class Login {
 
   onLogin() {
     this.auth.login(this.email, this.password).subscribe({
-      next: () => this.router.navigateByUrl('presences'),
+      next: () => {
+        this.router.navigateByUrl('presences');
+        this.roleService.getRole(this.email).subscribe(role => {
+          this.role = role;
+          if (this.role===UserRole.ADMIN) {
+            this.router.navigateByUrl('validate-users');
+          }
+        });
+      },
       error: (err) => console.error('Login failed', err.error)
     });
   }
