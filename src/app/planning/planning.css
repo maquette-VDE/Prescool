@@ -131,3 +131,34 @@
     margin-inline: 5px !important;
     height: 100% !important;
 }
+
+.header-container {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.search-bar {
+  max-width: 500px;
+  background-color: #f8f9fa;
+}
+
+.search-bar input::placeholder {
+  color: #adb5bd;
+  font-size: 0.9rem;
+}
+
+.user-pill {
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.user-pill:hover {
+  background-color: #f8f9fa !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.bg-dark {
+  background-color: #000 !important;
+}

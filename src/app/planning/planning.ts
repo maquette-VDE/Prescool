@@ -29,6 +29,8 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
   private planningService = inject(PlanningService);
   private destroy$ = new Subject<void>();
 
+  profiles = signal<Profile[]>([]);
+
   today = new DayPilot.Date();
 
   @ViewChild('scheduler') scheduler!: DayPilotSchedulerComponent;
@@ -87,26 +89,6 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
 
     headerHeight: 50,
 
-    onTimeRangeSelected: async (args) => {
-      const data = {
-        start: args.start,
-        end: args.end,
-        resource: args.resource,
-        id: DayPilot.guid(),
-        text: 'Nouvelle présence',
-        tags: { type: 'presence' },
-      };
-      const result = await this.openModal(data);
-      args.control.clearSelection();
-      if (result) {
-        args.control.events.add(result);
-      }
-    },
-
-    onEventClick: async (args) => {
-      await this.editEvent(args.e);
-    },
-
     onBeforeEventRender: (args) => {
       const type =
         this.eventTypes.find((t) => t.id === args.data.tags?.type) ??
@@ -154,28 +136,15 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
     },
   });
 
-  async editEvent(e: DayPilot.Event) {
-    const result = await this.openModal(e.data);
-    if (result) {
-      this.scheduler.control.events.update(result);
-    }
-  }
+  onSearchChange(event: any) {
+    const query = event.target.value.toLowerCase();
+    
+    const filteredProfiles = this.profiles().filter(p => 
+      p.ressource.title.toLowerCase().includes(query) || 
+      p.ressource.id.toLowerCase().includes(query)
+    );
 
-  async openModal(data: any) {
-    const form = [
-      { name: 'Titre', id: 'text', type: 'text' },
-      {
-        name: 'Type',
-        id: 'tags.type',
-        type: 'select',
-        options: this.eventTypes.map((t) => ({ name: t.name, id: t.id })),
-      },
-      { name: 'Début', id: 'start', type: 'datetime' },
-      { name: 'Fin', id: 'end', type: 'datetime' },
-    ];
-
-    const modal = await DayPilot.Modal.form(form, data);
-    return modal.canceled ? null : modal.result;
+    this.updateScheduler(filteredProfiles);
   }
 
   ngOnInit(): void {
@@ -185,6 +154,7 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe((profiles) => {
+        this.profiles.set(profiles);
         if (profiles) this.updateScheduler(profiles);
       });
   }
