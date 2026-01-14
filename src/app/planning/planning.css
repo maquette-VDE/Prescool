@@ -129,7 +129,6 @@
     border: 1px solid !important;
     border-radius: inherit !important; /* Utilise le rounded-3 de Bootstrap */
     margin-inline: 5px !important;
-    margin-block: 2px !important;
     height: 100% !important;
 }
 
