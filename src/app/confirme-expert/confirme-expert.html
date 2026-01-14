@@ -1,7 +1,9 @@
 <div class="bg-screen">
-  <div class="connexion">
+  <div class="subscription">
+    <div class="header">
       <h4>Creer votre compte</h4>
       <button class="back" (click)="retour()"> < Retour</button>      
+    </div>
       <p class="paragraph">En tant qu'expert en recrutement</p>
       <form [formGroup]="expertForm" (ngSubmit)="inscription()">
         <div class="form">
@@ -20,7 +22,7 @@
             <label class="inline-checkbox">
             <input type="checkbox"/>J'accepte d'envoyer a email a l'administration</label>
             <div class="log">
-              <button class="inscription" type="submit">Je m'inscris</button>
+              <button class="subscribe" type="submit">Je m'inscris</button>
               <p>Deja un compte? <a (click)="login()" class="gradient">Je me connecte</a></p>
             </div>
         </div>

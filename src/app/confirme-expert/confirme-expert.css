@@ -8,17 +8,23 @@
 }
 
 /* Carte principale */
-.connexion {
+.subscription {
     background-color: #F5F5F5;
     border-radius: 30px;
     max-width: 650px;
     width: 100%;
     padding: 20px;
+}
+
+.header {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 /* Titres */
-.connexion h4 {
+.subscription h4 {
     font-weight: bold;
     font-size: 32px;
 }
@@ -69,7 +75,7 @@
 }
 
 /* Bouton inscription */
-.inscription {
+.subscribe {
     height: 60px;
     border-radius: 15px;
     background: linear-gradient(90deg, #C94B91, #57C4EB);
@@ -78,11 +84,12 @@
     margin-top: 15px;
 }
 
-.inscription:disabled {
+.subscribe:disabled {
     background: #888888;
     color: white;
 }
 
+/* Lien gradient */
 .gradient{
     color: #57C4EB;
     background-clip: text;
@@ -96,23 +103,8 @@
     text-decoration: none;
 }
 
-.back{
-    border: none;
-}
-
-/* Lien gradient */
-.gradient {
-    color: #57C4EB;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-}
-
 /* Bouton retour */
 .back {
-    position: absolute;
-    top: 20px;
-    left: 20px;
     border: none;
     background: none;
     font-size: 16px;
@@ -120,7 +112,7 @@
 
 /* Mobile */
 @media (max-width: 576px) {
-    .connexion {
+    .subscription {
         padding: 15px;
     }
 
@@ -132,11 +124,11 @@
         font-size: 13px;
     }
 
-    .connexion h4 {
+    .subscription h4 {
         font-size: 26px;
     }
 
-    .paragraphe {
+    .paragraph {
         font-size: 16px;
     }
 }
