@@ -1,6 +1,9 @@
 export interface Events {
-  resourceId: string;
+  resource: string;
   start: string;
   end: string;
+  type: string;
   title: string;
+  barColor: string;
+  barBackColor: string;
 }
