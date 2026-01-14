@@ -15,43 +15,6 @@
     padding: 20px;
 }
 
-/* Titres */
-.connexion h4 {
-    font-weight: bold;
-}
-
-.paragraph {
-    margin-bottom: 15px;
-}
-
-/* Cartes rôles */
-.consultant,
-.expert {
-    background-color: #FFFFFF;
-    border-radius: 15px;
-    min-height: 110px;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    transition: transform 0.2s ease, border 0.2s ease;
-}
-
-.consultant:hover,
-.expert:hover {
-    transform: scale(1.02);
-}
-
-.consultant.selected {
-    border: 3px solid #ff69b4;
-}
-
-.expert.selected {
-    border: 3px solid #57C4EB;
-}
-
-.row h6 {
-    font-weight: bold;
-}
-
 /* Formulaire */
 .form-control {
     height: 55px;
@@ -109,4 +72,17 @@
     .login {
         height: 50px;
     }
+
+    .warning {
+        font-size: 13px;
+    }
+
+    .connexion h4 {
+        font-size: 26px;
+    }
+
+    .paragraphe {
+        font-size: 16px;
+    }
 }
+

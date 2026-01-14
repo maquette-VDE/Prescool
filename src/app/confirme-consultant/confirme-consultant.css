@@ -8,7 +8,7 @@
 }
 
 /* Carte principale */
-.connexion {
+.subscription {
     background-color: #F5F5F5;
     border-radius: 30px;
     max-width: 650px;
@@ -16,8 +16,15 @@
     padding: 20px;
 }
 
+.header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 /* Titres */
-.connexion h4 {
+.subscription h4 {
     font-weight: bold;
     font-size: 32px;
 }
@@ -79,6 +86,12 @@
     color: white;
 }
 
+.back{
+    border: none;
+}
+
+/* Lien gradient */
+
 .gradient{
     color: #C94B91;
     background-clip: text;
@@ -92,24 +105,9 @@
     text-decoration: none;
 }
 
-.back{
-    border: none;
-}
-
-/* Lien gradient */
-.gradient {
-    color: #C94B91;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-}
-
 /* Bouton retour */
 .back {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    border: none;
+    text-decoration: none;
     background: none;
     font-size: 16px;
 }

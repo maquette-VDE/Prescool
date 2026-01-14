@@ -1,13 +1,16 @@
+import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-validate-users',
-  imports: [],
+  imports: [NgFor],
   templateUrl: './validate-users.html',
   styleUrl: './validate-users.css',
 })
 export class ValidateUsers {
+ users: any[] = [];
+
 validateUser(_t13: any) {
 throw new Error('Method not implemented.');
 }
