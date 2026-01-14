@@ -129,7 +129,32 @@
     border: 1px solid !important;
     border-radius: inherit !important; /* Utilise le rounded-3 de Bootstrap */
     margin-inline: 5px !important;
+    margin-block: 2px !important;
     height: 100% !important;
+}
+
+.header-container {
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.1rem !important;
+  }
+  
+  .search-section {
+    margin-top: 10px;
+  }
+}
+
+.user-pill:active {
+  background-color: #f1f1f1 !important;
+  transform: scale(0.98);
+}
+
+.search-bar:focus-within {
+  border-color: #000 !important;
+  box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.05) !important;
 }
 
 .header-container {
@@ -145,6 +170,8 @@
   color: #adb5bd;
   font-size: 0.9rem;
 }
+
+
 
 .user-pill {
   transition: background-color 0.2s;
