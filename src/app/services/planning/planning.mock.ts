@@ -1,91 +1,44 @@
-import { Profile } from '../../interfaces/profile';
+import { EventsApiResponse } from "../../interfaces/events";
 
-export const MOCK_PROFILES: Profile[] =
-[
-  // Aly
-  {
-    ressource: { id: 'NJE132', title: 'Aly' },
-    events: [{
-      resource: 'NJE132',
-      start_time: '2026-01-12T08:00:00',
-      end_time: '2026-01-12T18:00:00',
-      event_type: 'presence',
-      id: 101
-    },
-    {
-      resource: 'NJE132',
-      start_time: '2026-01-13T08:00:00',
-      end_time: '2026-01-13T18:00:00',
-      event_type: 'presence',
-      id: 102
-    }
-  ]
-  },
+export const PLANNING_MOCK: EventsApiResponse = {
+  items: [
+    // --- Lundi 12 Janvier ---
+    { id: 101, user_id: 4, title: "Analyse Système", start_time: "2026-01-12T09:00:00Z", end_time: "2026-01-12T12:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 102, user_id: 10, title: "Présence Bureau", start_time: "2026-01-12T08:30:00Z", end_time: "2026-01-12T17:30:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 103, user_id: 11, title: "Formation Sécurité", start_time: "2026-01-12T14:00:00Z", end_time: "2026-01-12T16:00:00Z", event_type: "formation", status: "scheduled", attendance_status: "present", all_day: false },
 
-  // Emilie - Avec une absence
-  {
-    ressource: { id: 'NJE405', title: 'Emilie' },
-    events: [{
-      resource: 'NJE405',
-      start_time: '2026-01-12T09:00:00',
-      end_time: '2026-01-12T17:30:00',
-      event_type: 'absence',
-      notes: 'Rendez-vous médical',
-      id: 201
-    },
-     {
-      resource: 'NJE405',
-      start_time: '2026-01-14T08:00:00',
-      end_time: '2026-01-14T18:00:00',
-      event_type: 'absence',
-      notes: 'Rendez-vous médical',
-      id: 202
-    }]
-  },
+    // --- Mardi 13 Janvier ---
+    { id: 104, user_id: 4, title: "Session Admin", start_time: "2026-01-13T10:00:00Z", end_time: "2026-01-13T12:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 105, user_id: 12, title: "Absence Congé", start_time: "2026-01-13T09:00:00Z", end_time: "2026-01-13T18:00:00Z", event_type: "holiday", status: "scheduled", attendance_status: "absent", all_day: true },
+    { id: 106, user_id: 8, title: "Test Technique", start_time: "2026-01-13T15:00:00Z", end_time: "2026-01-13T17:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
 
-  // Feriel - Avec un retard
-  {
-    ressource: { id: 'NJE235', title: 'Feriel' },
-    events: [{
-      resource: 'NJE235',
-      start_time: '2026-01-15T10:30:00',
-      end_time: '2026-01-15T19:00:00',
-      event_type: 'retard',
-      notes: 'Problème de transport',
-      id: 301
-    }]
-  },
-  // Ibrahima
-  {
-    ressource: { id: 'NJE212', title: 'Ibrahima' },
-    events: [{
-      resource: 'NJE212',
-      start_time: '2026-01-12T08:30:00',
-      end_time: '2026-01-12T17:00:00',
-      event_type: 'presence',
-      id: 401
-    }]
-  },
-  // Camille
-  {
-    ressource: { id: 'NJE215', title: 'Camille' },
-    events: [{
-      resource: 'NJE215',
-      start_time: '2026-01-12T08:30:00',
-      end_time: '2026-01-12T17:00:00',
-      event_type: 'presence',
-      id: 408
-    },
-    {
-      resource: 'NJE215',
-      start_time: '2026-01-13T08:30:00',
-      end_time: '2026-01-13T17:00:00',
-      event_type: 'presence',
-      id: 409
-    }
+    // --- Mercredi 14 Janvier ---
+    { id: 107, user_id: 4, title: "Pause Déjeuner", start_time: "2026-01-14T12:00:00Z", end_time: "2026-01-14T13:30:00Z", event_type: "holiday", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 108, user_id: 11, title: "Briefing Emilie", start_time: "2026-01-14T11:00:00Z", end_time: "2026-01-14T11:30:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 109, user_id: 12, title: "Formation Angular", start_time: "2026-01-14T14:00:00Z", end_time: "2026-01-14T17:30:00Z", event_type: "formation", status: "scheduled", attendance_status: "present", all_day: false },
 
-  ]
-  },
+    // --- Jeudi 15 Janvier (Votre journée chargée) ---
+    { id: 110, user_id: 10, title: "Réunion Ahmed", start_time: "2026-01-15T09:00:00Z", end_time: "2026-01-15T17:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: true },
+    { id: 111, user_id: 11, title: "Présence Bureau", start_time: "2026-01-15T08:00:00Z", end_time: "2026-01-15T18:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 112, user_id: 10, title: "Absence Médicale", start_time: "2026-01-15T09:00:00Z", end_time: "2026-01-15T17:00:00Z", event_type: "absence", status: "scheduled", attendance_status: "absent", all_day: false },
+    { id: 113, user_id: 4, title: "Audit Logs", start_time: "2026-01-15T14:00:00Z", end_time: "2026-01-15T16:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
 
+    // --- Vendredi 16 Janvier ---
+    { id: 114, user_id: 8, title: "Maintenance", start_time: "2026-01-16T10:00:00Z", end_time: "2026-01-16T12:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 115, user_id: 14, title: "Télétravail", start_time: "2026-01-16T09:00:00Z", end_time: "2026-01-16T18:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: true },
+    { id: 116, user_id: 4, title: "Révision Code", start_time: "2026-01-16T15:00:00Z", end_time: "2026-01-16T17:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
 
-];
+    // --- Samedi 17 & Dimanche 18 Janvier ---
+    { id: 117, user_id: 4, title: "Astreinte SmokeAdmin", start_time: "2026-01-17T09:00:00Z", end_time: "2026-01-17T12:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 118, user_id: 10, title: "Weekend Guard", start_time: "2026-01-17T10:00:00Z", end_time: "2026-01-17T16:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 119, user_id: 11, title: "Support Client", start_time: "2026-01-18T10:00:00Z", end_time: "2026-01-18T14:00:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false },
+    { id: 120, user_id: 14, title: "Update Serveur", start_time: "2026-01-18T22:00:00Z", end_time: "2026-01-18T23:59:00Z", event_type: "presence", status: "scheduled", attendance_status: "present", all_day: false }
+  ],
+  total: 20,
+  page: 0,
+  limit: 20,
+  pages: 1,
+  links: {
+    first: "https://prez-cool-staging.appsolutions224.com/api/v1/events?page=0&limit=20"
+  }
+};

@@ -26,7 +26,7 @@ export const routes: Routes = [
       {
         path: 'planning',
         component: Planning,
-        resolve: { profiles: planningResolver },
+        resolve: { planningData: planningResolver },
       },
     ],
   },

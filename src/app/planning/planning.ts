@@ -5,6 +5,11 @@ import { Subject, takeUntil } from 'rxjs';
 import { Profile } from '../interfaces/profile';
 import { PlanningService } from '../services/planning/planning-service';
 import { SchedulerUtils } from './scheduler-utils';
+import { PlanningData } from '../resolvers/planning/planning-resolver';
+import * as bootstrap from 'bootstrap';
+import { Ressource } from '../interfaces/ressource';
+
+
 
 @Component({
   selector: 'app-planning',
@@ -13,20 +18,20 @@ import { SchedulerUtils } from './scheduler-utils';
   templateUrl: './planning.html',
   styleUrls: ['./planning.css'],
 })
-export class Planning implements OnInit, AfterViewInit, OnDestroy {
+export class Planning implements AfterViewInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly planningService = inject(PlanningService);
   private readonly destroy$ = new Subject<void>();
 
-  readonly profiles = signal<Profile[]>([]);
+  readonly profiles = signal<DayPilot.ResourceData[]>([]);
   readonly searchQuery = signal<string>('');
   readonly today = new DayPilot.Date();
   
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
     return this.profiles().filter(p => 
-      p.ressource.title.toLowerCase().includes(query) || 
-      p.ressource.id.toLowerCase().includes(query)
+      p['title'].toLowerCase().includes(query) || 
+      p['tags']['code']?.toLowerCase().includes(query)
     );
   });
 
@@ -49,22 +54,35 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
     onBeforeRowHeaderRender: (args) => SchedulerUtils.renderResource(args),
   });
 
-  ngOnInit(): void {
-    this.route.data
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(data => {
-        const profiles = data['profiles'] as Profile[];
-        this.profiles.set(profiles);
-        this.refreshData();
-      });
-  }
-
   translateDateToFr(date: DayPilot.Date, format: string): string {
     return date.toString(format, 'fr-fr');
   }
 
   ngAfterViewInit(): void {
-    this.refreshData();
+    const data = this.route.snapshot.data['planningData'] as PlanningData;
+
+    this.profiles.set(data.resources);
+
+    if (data) {
+      this.scheduler.control.update({
+        resources: data.resources,
+        events: data.events.flatMap(e => e)
+      });
+
+      if (data.events.length > 0) {
+        this.scheduler.control.scrollTo(data.events[0].start);
+      }
+    }
+  }
+
+  ngAfterViewChecked() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    
+    tooltipTriggerList.forEach(tooltipTriggerEl => {
+      if (!bootstrap.Tooltip.getInstance(tooltipTriggerEl)) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      }
+    });
   }
 
   changeWeek(step: number): void {
@@ -83,15 +101,19 @@ export class Planning implements OnInit, AfterViewInit, OnDestroy {
 
   private refreshData(): void {
     const resources = this.filteredProfiles().map(p => ({
-      id: p.ressource.id,
-      name: p.ressource.title,
+      id: p['id'],
+      name: p['title'],
+      tags: p['tags']
     }));
 
-    this.planningService.getEvents()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(events => {
-        this.scheduler.control.update({ resources, events });
+    this.planningService.getUsersDayPilotData().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(data => {
+      this.scheduler.control.update({
+        resources: resources,
+        events: data.events
       });
+    });
   }
 
   get weekRangeLabel(): string {

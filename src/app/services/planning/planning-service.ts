@@ -1,53 +1,62 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { catchError, delay, map } from 'rxjs/operators';
 import { DayPilot } from '@daypilot/daypilot-lite-angular';
-import { Profile } from '../../interfaces/profile';
-import { MOCK_PROFILES } from './planning.mock';
+import { PLANNING_MOCK } from './planning.mock';
+import { UserEvent } from '../../interfaces/events';
+import { MOCK_USERS_RESPONSE } from './users.mock';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlanningService {
   private readonly http = inject(HttpClient); 
-  private readonly mockData = MOCK_PROFILES;
+  private readonly mockData = PLANNING_MOCK;
   private readonly MOCK_DELAY = 200;
 
 
-  getProfiles(): Observable<Profile[]> {
-    return of(this.mockData).pipe(delay(this.MOCK_DELAY));
-  }
 
+ getUsersDayPilotData(): Observable<{ events: DayPilot.EventData[], resources: DayPilot.ResourceData[] }> {
+  return of(this.mapUserEventsToDayPilotData(this.mockData.items)).pipe(delay(this.MOCK_DELAY));
+}
 
-  getResources(): Observable<DayPilot.ResourceData[]> {
-    return this.getProfiles().pipe(
-      map(profiles => profiles.map(p => ({
-        id: p.ressource.id,
-        name: p.ressource.title
-      })))
-    );
-  }
+private mapUserEventsToDayPilotData(events: UserEvent[]): { events: DayPilot.EventData[], resources: DayPilot.ResourceData[] } {
 
-  getEvents(): Observable<DayPilot.EventData[]> {
-    return this.getProfiles().pipe(
-      map(profiles => this.mapProfilesToEvents(profiles))
-    );
-  }
+  const daypilotEvents: DayPilot.EventData[] = events.map(event => {
+    const startDate = new Date(event.start_time);
+    const endDate = new Date(event.end_time);
+    return {
+    id: event.id ?? DayPilot.guid(),
+    resource: event.user_id?.toString(), 
+    start: new DayPilot.Date(startDate),
+    end: new DayPilot.Date(endDate),
+    text: event.notes ?? event.title ?? '',
+    tags: { 
+      type: event.event_type ?? 'presence',
 
+    }}
+  });
 
-  private mapProfilesToEvents(profiles: Profile[]): DayPilot.EventData[] {
-    return profiles.flatMap(profile => 
-      profile.events.map(event => ({
-        id: event.id ?? DayPilot.guid(),
-        resource: profile.ressource.id,
-        start: new DayPilot.Date(event.start_time),
-        end: new DayPilot.Date(event.end_time),
-        text: event.notes ?? '',
-        tags: { 
-          type: event.event_type ?? 'presence'
-        }
-      }))
-    );
-  }
+  const allUsers = MOCK_USERS_RESPONSE.items;
+  const uniqueUserIds = [...new Set(events.map(e => e.user_id))];
+
+  const daypilotResources: DayPilot.ResourceData[] = uniqueUserIds.map(id => {
+    const user = allUsers.find(u => u.id === id);
+    
+    return {
+      id: id?.toString() ?? '',
+      name: user ? `${user.first_name}` : `Utilisateur ${id}`,
+      tags: {
+        code: user?.code ?? '',
+        phone_number: user?.phone_number ?? ''
+      }
+    };
+  });
+  return {
+    events: daypilotEvents,
+    resources: daypilotResources
+  };
+}
+
 }

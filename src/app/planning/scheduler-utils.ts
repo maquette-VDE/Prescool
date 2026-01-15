@@ -35,9 +35,14 @@ export class SchedulerUtils {
              style="width: 35px; height: 35px; font-size: 0.8rem; color: #666;">${initials}</div>
         <div class="d-flex flex-column">
           <span class="fw-bold small">${args.row.name}</span>
-          <span class="text-muted" style="font-size: 0.7rem;">${args.row.id}</span>
+          <span class="text-muted" style="font-size: 0.7rem;">${args.row.tags.code}</span>
         </div>
-        <i class="bi bi-phone-vibrate text-success ms-auto"></i>
+        <i class="bi bi-phone-vibrate text-success ms-auto" 
+          data-bs-toggle="tooltip" 
+          data-bs-placement="top" 
+          title="${args.row.tags.phone_number}"
+          style="cursor: pointer;">
+        </i>
       </div>`;
   }
 }
