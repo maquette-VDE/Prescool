@@ -10,17 +10,18 @@ export class SchedulerUtils {
   static renderEvent(args: any): void {
     const typeKey = args.data.tags?.type as keyof typeof SchedulerUtils.eventTypes;
     const type = this.eventTypes[typeKey] || this.eventTypes.presence;
+    const eventIsPast = new DayPilot.Date(args.data.start) < new DayPilot.Date();
 
-    args.data.backColor = `${type.color}45`;
-    args.data.borderColor = type.textColor;
-    args.data.fontColor = type.textColor;
+    args.data.backColor = eventIsPast ? `${type.color}35` : `${type.color}65`
+    args.data.fontColor = eventIsPast ? `${type.color}75` : type.textColor;
     args.data.cssClass = 'border-1 rounded-3 shadow-none';
 
     const start = new DayPilot.Date(args.data.start).toString('HH:mm');
     const end = new DayPilot.Date(args.data.end).toString('HH:mm');
 
+  
     args.data.html = `
-      <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center">
+      <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center" style="${eventIsPast ? 'opacity: 0.35' : ''}">
         <div class="fw-bold">${typeKey === 'absence' ? 'Absent' : `${start} - ${end}`}</div>
         ${args.data.text ? `<div class="fst-italic small opacity-75">"${args.data.text}"</div>` : ''}
       </div>`;
