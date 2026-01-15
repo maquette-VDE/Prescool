@@ -12,4 +12,4 @@ COPY --chown=node:node . .
 USER node
 
 EXPOSE 4200
-CMD ["sh", "-c", "FRONTEND_URL_VAL=\"${FRONTEND_URL:-http://localhost:4200}\"; FRONTEND_HOST=\"$(printf '%s' \"$FRONTEND_URL_VAL\" | sed -E 's#^[a-zA-Z]+://##; s#/.*##; s/:.*##')\"; if [ -z \"$FRONTEND_HOST\" ]; then FRONTEND_HOST=localhost; fi; printf 'window.__env = window.__env || {};\\nwindow.__env.API_BASE_URL = \"%s\";\\n' \"${API_BASE_URL:-}\" > /app/public/env.js && npm run start -- --host 0.0.0.0 --port 4200 --allowed-hosts \"$FRONTEND_HOST\""]
+CMD ["sh", "-c", "TMP_ENV=/tmp/env.js.$$; { printf 'window.__env = window.__env || {};\\nwindow.__env.API_BASE_URL = \"%s\";\\n' \"${API_BASE_URL:-}\"; if [ -f /app/public/env.js ]; then cat /app/public/env.js; fi; } > \"$TMP_ENV\" && mv \"$TMP_ENV\" /app/public/env.js && ng serve --host 0.0.0.0 --port 4200 --allowed-hosts \"${FRONTEND_HOST:-localhost}\""]
