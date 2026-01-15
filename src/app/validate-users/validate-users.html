@@ -1,0 +1,48 @@
+<div class="bg-screen">
+    <div class="validate-users">
+        <h4>Liste des utilisateurs à valider</h4>
+        <div class="container">
+            @if (users.length === 0) {
+                <p>Aucun utilisateur en attente de validation.</p>
+            } @else {
+                <table>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Actions</th>
+                    </tr>
+                @for (user of users; track user.email) {
+                    <tr>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-6">
+                                <div class="disabled p-3" (click)="toConsultant()">
+                                    <h6>Consultant</h6>
+                                    <p>J'ai terminé ma formation et j'attends de partir en mission</p>
+                                </div>
+                                </div>
+                                <div class="col-md-6">
+                                <div class="disabled p-3" (click)="toExpert()">
+                                    <h6>Expert en recrutement</h6>
+                                    <p>Je mets en relation les consultants avec les clients</p>
+                                </div>
+                                </div>
+                            </div>
+                            {{ user.role }}</td>
+                        <td>
+                            <button (click)="validateUser(user)">Valider</button>
+                            <button (click)="rejectUser(user)">Rejeter</button>
+                        </td>
+                    </tr>
+                }
+                </table>
+            }
+            <button class="back" (click)="back()"> < Accueil</button>
+        </div>
+    </div>
+</div>
