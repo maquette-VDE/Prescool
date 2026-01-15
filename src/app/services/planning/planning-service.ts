@@ -33,7 +33,7 @@ private mapUserEventsToDayPilotData(events: UserEvent[]): { events: DayPilot.Eve
     end: new DayPilot.Date(endDate),
     text: event.notes ?? event.title ?? '',
     tags: { 
-      type: event.event_type ?? 'presence',
+      type: event.attendance_status ?? 'present',
 
     }}
   });

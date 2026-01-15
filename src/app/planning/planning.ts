@@ -30,7 +30,7 @@ export class Planning implements AfterViewInit, OnDestroy {
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
     return this.profiles().filter(p => 
-      p['title'].toLowerCase().includes(query) || 
+      p['name']?.toLowerCase().includes(query) || 
       p['tags']['code']?.toLowerCase().includes(query)
     );
   });
@@ -102,7 +102,7 @@ export class Planning implements AfterViewInit, OnDestroy {
   private refreshData(): void {
     const resources = this.filteredProfiles().map(p => ({
       id: p['id'],
-      name: p['title'],
+      name: p['name'],
       tags: p['tags']
     }));
 

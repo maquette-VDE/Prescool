@@ -2,14 +2,14 @@ import { DayPilot } from "@daypilot/daypilot-lite-angular";
 
 export class SchedulerUtils {
   static readonly eventTypes = {
-    presence: { color: '#6BB346', textColor: '#3CAA04' },
-    absence: { color: '#B31F24', textColor: '#B31F24' },
-    retard: { color: '#F78404', textColor: '#F78404' },
+    present: { color: '#6BB346', textColor: '#3CAA04' },
+    absent: { color: '#B31F24', textColor: '#B31F24' },
+    late: { color: '#F78404', textColor: '#F78404' }
   };
 
   static renderEvent(args: any): void {
     const typeKey = args.data.tags?.type as keyof typeof SchedulerUtils.eventTypes;
-    const type = this.eventTypes[typeKey] || this.eventTypes.presence;
+    const type = this.eventTypes[typeKey] || this.eventTypes.present;
     const eventIsPast = new DayPilot.Date(args.data.start) < new DayPilot.Date();
 
     args.data.backColor = eventIsPast ? `${type.color}35` : `${type.color}65`
@@ -22,7 +22,7 @@ export class SchedulerUtils {
   
     args.data.html = `
       <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center" style="${eventIsPast ? 'opacity: 0.35' : ''}">
-        <div class="fw-bold">${typeKey === 'absence' ? 'Absent' : `${start} - ${end}`}</div>
+        <div class="fw-bold">${typeKey === 'absent' ? 'Absent' : `${start} - ${end}`}</div>
         ${args.data.text ? `<div class="fst-italic small opacity-75">"${args.data.text}"</div>` : ''}
       </div>`;
   }
