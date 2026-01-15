@@ -17,5 +17,4 @@ mv "$TMP_ENV" /app/public/env.js
 
 # Start Angular dev server
 exec npm run start -- \
-  --host 0.0.0.0 \
   --port 4200
