@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 import { UsersService } from '../services/admin/users.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-validate-users',
@@ -14,11 +15,13 @@ export class ValidateUsers {
     private route: Router,
     private usersService: UsersService,
   ) {}
-  
-  users: any[] = [];
+
+  userList: Observable<any> = new Observable<any>();
+  users: User[] = [];
 
   ngOnInit() {
-    //this.users = this.usersService.getListOfPendingUsers();
+    this.userList = this.usersService.getListOfPendingUsers();
+    console.log(this.userList);
     //je dois recuperer la liste des users en attente de validation
     //il faut get/users/ et filtrer sur is_active=false
     //ensuite get/users/{id} pour recuperer les infos de chaque user
