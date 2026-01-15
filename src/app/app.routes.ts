@@ -10,7 +10,6 @@ import { Planning } from './planning/planning';
 import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
-import { ValidateUsers } from './validate-users/validate-users';
 
 export const routes: Routes = [
     {path : '', component : Acceuil},
@@ -20,7 +19,6 @@ export const routes: Routes = [
     {path : 'confirm-consultant', component : ConfirmeConsultant},
     {path : 'wait-confirmation', component : WaitConfirmation},
     {path : 'presences', component : Presences},
-    {path : 'validate-users', component : ValidateUsers},
   {
     path: 'sidenav',
     component: SideNav,
