@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Angular build and cache
 dist/
 build/
@@ -33,4 +32,4 @@ cypress/videos/
 =======
 node_modules/
 .angular/
->>>>>>> b82b074b7af096115df695579ed74f2fce4bcc5c
+package-lock.json
