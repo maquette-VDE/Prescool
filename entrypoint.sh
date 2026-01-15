@@ -18,5 +18,4 @@ mv "$TMP_ENV" /app/public/env.js
 # Start Angular dev server
 exec npx ng serve Frontend-angular \
   --host 0.0.0.0 \
-  --port 4200 \
-  --allowed-hosts "${FRONTEND_HOST:-localhost}"
+  --port 4200
