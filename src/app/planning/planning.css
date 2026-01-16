@@ -18,8 +18,8 @@
 ::ng-deep .rounded_timeheadercol_inner,
 ::ng-deep .rounded_timeheader_cell_inner {
     display: flex !important;
-    align-items: center !important;    /* Centrage vertical */
-    justify-content: center !important; /* Centrage horizontal */
+    align-items: center !important;    
+    justify-content: center !important; 
     text-align: center !important;
     width: 100% !important;
     height: 100% !important;
@@ -34,7 +34,6 @@
     padding: 0 !important;
 }
 
-/* Assure que la div interne générée par votre code prend toute la largeur */
 ::ng-deep .rounded_rowheader_inner > div {
     width: 100%;
 }
@@ -54,23 +53,21 @@
     height: 100% !important;
     width: 100% !important;
     display: flex !important;
-    align-items: center !important; /* C'est ici que le centrage vertical final se joue */
+    align-items: center !important; 
 }
 
 ::ng-deep .rounded_timeheader_float {
     display: flex !important;
-    align-items: center !important;    /* Centrage vertical */
-    justify-content: center !important; /* Centrage horizontal */
+    align-items: center !important;   
+    justify-content: center !important; 
 }
 
-/* Cible la div interne qui contient directement le texte */
 ::ng-deep .rounded_timeheader_float_inner {
     width: 100% !important;
     text-align: center !important;
     display: block !important;
 }
 
-/* Pour s'assurer que le titre "Consultants" reste aussi centré */
 ::ng-deep .rounded_corner_inner {
     display: flex !important;
     align-items: center !important;
@@ -78,13 +75,11 @@
     font-weight: bold !important;
 }
 
-/* 3. On s'assure que votre contenu HTML injecté s'étire aussi */
 ::ng-deep .rounded_rowheader_inner_text > div {
     width: 100%;
 }
 
 
-/* On s'assure que le scheduler prend bien toute la largeur */
 .scheduler_white_main {
   border-radius: 15px;
   overflow: hidden;
@@ -127,7 +122,7 @@
 }
 ::ng-deep .rounded_event_inner {
     border: 1px solid !important;
-    border-radius: inherit !important; /* Utilise le rounded-3 de Bootstrap */
+    border-radius: inherit !important; 
     margin-inline: 5px !important;
     height: 100% !important;
 }
