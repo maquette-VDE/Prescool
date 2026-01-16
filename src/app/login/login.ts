@@ -53,12 +53,9 @@ export class Login {
   onLogin() {
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
-        this.router.navigateByUrl('presences');
         this.roleService.getRole(this.email).subscribe(role => {
           this.role = role;
-          if (this.role===UserRole.ADMIN) {
-            this.router.navigateByUrl('validate-users');
-          }
+          this.router.navigateByUrl('sidenav/presences');
         });
       },
       error: (err) => console.error('Login failed', err.error)
