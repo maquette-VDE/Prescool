@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, delay, map } from 'rxjs/operators';
+import { delay } from 'rxjs/operators';
 import { DayPilot } from '@daypilot/daypilot-lite-angular';
 import { PLANNING_MOCK } from './planning.mock';
 import { UserEvent } from '../../interfaces/events';

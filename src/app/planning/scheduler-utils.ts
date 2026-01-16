@@ -19,7 +19,7 @@ export class SchedulerUtils {
     const start = new DayPilot.Date(args.data.start).toString('HH:mm');
     const end = new DayPilot.Date(args.data.end).toString('HH:mm');
 
-  
+
     args.data.html = `
       <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center" style="${eventIsPast ? 'opacity: 0.35' : ''}">
         <div class="fw-bold">${typeKey === 'absent' ? 'Absent' : `${start} - ${end}`}</div>

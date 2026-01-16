@@ -2,12 +2,10 @@ import { Component, ViewChild, AfterViewInit, signal, inject, OnInit, OnDestroy,
 import { DayPilot, DayPilotModule, DayPilotSchedulerComponent } from '@daypilot/daypilot-lite-angular';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { Profile } from '../interfaces/profile';
 import { PlanningService } from '../services/planning/planning-service';
 import { SchedulerUtils } from './scheduler-utils';
 import { PlanningData } from '../resolvers/planning/planning-resolver';
 import * as bootstrap from 'bootstrap';
-import { Ressource } from '../interfaces/ressource';
 
 
 
