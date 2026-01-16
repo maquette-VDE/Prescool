@@ -1,20 +1,48 @@
 <div class="bg-screen">
   <div class="connexion container">
-    <h4 class="text-center text-md-start mt-3">Connectez-vous à votre compte</h4>
-    <div class="row g-3 mb-4">
-      <div class="form" >
-        <div class="form-group">
-          <label for="email" >E-mail</label>
-          <input type="text" id="email"  name="username" [(ngModel)]="email">
+    <h4 class="text-center text-md-start mb-4">
+      Connectez-vous à votre compte
+    </h4>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-9">
+
+        <div class="form-group mb-3">
+          <label for="email">E-mail</label>
+          <input
+            type="text"
+            id="email"
+            name="username"
+            class="form-control"
+            [(ngModel)]="email"
+          >
         </div>
-        <div class="form-group">
+
+        <div class="form-group mb-4">
           <label for="password">Mot de passe</label>
-          <input type="password" id="password" name="password" placeholder="Mot de passe" [(ngModel)]="password">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            placeholder="Mot de passe"
+            [(ngModel)]="password"
+          >
         </div>
-        <div class="log">
-          <button class="login" (click)="onLogin()">Je me connecte</button>
-          <p>Pas encore de compte? <a [routerLink]= "signupLink" class="gradient">Je m'inscris</a></p>
+
+        <div class="d-grid gap-3">
+          <button class="login" (click)="onLogin()">
+            Je me connecte
+          </button>
+
+          <p class="text-center mb-0">
+            Pas encore de compte ?
+            <a [routerLink]="signupLink" class="gradient">
+              Je m'inscris
+            </a>
+          </p>
         </div>
+
       </div>
     </div>
   </div>
