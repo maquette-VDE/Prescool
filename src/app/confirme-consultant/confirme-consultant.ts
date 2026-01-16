@@ -1,42 +1,103 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserRole } from '../models/enum';
+import { UserRole } from '../models/userRole';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../services/auth/auth.service';
+import { Consultant } from '../models/consultant';
+import { Store } from '@ngrx/store';
+import { selectRole, selectStep2Consultant } from '../store/register.selectors';
+import { actualRole, registerConsultant } from '../store/register.actions';
+import { User } from '../models/user';
+import { RegisterService } from '../services/auth/register.service';
 
 @Component({
   selector: 'app-confirme-consultant',
-  imports: [],
+  imports: [
+    ReactiveFormsModule,
+  ],
   templateUrl: './confirme-consultant.html',
   styleUrl: './confirme-consultant.css',
 })
+
 export class ConfirmeConsultant {
+  codeNotUnique: boolean= false;
+  
+  constructor(private router : Router,
+              private formBuilder: FormBuilder,
+              private store: Store,
+              private subscriptionService: RegisterService,
+  ){}
 
   role: UserRole | null = null; 
-  userRole = UserRole;
-  constructor(private router : Router){}
+  consultantForm!: FormGroup;  
+  user: User = new User('','','','',UserRole.CONSULTANT);
+  consultant: Consultant = new Consultant('',new Date(),false,'','','','',UserRole.CONSULTANT);
+  mission: boolean = false;
+  ngOnInit() {
+    this.store.select(selectStep2Consultant).subscribe(userData => {
+      this.consultant.code = userData.code || '';
+      this.consultant.arrivedAt = userData.arrivedAt || new Date();
+    });
+    
+    this.store.select(selectRole).subscribe(role => {
+      this.role = role;
+    });
 
-  retour(){
-    this.router.navigateByUrl('create-consultant')
+    this.consultantForm = this.formBuilder.group({
+      code: [this.consultant.code, Validators.required],
+      arrivedAt: [this.consultant.arrivedAt, [Validators.required]],
+      gotMission: [false]
+    }); 
   }
 
-   ngOnInit() {
-      
-        const path = this.router.url; 
-        if (path.includes('consultant')) {
-          this.role = UserRole.CONSULTANT;
-        } else if (path.includes('expert')) {
-          this.role = UserRole.EXPERT;
-        } else {
-          this.role = null;
-        }
-      }
+  
+  retour(){
+    this.store.dispatch(registerConsultant({ 
+      code: this.consultantForm.value.code || '',
+      arrivedAt: this.consultantForm.value.arrivedAt || '',
+      gotMission: this.consultantForm.value.gotMission || false
+    }));
+    this.store.dispatch(actualRole({ role: UserRole.CONSULTANT }));
+    this.router.navigateByUrl('create-user');
     
-      login() {
-      if (!this.role) {
-        return; 
-      }
-      this.router.navigate(
-        ['login'],
-        { queryParams: {role: this.role } }
-        );
-      }
+  }
+
+  login() {
+    if (!this.role) {
+      return; 
+    }
+    this.router.navigate(
+      ['login'],
+      { queryParams: {role: this.role } }
+    );
+  }
+  
+  inscription() {
+    if (!this.role) {
+      console.error('Role is not defined');
+      return; 
+    }
+    console.log('Inscription for role : ', this.role);
+
+    this.consultant = this.subscriptionService.initialize(
+      this.consultant, 
+      this.store, 
+      this.role, 
+      this.consultantForm) as Consultant;
+      
+    this.subscriptionService.inscription( this.consultant ).subscribe({
+      next: () => {
+        console.log('Consultant data for inscription:', this.consultant);
+        this.router.navigateByUrl('wait-confirmation');
+      }, 
+        error: (err1) => console.error('Inscription failed', err1.error)
+    });
+    
+  }
+
+  hasError(controlName: string, error: string) {
+    const control = this.consultantForm.get(controlName);
+    return control?.touched && control?.hasError(error);
+  }
+
 }

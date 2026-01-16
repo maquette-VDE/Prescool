@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Consultants } from './consultants';
+import { WaitConfirmation } from './wait-confirmation';
 
-describe('Consultants', () => {
-  let component: Consultants;
-  let fixture: ComponentFixture<Consultants>;
-
+describe('WaitConfirmation', () => {
+  let component: WaitConfirmation;
+  let fixture: ComponentFixture<WaitConfirmation>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Consultants]
+      imports: [WaitConfirmation]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Consultants);
+    fixture = TestBed.createComponent(WaitConfirmation);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

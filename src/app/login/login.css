@@ -1,4 +1,4 @@
-.fond-ecran {
+.bg-screen {
     background-color: #54545440;
     min-height: 100vh;
     display: flex;
@@ -15,49 +15,33 @@
     padding: 20px;
 }
 
-/* Titres */
-.connexion h4 {
-    font-weight: bold;
-}
-
-.paragraphe {
-    margin-bottom: 15px;
-}
-
-/* Cartes rôles */
-.consultant,
-.expert {
-    background-color: #FFFFFF;
-    border-radius: 15px;
-    min-height: 110px;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    transition: transform 0.2s ease, border 0.2s ease;
-}
-
-.consultant:hover,
-.expert:hover {
-    transform: scale(1.02);
-}
-
-.consultant.selected {
-    border: 3px solid #ff69b4;
-}
-
-.expert.selected {
-    border: 3px solid #57C4EB;
-}
-
-.row h6 {
-    font-weight: bold;
-}
-
 /* Formulaire */
 .form-control {
     height: 55px;
     border-radius: 10px;
     box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
     border: none;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form {
+    margin: 20px 0 5px 20px;
+}
+
+.form label {
+    display: block;
+}
+
+.form input {
+    width: 570px;
+    height: 59px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
+    padding-left: 20px;
 }
 
 /* Bouton */
@@ -72,6 +56,7 @@
 /* Texte gradient */
 .gradient {
     background: linear-gradient(90deg, #C94B91, #57C4EB);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;
@@ -87,4 +72,17 @@
     .login {
         height: 50px;
     }
+
+    .warning {
+        font-size: 13px;
+    }
+
+    .connexion h4 {
+        font-size: 26px;
+    }
+
+    .paragraphe {
+        font-size: 16px;
+    }
 }
+

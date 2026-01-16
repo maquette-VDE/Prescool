@@ -1,35 +1,52 @@
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserRole } from '../models/enum';
+import { UserRole } from '../models/userRole';
+import { Store } from '@ngrx/store';
+import { selectRole, selectStep1User } from '../store/register.selectors';
+import { Expert } from '../models/expert';
+import { RegisterService } from '../services/auth/register.service';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-confirme-expert',
-  imports: [],
+  imports: [
+    ReactiveFormsModule,
+  ],
   templateUrl: './confirme-expert.html',
   styleUrl: './confirme-expert.css'
 })
 export class ConfirmeExpert {
 
+  constructor(
+    private router : Router,
+    private store: Store,
+    private formBuilder: FormBuilder,
+    private subscriptionService: RegisterService,
+  ){}
+
+  user$!: any;
+  expert: Expert = new Expert('','','','','',UserRole.EXPERT);
   role: UserRole | null = null; 
-  userRole = UserRole;
-  constructor(private router : Router){}
+  expertForm!: FormGroup;
 
-  retour(){
-    this.router.navigateByUrl('create-expert')
-  }
+  ngOnInit() {
+      
+      this.store.select(selectRole).subscribe(role => {
+        this.role = role;
+      });
 
-    ngOnInit() {
-    
-      const path = this.router.url; 
-      if (path.includes('consultant')) {
-        this.role = UserRole.CONSULTANT;
-      } else if (path.includes('expert')) {
-        this.role = UserRole.EXPERT;
-      } else {
-        this.role = null;
-      }
+      this.expertForm = this.formBuilder.group({
+        diplome : ['', Validators.required],
+      });
+
     }
   
+    retour(){
+
+      this.router.navigateByUrl('create-user')
+    }
+
     login() {
     if (!this.role) {
       return; 
@@ -38,5 +55,27 @@ export class ConfirmeExpert {
       ['login'],
       { queryParams: {role: this.role } }
       );
+    }
+
+    inscription() {
+      if (!this.role) {
+        console.error('Role is not defined');
+        return; 
+      }
+
+      this.expert = this.subscriptionService.initialize(
+        this.expert, 
+        this.store, 
+        this.role, 
+        this.expertForm
+      ) as Expert;
+
+      this.subscriptionService.inscription( this.expert as Expert ).subscribe({
+        next: () => {
+          console.log('Expert data for inscription:', this.expert);
+          this.router.navigateByUrl('wait-confirmation');
+          },
+        error: (err1) => console.error('Inscription failed',err1)
+      });
     }
 }

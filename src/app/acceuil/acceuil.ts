@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserRole } from '../models/enum';
+import { UserRole } from '../models/userRole';
+import { Store } from '@ngrx/store';
+import { actualRole } from '../store/register.actions';
 
 @Component({
   selector: 'app-acceuil',
@@ -10,7 +12,10 @@ import { UserRole } from '../models/enum';
 })
 export class Acceuil {
 
-  constructor(private router: Router){}
+  constructor(
+    private router: Router,
+    private store : Store
+  ){}
 
   UserRole = UserRole;
 
@@ -21,12 +26,14 @@ export class Acceuil {
     );
   }
 
-  CreateExperts(){
-    this.router.navigateByUrl('create-expert')
+  createExperts(){
+    this.store.dispatch(actualRole({ role: UserRole.EXPERT }));
+    this.router.navigateByUrl('create-user')
   }
 
-  CreateConsultant(){
-    this.router.navigateByUrl('create-consultant')
+  createConsultant(){
+    this.store.dispatch(actualRole({ role: UserRole.CONSULTANT }));
+    this.router.navigateByUrl('create-user')
   }
 
 

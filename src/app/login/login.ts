@@ -1,24 +1,31 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { service } from '../services/service';
-import { UserRole } from '../models/enum';
+import { UserRole } from '../models/userRole';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../services/auth/auth.service';
+import { FormsModule } from '@angular/forms';
+import { RoleService } from '../services/role.servcice';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, FormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
 
-  constructor(private router : Router, private route : ActivatedRoute ,private auth : service){}
+  constructor(
+    private router : Router, 
+    private route : ActivatedRoute ,
+    private auth : AuthService,
+    private roleService : RoleService,
+  ){}
 
-  
   role: UserRole | null = null; 
   userRole = UserRole;
   signupLink : string | null = null
-
+  email: string = '';
+  password: string = '';
 
 
   ngOnInit() {
@@ -30,14 +37,8 @@ export class Login {
     } else {
       this.role = null;  
     }
-
-    if (this.role === UserRole.CONSULTANT) {
-        this.signupLink = '/create-consultant';
-      } else if (this.role === UserRole.EXPERT) {
-        this.signupLink = '/create-expert';
-      } 
+    this.signupLink = '/create-user'; 
   });
-  
   
 }
   switchRole(role: UserRole) {
@@ -49,7 +50,19 @@ export class Login {
     });
   }
 
-
-
+  onLogin() {
+    this.auth.login(this.email, this.password).subscribe({
+      next: () => {
+        this.router.navigateByUrl('presences');
+        this.roleService.getRole(this.email).subscribe(role => {
+          this.role = role;
+          if (this.role===UserRole.ADMIN) {
+            this.router.navigateByUrl('validate-users');
+          }
+        });
+      },
+      error: (err) => console.error('Login failed', err.error)
+    });
+  }
 
 }

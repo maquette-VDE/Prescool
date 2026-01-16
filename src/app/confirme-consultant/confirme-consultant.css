@@ -1,4 +1,4 @@
-.fond-ecran {
+.bg-screen {
     background-color: #54545440;
     min-height: 100vh;
     display: flex;
@@ -8,7 +8,7 @@
 }
 
 /* Carte principale */
-.connexion {
+.subscription {
     background-color: #F5F5F5;
     border-radius: 30px;
     max-width: 650px;
@@ -16,13 +16,20 @@
     padding: 20px;
 }
 
+.header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 /* Titres */
-.connexion h4 {
+.subscription h4 {
     font-weight: bold;
     font-size: 32px;
 }
 
-.paragraphe {
+.paragraph {
     margin-bottom: 15px;
     font-size: 18px;
     color: #545454;
@@ -36,6 +43,26 @@
     box-shadow: 0px 1px 4px rgba(0,0,0,0.15);
     padding-left: 15px;
 }
+.form {
+    margin: 20px 0 5px 20px;
+}
+
+.form label {
+    display: block;
+}
+
+.form input {
+    width: 570px;
+    height: 59px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
+    padding-left: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
 
 /* Warning */
 .warning {
@@ -46,28 +73,41 @@
 }
 
 /* Bouton inscription */
-.inscription {
+.subscribe {
     height: 60px;
     border-radius: 15px;
     background: linear-gradient(90deg, #C94B91, #57C4EB);
     color: white;
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+.subscribe:disabled {
+    background: #888888;
+    color: white;
+}
+
+.back{
     border: none;
 }
 
 /* Lien gradient */
-.gradient {
+
+.gradient{
     color: #C94B91;
+    background-clip: text;
     font-weight: bold;
+    text-decoration: none;
     cursor: pointer;
+}
+
+.gradient:hover,
+.gradient:visited {
     text-decoration: none;
 }
 
 /* Bouton retour */
 .back {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    border: none;
+    text-decoration: none;
     background: none;
     font-size: 16px;
 }
@@ -78,7 +118,7 @@
         padding: 15px;
     }
 
-    .inscription {
+    .subscribe {
         height: 50px;
     }
 
@@ -90,7 +130,7 @@
         font-size: 26px;
     }
 
-    .paragraphe {
+    .paragraph {
         font-size: 16px;
     }
 }
