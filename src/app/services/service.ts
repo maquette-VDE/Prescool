@@ -7,16 +7,18 @@ import { Router } from "@angular/router";
 })
 export class service {
 
+    private readonly apiBaseUrl = ((window as any).__env?.API_BASE_URL || 'http://127.0.0.1:8002').replace(/\/$/, '');
+
     constructor( private router : Router,
                 private http : HttpClient
     ){}
 
     getData() {
-        return this.http.get('http://127.0.0.1:8002/api/v1/users/me')
+        return this.http.get(`${this.apiBaseUrl}/api/v1/users/me`)
     }
 
 //    login(username: string, password: string){
-//         return this.http.post(`http://127.0.0.1:8002/api/v1/auth/register'`, { username, password });
+//         return this.http.post(`${this.apiBaseUrl}/api/v1/auth/register`, { username, password });
 //     }
 
 
