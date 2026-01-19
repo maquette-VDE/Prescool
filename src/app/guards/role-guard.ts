@@ -1,20 +1,24 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { RoleService } from '../services/role/role-service';
+import { map, take } from 'rxjs';
+import { UserRole } from '../models/userRole';
 
 export const roleGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const roleService = inject(RoleService);
-  let roles = roleService.getRole();
-  let isConsultant: boolean = roles?.includes('consultant') || false;
-  let isExpert: boolean = roles?.includes('expert') || false;
 
-  if(isConsultant) {
-    return true;
-  }
-  else if(isExpert) {
-     return router.parseUrl('/sidenav/planning');
-  }
-
-  return false;
+  return roleService.getRole$().pipe(
+    take(1),
+    map(role => {
+      console.log("role: ", role);
+      if (role === UserRole.CONSULTANT) {
+        return true; //accès autorisé
+      }
+      else if(role === UserRole.EXPERT) {
+        return router.parseUrl('/sidenav/planning'); //redirection
+      }
+      return false;
+    })
+  );
 };

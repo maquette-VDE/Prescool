@@ -1,12 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { selectRole } from '../../store/register.selectors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoleService {
-  getRole(): string[] | null {
-    const storedRoles = localStorage.getItem('roles');
-    const roles = storedRoles ? JSON.parse(storedRoles) : ['consultant'];
-    return roles;
+
+  private store = inject(Store);
+
+  getRole$(): Observable<string> {
+    const role$ = this.store.select(selectRole);
+    return role$;
   }
 }
