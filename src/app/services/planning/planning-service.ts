@@ -1,52 +1,62 @@
-import { Injectable } from '@angular/core';
-import { Profile } from '../../interfaces/profile';
-import { Events } from '../../interfaces/events';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { DayPilot } from '@daypilot/daypilot-lite-angular';
+import { PLANNING_MOCK } from './planning.mock';
+import { UserEvent } from '../../interfaces/events';
+import { MOCK_USERS_RESPONSE } from './users.mock';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlanningService {
+  private readonly http = inject(HttpClient); 
+  private readonly mockData = PLANNING_MOCK;
+  private readonly MOCK_DELAY = 200;
 
-  getProfiles(): Profile[] {
-    const profils: Profile[] = [
-      {
-        ressource: { id: 'NJE132', title: 'Aly' },
-        events: {
-          resourceId: 'NJE132',
-          start: '2025-12-15T08:00',
-          end: '2025-12-15T18:00',
-          title: '8h00-18h00',
-        }
-      },
-      {
-        ressource: { id: 'NJE405', title: 'Emilie' },
-        events: {
-          resourceId: 'NJE405',
-          start: '2025-12-15T08:30',
-          end: '2025-12-15T18:00',
-          title: '8h30-18h00',
-        }
-      },
-      {
-        ressource: { id: 'NJE235', title: 'Feriel' },
-        events: {
-          resourceId: 'NJE235',
-          start: '2025-12-15T08:00',
-          end: '2025-12-15T17:00',
-          title: '8h00-17h00',
-        }
-      },
-      {
-        ressource: { id: 'NJE212', title: 'Ibrahima' },
-        events: {
-          resourceId: 'NJE212',
-          start: '2025-12-15T09:30',
-          end: '2025-12-15T17:30',
-          title: '9h30-17h30',
-        }
-      },
-    ];
 
-    return profils;
-  }
+
+ getUsersDayPilotData(): Observable<{ events: DayPilot.EventData[], resources: DayPilot.ResourceData[] }> {
+  return of(this.mapUserEventsToDayPilotData(this.mockData.items)).pipe(delay(this.MOCK_DELAY));
+}
+
+private mapUserEventsToDayPilotData(events: UserEvent[]): { events: DayPilot.EventData[], resources: DayPilot.ResourceData[] } {
+
+  const daypilotEvents: DayPilot.EventData[] = events.map(event => {
+    const startDate = new Date(event.start_time);
+    const endDate = new Date(event.end_time);
+    return {
+    id: event.id ?? DayPilot.guid(),
+    resource: event.user_id?.toString(), 
+    start: new DayPilot.Date(startDate),
+    end: new DayPilot.Date(endDate),
+    text: event.notes ?? event.title ?? '',
+    tags: { 
+      type: event.attendance_status ?? 'present',
+
+    }}
+  });
+
+  const allUsers = MOCK_USERS_RESPONSE.items;
+  const uniqueUserIds = [...new Set(events.map(e => e.user_id))];
+
+  const daypilotResources: DayPilot.ResourceData[] = uniqueUserIds.map(id => {
+    const user = allUsers.find(u => u.id === id);
+    
+    return {
+      id: id?.toString() ?? '',
+      name: user ? `${user.first_name}` : `Utilisateur ${id}`,
+      tags: {
+        code: user?.code ?? '',
+        phone_number: user?.phone_number ?? ''
+      }
+    };
+  });
+  return {
+    events: daypilotEvents,
+    resources: daypilotResources
+  };
+}
+
 }

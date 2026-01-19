@@ -29,3 +29,6 @@ Thumbs.db
 coverage/
 cypress/screenshots/
 cypress/videos/
+node_modules/
+.angular/
+package-lock.json
