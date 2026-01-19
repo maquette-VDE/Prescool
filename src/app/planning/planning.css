@@ -1,0 +1,188 @@
+::ng-deep .rounded_corner_inner::before {
+  content: "Consultants";
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  font-weight: bold;
+  color: #333;
+  z-index: 10;
+}
+
+.week-selector {
+  min-width: 200px;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .rounded_timeheadercol_inner,
+::ng-deep .rounded_timeheader_cell_inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-top: 1px solid #e0e0e0 !important;
+}
+
+::ng-deep .rounded_rowheader_inner {
+
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  padding: 0 !important;
+}
+
+::ng-deep .rounded_rowheader_inner>div {
+  width: 100%;
+}
+
+.week-selector button {
+  border: none;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.week-selector button:hover {
+  opacity: 0.7;
+}
+
+::ng-deep .rounded_rowheader_inner>div,
+::ng-deep .rounded_rowheader_inner_text {
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep .rounded_timeheader_float {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep .rounded_timeheader_float_inner {
+  width: 100% !important;
+  text-align: center !important;
+  display: block !important;
+}
+
+::ng-deep .rounded_corner_inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: bold !important;
+}
+
+::ng-deep .rounded_rowheader_inner_text>div {
+  width: 100%;
+}
+
+
+.scheduler_white_main {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+::ng-deep .rounded_event_inner {
+  border: 1px solid !important;
+}
+
+::ng-deep .rounded_corner_inner {
+
+  border: 1px solid #e0e0e0;
+}
+
+::ng-deep .rounded_divider_horizontal {
+  border-top: 0px solid #e0e0e0 !important;
+}
+
+::ng-deep .rounded_cell {
+  background-color: #ffffff !important;
+  border-right: 1px solid #ececec !important;
+  border-bottom: 1px solid #ececec !important;
+}
+
+::ng-deep .rounded_rowheader {
+  background-color: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+}
+
+::ng-deep .rounded_rowheader_inner {
+  display: flex;
+  align-items: center;
+  padding-left: 10px !important;
+  font-weight: 500;
+}
+
+::ng-deep .rounded_timeheader_cell {
+  background-color: #fcfcfc !important;
+  border-right: 1px solid #ececec !important;
+  border-bottom: 1px solid #ececec !important;
+  color: #666;
+}
+
+::ng-deep .rounded_event_inner {
+  border: 1px solid !important;
+  border-radius: inherit !important;
+  margin-inline: 5px !important;
+  height: 100% !important;
+}
+
+.header-container {
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.1rem !important;
+  }
+
+  .search-section {
+    margin-top: 10px;
+  }
+}
+
+.user-pill:active {
+  background-color: #f1f1f1 !important;
+  transform: scale(0.98);
+}
+
+.search-bar:focus-within {
+  border-color: #000 !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.05) !important;
+}
+
+.header-container {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.search-bar {
+  max-width: 500px;
+  background-color: #f8f9fa;
+}
+
+.search-bar input::placeholder {
+  color: #adb5bd;
+  font-size: 0.9rem;
+}
+
+
+
+.user-pill {
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.user-pill:hover {
+  background-color: #f8f9fa !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.bg-dark {
+  background-color: #000 !important;
+}
