@@ -100,7 +100,7 @@
 .login:disabled {
             background: #3e3e3e;
             color: white;
-        }        
+        }
 
 .error {
     color: red;
@@ -147,6 +147,31 @@
     background: linear-gradient(90deg, #C94B91, #57C4EB);
     color: white;
     border: none;
+}
+
+/*Message d'erreur du téléphone*/
+.errorPhone {
+  margin-bottom: 20px;
+}
+
+/*Gestion du petit oeil dans le champ du mdp*/
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 20px;
+  top: 46px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
 }
 
 
