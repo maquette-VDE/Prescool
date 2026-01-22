@@ -10,6 +10,10 @@
         Gérez et consultez votre présentiel.
       </p>
     </div>
+    <div class="presences-view-switch">
+      <button class="btn-view" [class.active]="currentView === 'dayGridMonth'" (click)="switchToMonth()">Mois</button>
+      <button class="btn-view" [class.active]="currentView === 'timeGridWeek'" (click)="switchToWeek()">Semaine</button>
+    </div>
   </header>
 
 
@@ -148,6 +152,17 @@
 
         <!-- Champs supplémentaires selon le statut -->
         <div class="status-modal-fields" *ngIf="statusModal.selectedStatus">
+
+          <div *ngIf="statusModal.selectedStatus === 'present'" class="status-field">
+            <label class="status-field-label">
+              <input type="checkbox" [(ngModel)]="statusModal.depart" />Départ anticipé
+            </label> 
+
+              <label *ngIf="statusModal.depart" class="status-field-label">
+                Heure de départ :
+                <input type="time" class="status-field-input" [(ngModel)]="statusModal.heureDepart" />
+              </label>
+          </div>
           
           <!-- Pour "En retard" : champ heure d'arrivée -->
           <div *ngIf="statusModal.selectedStatus === 'late'" class="status-field">
