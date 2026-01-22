@@ -1,12 +1,10 @@
-import { Component, ViewChild, AfterViewInit, signal, inject, OnInit, OnDestroy, computed } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, signal, inject, OnDestroy, computed } from '@angular/core';
 import { DayPilot, DayPilotModule, DayPilotSchedulerComponent } from '@daypilot/daypilot-lite-angular';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PlanningService } from '../services/planning/planning-service';
 import { SchedulerUtils } from './scheduler-utils';
-import { PlanningData } from '../resolvers/planning/planning-resolver';
 import * as bootstrap from 'bootstrap';
-
 
 
 @Component({
@@ -24,11 +22,11 @@ export class Planning implements AfterViewInit, OnDestroy {
   readonly profiles = signal<DayPilot.ResourceData[]>([]);
   readonly searchQuery = signal<string>('');
   readonly today = new DayPilot.Date();
-  
+
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    return this.profiles().filter(p => 
-      p['name']?.toLowerCase().includes(query) || 
+    return this.profiles().filter(p =>
+      p['name']?.toLowerCase().includes(query) ||
       p['tags']['code']?.toLowerCase().includes(query)
     );
   });
@@ -46,7 +44,7 @@ export class Planning implements AfterViewInit, OnDestroy {
     days: 5,
     rowHeaderWidth: 200,
     eventHeight: 80,
-    cellWidth: 220,
+    cellWidth: 155,
     theme: 'rounded',
     onBeforeEventRender: (args) => SchedulerUtils.renderEvent(args),
     onBeforeRowHeaderRender: (args) => SchedulerUtils.renderResource(args),
@@ -57,25 +55,21 @@ export class Planning implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const data = this.route.snapshot.data['planningData'] as PlanningData;
-
-    this.profiles.set(data.resources);
-
-    if (data) {
+    const data = this.route.snapshot.data['planningData'];
+      this.profiles.set(data.resources);
       this.scheduler.control.update({
         resources: data.resources,
-        events: data.events.flatMap(e => e)
+        events: data.events
       });
 
       if (data.events.length > 0) {
         this.scheduler.control.scrollTo(data.events[0].start);
       }
-    }
   }
 
   ngAfterViewChecked() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    
+
     tooltipTriggerList.forEach(tooltipTriggerEl => {
       if (!bootstrap.Tooltip.getInstance(tooltipTriggerEl)) {
         new bootstrap.Tooltip(tooltipTriggerEl);
