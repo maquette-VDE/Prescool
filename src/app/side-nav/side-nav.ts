@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-side-nav',
@@ -12,5 +13,10 @@ import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
   styleUrl: './side-nav.css',
 })
 export class SideNav {
+  authService = inject(AuthService)
+
+  onLogout(){
+    this.authService.logout();
+  }
 
 }
