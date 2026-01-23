@@ -62,13 +62,14 @@ export class CreateUser {
           [
             Validators.required,
             Validators.minLength(6),
-            Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{8,}$/),
+            Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/),
           ],
         ],
         confirmPassword: ['', Validators.required],
-        phone: [this.user.phone, Validators.pattern(/^0{1}\d{9}$/)],
+        phone: [this.user.phone],
+        //, Validators.pattern(/^0{1}\d{9}$/)
       },
-      { validators: passwordMatchValidator, updateOn: 'blur' },
+      { validators: passwordMatchValidator },
     );
 
     this.store.pipe(select(selectRole)).subscribe((role) => {
@@ -95,6 +96,8 @@ export class CreateUser {
 
   hasError(controlName: string, error: string) {
     const control = this.userForm.get(controlName);
+    // Si le champ est vide, on ne veut pas afficher de message
+    if (!control?.value) return false;
     return control?.touched && control?.hasError(error);
   }
 
@@ -125,6 +128,38 @@ export class CreateUser {
     if (this.hasTypedPassword) {
       this.hasBlurredOnce = true;
     }
+  }
+
+  hasPhoneError() {
+    const control = this.userForm.get('phone');
+    if (!control?.value) return false;
+    const pattern = /^0\d{9}$/;
+    return control.touched && !pattern.test(control.value);
+  }
+
+  blockNonDigits(event: KeyboardEvent) {
+    const allowedKeys = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+    ];
+
+    if (allowedKeys.includes(event.key)) {
+      return;
+    }
+
+    if (!/^\d$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  onPhonePaste(event: ClipboardEvent) {
+    event.preventDefault();
+    const pasted = event.clipboardData?.getData('text') ?? '';
+    const digitsOnly = pasted.replace(/\D/g, '');
+    this.userForm.get('phone')?.setValue(digitsOnly);
   }
 }
 

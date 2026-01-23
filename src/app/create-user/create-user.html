@@ -104,13 +104,20 @@
         }
         <div class="form-group">
           <label for="phone">Téléphone</label>
-          <input type="text" id="phone" name="phone" formControlName="phone">
+          <input
+          type="tel"
+          id="phone"
+          name="phone"
+          formControlName="phone"
+          (keydown)="blockNonDigits($event)"
+          (paste)="onPhonePaste($event)"
+          >
         </div>
-         @if (hasError('phone', 'pattern')) {
+        @if (hasPhoneError()) {
           <div class="error errorPhone">
             Le numéro de téléphone n'est pas valide
           </div>
-        }
+         }
         <div class="log">
           <button class="login" (click)="suivant()" [disabled]="userForm.invalid">Suivant</button>
           <p>déja un compte? <a (click)="login()"  class="gradient">Je me connecte</a></p>
