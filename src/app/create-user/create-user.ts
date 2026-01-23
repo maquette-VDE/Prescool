@@ -30,7 +30,7 @@ export class CreateUser {
   user: User = new User('', '', '', '', UserRole.CONSULTANT);
 
   showPassword = false;
-  hasBlurredOnce = false; // nouveau
+  hasBlurredOnce = false;
   hasTypedPassword = false; // vrai si l'utilisateur a saisi quelque chose
   isPasswordFocused = false; // vrai si l'input est focus
 
@@ -67,7 +67,6 @@ export class CreateUser {
         ],
         confirmPassword: ['', Validators.required],
         phone: [this.user.phone],
-        //, Validators.pattern(/^0{1}\d{9}$/)
       },
       { validators: passwordMatchValidator },
     );
