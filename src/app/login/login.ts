@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { RoleService } from '../services/role.servcice';
-import { delay, of } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -70,14 +69,12 @@ export class Login {
         console.error('Login failed', err.error);
         if (err.status === 400) {
           this.errorMessage = "Email ou mot de passe incorrecte";
-          console.log(this.errorMessage);
         }
         else if (err.status === 500) {
           this.router.navigateByUrl('error');
         }
         else {
           this.errorMessage = "Une erreur inattendue s'est produite";
-          console.log(this.errorMessage);
         }
       }
     });
