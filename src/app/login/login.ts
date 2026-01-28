@@ -29,6 +29,8 @@ export class Login {
 
   showMessageErrorConnexion = false;
 
+  errorMessage: string | null = null;
+  loading: boolean = false; //Variable pour le loader
 
   ngOnInit() {
   this.route.queryParams.subscribe(params => {
@@ -53,15 +55,27 @@ export class Login {
   }
 
   onLogin() {
+    this.loading = true; //Connexion en cours
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
-        this.roleService.getRole(this.email).subscribe(role => {
+        this.loading = false; //Fin de connexion
+        this.roleService.getRole(this.email).subscribe((role) => {
           this.role = role;
           this.router.navigateByUrl('sidenav/presences');
         });
       },
       error: (err) => {
+        this.loading = false; //Fin de connexion
         console.error('Login failed', err.error);
+        if (err.status === 400) {
+          this.errorMessage = "Email ou mot de passe incorrecte";
+        }
+        else if (err.status === 500) {
+          this.router.navigateByUrl('error');
+        }
+        else {
+          this.errorMessage = "Une erreur inattendue s'est produite";
+        }
       }
     });
   }

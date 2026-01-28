@@ -10,6 +10,7 @@ import { Planning } from './planning/planning';
 import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
+import { Erreur } from './erreur/erreur';
 
 export const routes: Routes = [
     {path : '', component : Acceuil},
@@ -18,16 +19,17 @@ export const routes: Routes = [
     {path : 'confirm-expert', component : ConfirmeExpert},
     {path : 'confirm-consultant', component : ConfirmeConsultant},
     {path : 'wait-confirmation', component : WaitConfirmation},
-  {
-    path: 'sidenav',
-    component: SideNav,
-    children: [
-      { path: 'presences', component: Presences, canActivate: [roleGuard] },
-      {
-        path: 'planning',
-        component: Planning,
-        resolve: { planningData: planningResolver },
-      },
-    ],
-  }
+    {path : 'error', component : Erreur},
+    {
+      path: 'sidenav',
+      component: SideNav,
+      children: [
+        { path: 'presences', component: Presences, canActivate: [roleGuard] },
+        {
+          path: 'planning',
+          component: Planning,
+          resolve: { planningData: planningResolver },
+        },
+      ],
+    }
 ];
