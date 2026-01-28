@@ -15,16 +15,41 @@ export class PlanningService {
   private events: UserEvent[] = [];
 
 
-  getUsersDayPilotData(): Observable<{ events: DayPilot.EventData[], resources: DayPilot.ResourceData[] }> {
+  getUsersDayPilotData(
+    page: number = 0,
+    limit: number = 4,
+    startFrom?: string,
+    startTo?: string
+  ): Observable<{
+    events: DayPilot.EventData[],
+    resources: DayPilot.ResourceData[],
+    pagination: { total: number, pages: number }
+  }> {
     return forkJoin({
-      users: this.getAllUsers(),
-      events: this.getAllUserEvents()
+      users: this.getUsers(page, limit),
+      events: this.getEvents(page, limit, startFrom, startTo)
     }).pipe(
       map(({ users, events }) => {
-        return this.mapUserEventsToDayPilotData(users, events);
+        const mappedData = this.mapUserEventsToDayPilotData(users.items, events.items);
+        return {
+          ...mappedData,
+          pagination: { total: users.total, pages: users.pages }
+        };
       })
     );
   }
+
+  private getEvents(page: number, limit: number, from?: string, to?: string): Observable<any> {
+    let url = `https://prez-cool-staging.appsolutions224.com/api/v1/events?limit=${limit}&page=${page}`;
+    if (from) url += `&start_from=${from}`;
+    if (to) url += `&start_to=${to}`;
+    return this.http.get<any>(url);
+  }
+
+  private getUsers(page: number, limit: number): Observable<any> {
+    return this.http.get<any>(`https://prez-cool-staging.appsolutions224.com/api/v1/users?limit=${limit}&page=${page}`);
+  }
+
 
   private mapUserEventsToDayPilotData(users: UserItem[], events: UserEvent[]): { events: DayPilot.EventData[], resources: DayPilot.ResourceData[] } {
     const daypilotEvents: DayPilot.EventData[] = events.map(event => ({
@@ -53,19 +78,5 @@ export class PlanningService {
     });
 
     return { events: daypilotEvents, resources: daypilotResources };
-  }
-
-  getAllUserEvents(): Observable<UserEvent[]> {
-    return this.http.get<any>('https://prez-cool-staging.appsolutions224.com/api/v1/events?limit=10&page=0')
-      .pipe(
-        map(response => response.items as UserEvent[])
-      )
-  }
-
-  getAllUsers(): Observable<UserItem[]> {
-    return this.http.get<any>('https://prez-cool-staging.appsolutions224.com/api/v1/users?limit=10&page=0')
-      .pipe(
-        map(response => response.items as UserItem[])
-      )
   }
 }

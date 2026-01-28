@@ -120,3 +120,34 @@
   </div>
 </div>
 <daypilot-scheduler [config]="config()" #scheduler></daypilot-scheduler>
+
+<div class="w-full d-flex justify-content-center py-4 border-top">
+
+  <div class="d-flex align-items-center bg-white shadow-sm border rounded-pill px-2 py-1" style="gap: 10px;">
+
+    <button
+      (click)="goToPage(currentPage() - 1)"
+      [disabled]="currentPage() === 0"
+      class="btn btn-link text-dark p-0 d-flex align-items-center justify-content-center rounded-circle hover-bg-light"
+      style="width: 35px; height: 35px; text-decoration: none; border: none;"
+    >
+      <i class="bi bi-chevron-left"></i>
+    </button>
+
+    <div class="d-flex align-items-center px-3 border-start border-end" style="height: 25px;">
+      <span class="fw-bold text-primary me-1">{{ currentPage() + 1 }}</span>
+      <span class="text-muted small">/ {{ totalPages() }}</span>
+    </div>
+
+    <button
+      (click)="goToPage(currentPage() + 1)"
+      [disabled]="currentPage() >= totalPages() - 1"
+      class="btn btn-link text-dark p-0 d-flex align-items-center justify-content-center rounded-circle hover-bg-light"
+      style="width: 35px; height: 35px; text-decoration: none; border: none;"
+    >
+      <i class="bi bi-chevron-right"></i>
+    </button>
+
+  </div>
+</div>
+

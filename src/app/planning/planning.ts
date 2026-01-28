@@ -22,6 +22,8 @@ export class Planning implements AfterViewInit, OnDestroy {
   readonly profiles = signal<DayPilot.ResourceData[]>([]);
   readonly searchQuery = signal<string>('');
   readonly today = new DayPilot.Date();
+  readonly currentPage = signal<number>(0);
+  readonly totalPages = signal<number>(2);
 
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
@@ -56,6 +58,7 @@ export class Planning implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const data = this.route.snapshot.data['planningData'];
+    console.log(data);
       this.profiles.set(data.resources);
       this.scheduler.control.update({
         resources: data.resources,
@@ -91,22 +94,30 @@ export class Planning implements AfterViewInit, OnDestroy {
     this.refreshData();
   }
 
-  private refreshData(): void {
-    const resources = this.filteredProfiles().map(p => ({
-      id: p['id'],
-      name: p['name'],
-      tags: p['tags']
-    }));
 
-    this.planningService.getUsersDayPilotData().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(data => {
-      this.scheduler.control.update({
-        resources: resources,
-        events: data.events
-      });
+
+
+private refreshData(): void {
+  let startDate = this.config().startDate as DayPilot.Date;
+  const endDate = startDate?.addDays(4);
+  this.planningService.getUsersDayPilotData(this.currentPage(), 10,startDate.toString(), endDate.toString()).pipe(
+    takeUntil(this.destroy$)
+  ).subscribe(data => {
+    this.totalPages.set(data.pagination.pages);
+
+    this.scheduler.control.update({
+      resources: data.resources,
+      events: data.events
     });
+  });
+}
+
+goToPage(pageIndex: number): void {
+  if (pageIndex >= 0 && pageIndex < this.totalPages()) {
+    this.currentPage.set(pageIndex);
+    this.refreshData();
   }
+}
 
   get weekRangeLabel(): string {
     const start = new DayPilot.Date(this.config().startDate);

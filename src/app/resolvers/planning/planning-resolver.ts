@@ -11,5 +11,7 @@ export type PlanningData = {
 
 export const planningResolver: ResolveFn<PlanningData> = (route, state) => {
   const planningService = inject(PlanningService);
-  return planningService.getUsersDayPilotData();
+  const startFrom = DayPilot.Date.today().firstDayOfWeek(1).toString();
+  const startTo = new DayPilot.Date(startFrom).addDays(5).toString();
+  return planningService.getUsersDayPilotData(0,4, startFrom, startTo);
 };
