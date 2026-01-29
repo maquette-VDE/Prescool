@@ -343,6 +343,8 @@
   align-items: center;
   justify-content: space-between;
   min-height: 40px;
+  overflow: hidden;     
+  text-overflow: ellipsis;
 }
 
 .fc-daygrid-event.event-present {
