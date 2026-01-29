@@ -1,3 +1,6 @@
+/* =========================
+   BACKGROUND
+========================= */
 .bg-screen {
     background-color: #54545440;
     min-height: 100vh;
@@ -7,7 +10,9 @@
     padding: 15px;
 }
 
-/* Carte principale */
+/* =========================
+   CARTE PRINCIPALE
+========================= */
 .subscription {
     background-color: #F5F5F5;
     border-radius: 30px;
@@ -16,14 +21,19 @@
     padding: 20px;
 }
 
+/* =========================
+   HEADER
+========================= */
 .header {
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 10px;
 }
 
-/* Titres */
+/* =========================
+   TITRES
+========================= */
 .subscription h4 {
     font-weight: bold;
     font-size: 32px;
@@ -35,36 +45,87 @@
     color: #545454;
 }
 
-/* Inputs */
-.form-control {
-    height: 55px;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0px 1px 4px rgba(0,0,0,0.15);
-    padding-left: 15px;
-}
+/* =========================
+   FORMULAIRE
+========================= */
 .form {
-    margin: 20px 0 5px 20px;
-}
-
-.form label {
-    display: block;
-}
-
-.form input {
-    width: 570px;
-    height: 59px;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
-    padding-left: 20px;
+    margin: 20px 0;
 }
 
 .form-group {
     margin-bottom: 15px;
 }
 
-/* Warning */
+.form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+/* Inputs – Bootstrap friendly */
+.form-control,
+.form input {
+    width: 100%;
+    height: 55px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0px 1px 4px rgba(0,0,0,0.15);
+    padding: 0 15px;
+    font-size: 15px;
+}
+
+/* =========================
+   CHECKBOX
+========================= */
+.inline-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+/* =========================
+   BOUTON INSCRIPTION
+========================= */
+.subscribe {
+    width: 100%;
+    height: 60px;
+    border-radius: 15px;
+    border: none;
+    background: linear-gradient(90deg, #C94B91, #57C4EB);
+    color: white;
+    font-size: 16px;
+    margin: 15px 0 20px;
+}
+
+.subscribe:disabled {
+    background: #888888;
+    color: white;
+}
+
+/* =========================
+   BOUTON RETOUR
+========================= */
+.back {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* =========================
+   ERREURS
+========================= */
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* =========================
+   WARNING
+========================= */
 .warning {
     display: flex;
     gap: 8px;
@@ -72,65 +133,50 @@
     color: #6c757d;
 }
 
-/* Bouton inscription */
-.subscribe {
-    height: 60px;
-    border-radius: 15px;
-    background: linear-gradient(90deg, #C94B91, #57C4EB);
-    color: white;
-    margin-bottom: 20px;
-    margin-top: 15px;
-}
-.subscribe:disabled {
-    background: #888888;
-    color: white;
-}
-
-.back{
-    border: none;
-}
-
-/* Lien gradient */
-
-.gradient{
+/* =========================
+   LIENS
+========================= */
+.gradient {
     color: #C94B91;
-    background-clip: text;
     font-weight: bold;
     text-decoration: none;
     cursor: pointer;
 }
 
-.gradient:hover,
-.gradient:visited {
-    text-decoration: none;
+.gradient:hover {
+    text-decoration: underline;
 }
 
-/* Bouton retour */
-.back {
-    text-decoration: none;
-    background: none;
-    font-size: 16px;
-}
-
-/* Mobile */
+/* =========================
+   MOBILE
+========================= */
 @media (max-width: 576px) {
-    .connexion {
+
+    .subscription {
         padding: 15px;
+        border-radius: 20px;
     }
 
-    .subscribe {
-        height: 50px;
-    }
-
-    .warning {
-        font-size: 13px;
-    }
-
-    .connexion h4 {
+    .subscription h4 {
         font-size: 26px;
     }
 
     .paragraph {
         font-size: 16px;
+    }
+
+    .form-control,
+    .form input {
+        height: 50px;
+        font-size: 14px;
+    }
+
+    .subscribe {
+        height: 50px;
+        font-size: 15px;
+    }
+
+    .warning {
+        font-size: 13px;
     }
 }

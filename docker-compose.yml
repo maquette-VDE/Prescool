@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    environment:
+      API_BASE_URL: "${API_BASE_URL:-http://backend:8002}"
+      FRONTEND_HOST: "${FRONTEND_HOST:-localhost}"
+    restart: unless-stopped

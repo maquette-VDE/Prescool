@@ -15,17 +15,19 @@ import { RoleService } from '../services/role.servcice';
 export class Login {
 
   constructor(
-    private router : Router, 
+    private router : Router,
     private route : ActivatedRoute ,
     private auth : AuthService,
     private roleService : RoleService,
   ){}
 
-  role: UserRole | null = null; 
+  role: UserRole | null = null;
   userRole = UserRole;
   signupLink : string | null = null
   email: string = '';
   password: string = '';
+
+  showMessageErrorConnexion = false;
 
 
   ngOnInit() {
@@ -35,11 +37,11 @@ export class Login {
     if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.EXPERT) {
       this.role = roleParam;
     } else {
-      this.role = null;  
+      this.role = null;
     }
-    this.signupLink = '/create-user'; 
+    this.signupLink = '/create-user';
   });
-  
+
 }
   switchRole(role: UserRole) {
     this.role = role;
@@ -53,15 +55,14 @@ export class Login {
   onLogin() {
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
-        this.router.navigateByUrl('presences');
         this.roleService.getRole(this.email).subscribe(role => {
           this.role = role;
-          if (this.role===UserRole.ADMIN) {
-            this.router.navigateByUrl('validate-users');
-          }
+          this.router.navigateByUrl('sidenav/presences');
         });
       },
-      error: (err) => console.error('Login failed', err.error)
+      error: (err) => {
+        console.error('Login failed', err.error);
+      }
     });
   }
 

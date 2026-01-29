@@ -1,4 +1,6 @@
+import { getApiBaseUrl } from './env.utils';
+
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://localhost:8002/'
+  apiBaseUrl: getApiBaseUrl('https://localhost:8002')
 };

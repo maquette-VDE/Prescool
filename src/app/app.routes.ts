@@ -18,7 +18,6 @@ export const routes: Routes = [
     {path : 'confirm-expert', component : ConfirmeExpert},
     {path : 'confirm-consultant', component : ConfirmeConsultant},
     {path : 'wait-confirmation', component : WaitConfirmation},
-    {path : 'presences', component : Presences},
   {
     path: 'sidenav',
     component: SideNav,
@@ -27,7 +26,7 @@ export const routes: Routes = [
       {
         path: 'planning',
         component: Planning,
-        resolve: { profiles: planningResolver },
+        resolve: { planningData: planningResolver },
       },
     ],
   }
