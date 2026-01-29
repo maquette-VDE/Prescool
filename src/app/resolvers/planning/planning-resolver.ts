@@ -2,7 +2,6 @@ import { ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
 import { PlanningService } from '../../services/planning/planning-service';
 import { DayPilot } from '@daypilot/daypilot-lite-angular';
-import { Observable } from 'rxjs';
 
 export type PlanningData = {
   events: DayPilot.EventData[],
