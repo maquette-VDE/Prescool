@@ -1,62 +1,71 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import {  map } from 'rxjs/operators';
 import { DayPilot } from '@daypilot/daypilot-lite-angular';
-import { PLANNING_MOCK } from './planning.mock';
 import { UserEvent } from '../../interfaces/events';
-import { MOCK_USERS_RESPONSE } from './users.mock';
+import { UserItem } from '../../interfaces/userItem';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlanningService {
-  private readonly http = inject(HttpClient); 
-  private readonly mockData = PLANNING_MOCK;
-  private readonly MOCK_DELAY = 200;
+  private readonly http = inject(HttpClient);
+  private users: UserItem[] = [];
+  private events: UserEvent[] = [];
 
 
+  getUsersDayPilotData(): Observable<{ events: DayPilot.EventData[], resources: DayPilot.ResourceData[] }> {
+    return forkJoin({
+      users: this.getAllUsers(),
+      events: this.getAllUserEvents()
+    }).pipe(
+      map(({ users, events }) => {
+        return this.mapUserEventsToDayPilotData(users, events);
+      })
+    );
+  }
 
- getUsersDayPilotData(): Observable<{ events: DayPilot.EventData[], resources: DayPilot.ResourceData[] }> {
-  return of(this.mapUserEventsToDayPilotData(this.mockData.items)).pipe(delay(this.MOCK_DELAY));
-}
-
-private mapUserEventsToDayPilotData(events: UserEvent[]): { events: DayPilot.EventData[], resources: DayPilot.ResourceData[] } {
-
-  const daypilotEvents: DayPilot.EventData[] = events.map(event => {
-    const startDate = new Date(event.start_time);
-    const endDate = new Date(event.end_time);
-    return {
-    id: event.id ?? DayPilot.guid(),
-    resource: event.user_id?.toString(), 
-    start: new DayPilot.Date(startDate),
-    end: new DayPilot.Date(endDate),
-    text: event.notes ?? event.title ?? '',
-    tags: { 
-      type: event.attendance_status ?? 'present',
-
-    }}
-  });
-
-  const allUsers = MOCK_USERS_RESPONSE.items;
-  const uniqueUserIds = [...new Set(events.map(e => e.user_id))];
-
-  const daypilotResources: DayPilot.ResourceData[] = uniqueUserIds.map(id => {
-    const user = allUsers.find(u => u.id === id);
-    
-    return {
-      id: id?.toString() ?? '',
-      name: user ? `${user.first_name}` : `Utilisateur ${id}`,
+  private mapUserEventsToDayPilotData(users: UserItem[], events: UserEvent[]): { events: DayPilot.EventData[], resources: DayPilot.ResourceData[] } {
+    const daypilotEvents: DayPilot.EventData[] = events.map(event => ({
+      id: event.id ?? DayPilot.guid(),
+      resource: event.user_id?.toString(),
+      start: new DayPilot.Date(new Date(event.start_time)),
+      end: new DayPilot.Date(new Date(event.end_time)),
+      text: event.notes ?? event.title ?? '',
       tags: {
-        code: user?.code ?? '',
-        phone_number: user?.phone_number ?? ''
+        type: event.attendance_status ?? 'present',
       }
-    };
-  });
-  return {
-    events: daypilotEvents,
-    resources: daypilotResources
-  };
-}
+    }));
 
+    const uniqueUserIds = [...new Set(events.map(e => e.user_id))];
+
+    const daypilotResources: DayPilot.ResourceData[] = uniqueUserIds.map(id => {
+      const user = users.find(u => u.id === id);
+      return {
+        id: id?.toString() ?? '',
+        name: user ? `${user.first_name}` : `Utilisateur ${id}`,
+        tags: {
+          code: user?.code ?? '',
+          phone_number: user?.phone_number ?? ''
+        }
+      };
+    });
+
+    return { events: daypilotEvents, resources: daypilotResources };
+  }
+
+  getAllUserEvents(): Observable<UserEvent[]> {
+    return this.http.get<any>('https://prez-cool-staging.appsolutions224.com/api/v1/events?limit=10&page=0')
+      .pipe(
+        map(response => response.items as UserEvent[])
+      )
+  }
+
+  getAllUsers(): Observable<UserItem[]> {
+    return this.http.get<any>('https://prez-cool-staging.appsolutions224.com/api/v1/users?limit=10&page=0')
+      .pipe(
+        map(response => response.items as UserItem[])
+      )
+  }
 }
