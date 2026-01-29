@@ -1,11 +1,22 @@
-import { Component, ViewChild, AfterViewInit, signal, inject, OnDestroy, computed } from '@angular/core';
-import { DayPilot, DayPilotModule, DayPilotSchedulerComponent } from '@daypilot/daypilot-lite-angular';
+import {
+  Component,
+  ViewChild,
+  AfterViewInit,
+  signal,
+  inject,
+  OnDestroy,
+  computed,
+} from '@angular/core';
+import {
+  DayPilot,
+  DayPilotModule,
+  DayPilotSchedulerComponent,
+} from '@daypilot/daypilot-lite-angular';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PlanningService } from '../services/planning/planning-service';
 import { SchedulerUtils } from './scheduler-utils';
 import * as bootstrap from 'bootstrap';
-
 
 @Component({
   selector: 'app-planning',
@@ -27,18 +38,17 @@ export class Planning implements AfterViewInit, OnDestroy {
 
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    return this.profiles().filter(p =>
-      p['name']?.toLowerCase().includes(query) ||
-      p['tags']['code']?.toLowerCase().includes(query)
+    return this.profiles().filter(
+      (p) =>
+        p['name']?.toLowerCase().includes(query) ||
+        p['tags']['code']?.toLowerCase().includes(query),
     );
   });
 
   @ViewChild('scheduler') scheduler!: DayPilotSchedulerComponent;
 
   config = signal<DayPilot.SchedulerConfig>({
-    timeHeaders : [
-      { groupBy: 'Day', format: 'dddd d'},
-    ],
+    timeHeaders: [{ groupBy: 'Day', format: 'dddd d' }],
     headerHeight: 60,
     locale: 'fr-fr',
     scale: 'Day',
@@ -59,21 +69,23 @@ export class Planning implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const data = this.route.snapshot.data['planningData'];
     console.log(data);
-      this.profiles.set(data.resources);
-      this.scheduler.control.update({
-        resources: data.resources,
-        events: data.events
-      });
+    this.profiles.set(data.resources);
+    this.scheduler.control.update({
+      resources: data.resources,
+      events: data.events,
+    });
 
-      if (data.events.length > 0) {
-        this.scheduler.control.scrollTo(data.events[0].start);
-      }
+    if (data.events.length > 0) {
+      this.scheduler.control.scrollTo(data.events[0].start);
+    }
   }
 
   ngAfterViewChecked() {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]',
+    );
 
-    tooltipTriggerList.forEach(tooltipTriggerEl => {
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
       if (!bootstrap.Tooltip.getInstance(tooltipTriggerEl)) {
         new bootstrap.Tooltip(tooltipTriggerEl);
       }
@@ -81,9 +93,11 @@ export class Planning implements AfterViewInit, OnDestroy {
   }
 
   changeWeek(step: number): void {
-    this.config.update(prev => ({
+    this.config.update((prev) => ({
       ...prev,
-      startDate: new DayPilot.Date(prev.startDate).addDays(step * 7).firstDayOfWeek(1)
+      startDate: new DayPilot.Date(prev.startDate)
+        .addDays(step * 7)
+        .firstDayOfWeek(1),
     }));
     this.refreshData();
   }
@@ -94,30 +108,34 @@ export class Planning implements AfterViewInit, OnDestroy {
     this.refreshData();
   }
 
+  private refreshData(): void {
+    let startDate = this.config().startDate as DayPilot.Date;
+    const endDate = startDate?.addDays(4);
+    this.planningService
+      .getUsersDayPilotData(
+        this.currentPage(),
+        10,
+        startDate.toString(),
+        endDate.toString(),
+        this.searchQuery()
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        this.totalPages.set(data.pagination.pages);
 
-
-
-private refreshData(): void {
-  let startDate = this.config().startDate as DayPilot.Date;
-  const endDate = startDate?.addDays(4);
-  this.planningService.getUsersDayPilotData(this.currentPage(), 10,startDate.toString(), endDate.toString()).pipe(
-    takeUntil(this.destroy$)
-  ).subscribe(data => {
-    this.totalPages.set(data.pagination.pages);
-
-    this.scheduler.control.update({
-      resources: data.resources,
-      events: data.events
-    });
-  });
-}
-
-goToPage(pageIndex: number): void {
-  if (pageIndex >= 0 && pageIndex < this.totalPages()) {
-    this.currentPage.set(pageIndex);
-    this.refreshData();
+        this.scheduler.control.update({
+          resources: data.resources,
+          events: data.events,
+        });
+      });
   }
-}
+
+  goToPage(pageIndex: number): void {
+    if (pageIndex >= 0 && pageIndex < this.totalPages()) {
+      this.currentPage.set(pageIndex);
+      this.refreshData();
+    }
+  }
 
   get weekRangeLabel(): string {
     const start = new DayPilot.Date(this.config().startDate);
