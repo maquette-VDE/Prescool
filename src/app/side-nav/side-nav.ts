@@ -1,5 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
 
 @Component({
@@ -7,7 +9,9 @@ import { AuthService } from '../services/auth/auth.service';
   imports: [
     RouterLink,
     RouterOutlet,
-    RouterLinkActive
+    RouterLinkActive,
+    CommonModule,
+    NgTemplateOutlet
   ],
   templateUrl: './side-nav.html',
   styleUrl: './side-nav.css',

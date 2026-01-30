@@ -9,3 +9,32 @@
 .active-link {
     color: #000000 !important;
 }
+
+.nav-link {
+  color: #8e8e8e !important;
+  transition: color 0.2s ease;
+  font-size: 0.75rem !important;
+}
+
+.icon-vde {
+  color: #8e8e8e;
+}
+
+.active-vde {
+  color: #000000 !important;
+  font-weight: 500 !important;
+}
+
+.active-vde .icon-vde {
+  color: #000000 !important;
+  -webkit-text-stroke: 0.5px #000;
+}
+
+.nav-link:hover {
+  color: #444 !important;
+}
+
+.nav-link:focus, .nav-link:active {
+  background: transparent !important;
+  outline: none !important;
+}
