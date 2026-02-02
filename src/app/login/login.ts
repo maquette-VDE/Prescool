@@ -61,7 +61,12 @@ export class Login {
         this.loading = false; //Fin de connexion
         this.roleService.getRole(this.email).subscribe((role) => {
           this.role = role;
-          this.router.navigateByUrl('sidenav/presences');
+          if (role === UserRole.ADMIN || role === UserRole.EXPERT) {
+            this.router.navigateByUrl('sidenav/planning');
+          }
+          else if (role === UserRole.CONSULTANT) {
+            this.router.navigateByUrl('sidenav/presences');
+          }
         });
       },
       error: (err) => {
@@ -79,5 +84,6 @@ export class Login {
       }
     });
   }
+
 
 }
