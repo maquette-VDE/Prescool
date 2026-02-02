@@ -116,6 +116,32 @@ export class Presences {
       info.el.addEventListener('dblclick', () => {
         this.onEventDoubleClick(info.event);
       });
+     
+      const reason = info.event.extendedProps['reason'];
+      const lateTime = info.event.extendedProps['lateTime'];
+      const pou = info.event.start;
+      if (lateTime || reason) {
+        let tooltipText = ''
+
+        if (lateTime) {
+          tooltipText += ` ${lateTime}`; 
+        }
+        if (reason) {
+          tooltipText += ` : ${reason}`; 
+        }
+        if (pou) {
+          tooltipText += '\n'; 
+          tooltipText += pou.toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+          });
+      }
+
+        if (tooltipText) {
+          info.el.setAttribute('title', tooltipText);
+        }
+      }
     },
 
     // Événement quand les dates affichées changent
@@ -219,22 +245,22 @@ export class Presences {
         displayTitle += ` : Départ anticipé`;
         }
     } else if (e.type === 'absent') {
-      if (e.reason) {
-        displayTitle = `Absent(e): "${e.reason}"`;
-      } else {
-        displayTitle = 'Absent(e)';
-      }
+      displayTitle = 'Absent(e)';
+      if (e.startTime) {
+          displayTitle += ` ${e.startTime}`;
+        }
+        if (e.reason) {
+          displayTitle += ` : ${e.reason}`;
+        }
     } else if (e.type === 'late') {
-      if (e.reason && e.lateTime) {
-        displayTitle = `Retard : "${e.reason}" ${e.lateTime}`;
-      } else if (e.reason) {
-        displayTitle = `Retard : "${e.reason}"`;
-      } else if (e.lateTime) {
-        displayTitle = `En retard ${e.lateTime}`;
-      } else {
-        displayTitle = 'En retard';
+      displayTitle = 'Retard';
+       if (e.lateTime) {
+          displayTitle += ` ${e.lateTime}`;
+        }
+        if (e.reason) {
+          displayTitle += ` : ${e.reason}`;
+        }
       }
-    }
 
     return {
       id: e.id,
@@ -242,8 +268,11 @@ export class Presences {
       start: e.date,
       className: css,
       extendedProps: {
+        reason : e.reason,
+        lateTime : e.lateTime,
         depart: e.depart,
         heureDepart: e.heureDepart
+
       }
     };
   }
