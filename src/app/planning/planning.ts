@@ -35,6 +35,8 @@ export class Planning implements AfterViewInit, OnDestroy {
   readonly today = new DayPilot.Date();
   readonly currentPage = signal<number>(0);
   readonly totalPages = signal<number>(2);
+  selectedStatus = signal<string>('');
+  selectedSpecialty = signal<string>('');
 
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
@@ -147,4 +149,20 @@ export class Planning implements AfterViewInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+
+
+onStatusChange(event: Event): void {
+  const value = (event.target as HTMLSelectElement).value;
+  this.selectedStatus.set(value);
+  //this.currentPage.set(0); // Reset à la page 1 lors d'un filtrage
+  //this.refreshData();
+}
+
+onSpecialtyChange(event: Event): void {
+  const value = (event.target as HTMLSelectElement).value;
+  this.selectedSpecialty.set(value);
+  //this.currentPage.set(0);
+  //this.refreshData();
+}
 }
