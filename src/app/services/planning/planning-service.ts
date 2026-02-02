@@ -17,7 +17,9 @@ export class PlanningService {
     limit: number = 4,
     startFrom?: string,
     startTo?: string,
-    search?: string
+    search?: string,
+    status?: string,
+    specialty?: string
   ): Observable<{
     events: DayPilot.EventData[],
     resources: DayPilot.ResourceData[],
@@ -47,12 +49,14 @@ export class PlanningService {
     );
   }
 
-  private getUsers( search?: string): Observable<any> {
+  private getUsers( search?: string, status?: string, specialty?: string): Observable<any> {
     let url = `https://prez-cool-staging.appsolutions224.com/api/v1/users?limit=100&page=0`;
     if (search) {
       url += `&first_name=${encodeURIComponent(search)}`;
       url += `&last_name=${encodeURIComponent(search)}`;
     }
+    if (status) url += `&status=${status}`;
+    if (specialty) url += `&code=${specialty}`;
     return this.http.get<any>(url);
   }
 

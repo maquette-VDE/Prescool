@@ -119,7 +119,9 @@ export class Planning implements AfterViewInit, OnDestroy {
         10,
         startDate.toString(),
         endDate.toString(),
-        this.searchQuery()
+        this.searchQuery(),
+        this.selectedStatus(),
+        this.selectedSpecialty()
       )
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
