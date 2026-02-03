@@ -5,12 +5,12 @@ import { Subject, takeUntil } from 'rxjs';
 import { PlanningService } from '../services/planning/planning-service';
 import { SchedulerUtils } from './scheduler-utils';
 import { PlanningData } from '../resolvers/planning/planning-resolver';
-import { ModalModule, ButtonModule, FormModule } from '@coreui/angular';
+import { HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/planning/user.service';
 import Swal from 'sweetalert2';
-import { DropdownModule } from '@coreui/angular';
+
 import * as bootstrap from 'bootstrap';
 
 
@@ -19,13 +19,8 @@ import * as bootstrap from 'bootstrap';
   standalone: true,
   imports: [
     CommonModule,
-    DropdownModule,
     DayPilotModule,
     FormsModule,
-    ButtonModule,
-    ModalModule,
-    ButtonModule, 
-    
   ],
   templateUrl: './planning.html',
   styleUrls: ['./planning.css'],
@@ -37,8 +32,7 @@ export class Planning implements AfterViewInit, OnDestroy {
   private readonly planningService = inject(PlanningService);
   private readonly destroy$ = new Subject<void>();
   private readonly cdr = inject(ChangeDetectorRef);
-  
-
+  public isMenuOpen = false;
   readonly profiles = signal<DayPilot.ResourceData[]>([]);
   readonly searchQuery = signal<string>('');
   readonly today = new DayPilot.Date();
@@ -95,6 +89,14 @@ export class Planning implements AfterViewInit, OnDestroy {
         new bootstrap.Tooltip(tooltipTriggerEl);
       }
     });
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: any) {
+    // Si on clique en dehors de la zone qui contient la classe .user-pill
+    if (!event.target.closest('.user-pill')) {
+      this.isMenuOpen = false;
+    }
   }
 
   changeWeek(step: number): void {

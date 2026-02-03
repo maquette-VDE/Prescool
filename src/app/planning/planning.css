@@ -34,6 +34,13 @@
   padding: 0 !important;
 }
 
+.modal.show {
+  z-index: 1060;
+}
+.modal-backdrop.show {
+  z-index: 1050;
+}
+
 ::ng-deep .rounded_rowheader_inner>div {
   width: 100%;
 }
@@ -96,6 +103,11 @@
 
 ::ng-deep .rounded_divider_horizontal {
   border-top: 0px solid #e0e0e0 !important;
+}
+
+.dropdown-menu.show {
+  z-index: 3000 !important;
+  position: absolute !important;
 }
 
 ::ng-deep .rounded_cell {
