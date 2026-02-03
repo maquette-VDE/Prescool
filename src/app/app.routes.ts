@@ -18,7 +18,7 @@ import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
 import { Erreur } from './erreur/erreur';
 
 export const routes: Routes = [
-    
+    {path : '', component : Acceuil},
     {path : 'login', component : Login},
     {path : 'create-user', component : CreateUser},
     {path : 'confirm-expert', component : ConfirmeExpert},
