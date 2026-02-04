@@ -100,6 +100,12 @@ export class Presences {
     locales: [frLocale],
     firstDay: 1,
 
+    businessHours: {
+      daysOfWeek: [1, 2, 3, 4, 5], // lundi → vendredi
+      startTime: '08:00',
+      endTime: '18:00',
+    },
+
     selectable: true,
     editable: false,
 
