@@ -4,6 +4,13 @@
       Connectez-vous à votre compte
     </h4>
 
+    @if (errorMessage != null) {
+      <div class="error400 col-12 col-md-10 col-lg-9 d-flex flex-column justify-content-center align-items-center bg-danger fs-14 mt-5 mb-5 mx-auto rounded">
+        <p class="pt-4">Connexion échouée !</p>
+        <p>{{ errorMessage }}</p>
+      </div>
+    }
+
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 col-lg-9">
 
@@ -31,8 +38,14 @@
         </div>
 
         <div class="d-grid gap-3">
-          <button class="login" (click)="onLogin()">
-            Je me connecte
+          <button class="login" (click)="onLogin()" [disabled]="loading">
+            @if (!loading) {
+              <span>Je me connecte</span>
+            }
+            @if (loading) {
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span class="ms-2">Connexion...</span>
+            }
           </button>
 
           <p class="text-center mb-0">
