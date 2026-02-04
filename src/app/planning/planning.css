@@ -260,6 +260,48 @@
   }
 }
 
+
+.btn-gradient-custom {
+    background: linear-gradient(135deg, #000000 0%, #333333 100%);
+    color: white;
+    border: none;
+    border-radius: 50px; /* Arrondi complet style pilule */
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 400px;
+}
+
+.btn-gradient-custom:hover {
+    transform: translateY(-2px); /* Petit saut au survol */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #333333 0%, #000000 100%);
+    color: white;
+}
+
+.btn-gradient-custom:active {
+    transform: translateY(0);
+}
+
+/* Animation fluide pour le message de succès */
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Style des champs au focus (optionnel pour le look) */
+.form-control:focus {
+    border-bottom: 2px solid #000 !important;
+    box-shadow: none;
+    background-color: #f8f9fa !important;
+}
+
+
+
+
 .createClientModal{
   background:#CCCCCC;
   height: 756px;

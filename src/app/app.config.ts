@@ -19,6 +19,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    
+    // Configuration HTTP avec support des Intercepteurs de classe
     provideHttpClient(
       withInterceptorsFromDi() 
     ),
@@ -27,6 +29,7 @@ export const appConfig: ApplicationConfig = {
       useClass: AuthInterceptor,
       multi: true
     },
+
     provideStore({
       userData : registerReducer
     }),

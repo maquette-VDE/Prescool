@@ -1,5 +1,19 @@
-import { Component, ViewChild, AfterViewInit, signal, inject, OnInit, OnDestroy, computed, ChangeDetectorRef } from '@angular/core';
-import { DayPilot, DayPilotModule, DayPilotSchedulerComponent } from '@daypilot/daypilot-lite-angular';
+import {
+  Component,
+  ViewChild,
+  AfterViewInit,
+  signal,
+  inject,
+  OnInit,
+  OnDestroy,
+  computed,
+  ChangeDetectorRef,
+} from '@angular/core';
+import {
+  DayPilot,
+  DayPilotModule,
+  DayPilotSchedulerComponent,
+} from '@daypilot/daypilot-lite-angular';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PlanningService } from '../services/planning/planning-service';
@@ -9,25 +23,17 @@ import { HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/planning/user.service';
-import Swal from 'sweetalert2';
 
 import * as bootstrap from 'bootstrap';
-
 
 @Component({
   selector: 'app-planning',
   standalone: true,
-  imports: [
-    CommonModule,
-    DayPilotModule,
-    FormsModule,
-  ],
+  imports: [CommonModule, DayPilotModule, FormsModule],
   templateUrl: './planning.html',
   styleUrls: ['./planning.css'],
-  
 })
 export class Planning implements AfterViewInit, OnDestroy {
-  
   private readonly route = inject(ActivatedRoute);
   private readonly planningService = inject(PlanningService);
   private readonly destroy$ = new Subject<void>();
@@ -39,18 +45,17 @@ export class Planning implements AfterViewInit, OnDestroy {
 
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    return this.profiles().filter(p =>
-      p['name']?.toLowerCase().includes(query) ||
-      p['tags']['code']?.toLowerCase().includes(query)
+    return this.profiles().filter(
+      (p) =>
+        p['name']?.toLowerCase().includes(query) ||
+        p['tags']['code']?.toLowerCase().includes(query)
     );
   });
 
   @ViewChild('scheduler') scheduler!: DayPilotSchedulerComponent;
 
   config = signal<DayPilot.SchedulerConfig>({
-    timeHeaders : [
-      { groupBy: 'Day', format: 'dddd d'},
-    ],
+    timeHeaders: [{ groupBy: 'Day', format: 'dddd d' }],
     headerHeight: 60,
     locale: 'fr-fr',
     scale: 'Day',
@@ -70,21 +75,23 @@ export class Planning implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const data = this.route.snapshot.data['planningData'];
-      this.profiles.set(data.resources);
-      this.scheduler.control.update({
-        resources: data.resources,
-        events: data.events
-      });
+    this.profiles.set(data.resources);
+    this.scheduler.control.update({
+      resources: data.resources,
+      events: data.events,
+    });
 
-      if (data.events.length > 0) {
-        this.scheduler.control.scrollTo(data.events[0].start);
-      }
+    if (data.events.length > 0) {
+      this.scheduler.control.scrollTo(data.events[0].start);
+    }
   }
 
   ngAfterViewChecked() {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]'
+    );
 
-    tooltipTriggerList.forEach(tooltipTriggerEl => {
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
       if (!bootstrap.Tooltip.getInstance(tooltipTriggerEl)) {
         new bootstrap.Tooltip(tooltipTriggerEl);
       }
@@ -100,9 +107,11 @@ export class Planning implements AfterViewInit, OnDestroy {
   }
 
   changeWeek(step: number): void {
-    this.config.update(prev => ({
+    this.config.update((prev) => ({
       ...prev,
-      startDate: new DayPilot.Date(prev.startDate).addDays(step * 7).firstDayOfWeek(1)
+      startDate: new DayPilot.Date(prev.startDate)
+        .addDays(step * 7)
+        .firstDayOfWeek(1),
     }));
     this.refreshData();
   }
@@ -114,45 +123,45 @@ export class Planning implements AfterViewInit, OnDestroy {
   }
 
   private refreshData(): void {
-    const resources = this.filteredProfiles().map(p => ({
+    const resources = this.filteredProfiles().map((p) => ({
       id: p['id'],
       name: p['name'],
-      tags: p['tags']
+      tags: p['tags'],
     }));
 
-    this.planningService.getUsersDayPilotData().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(data => {
-      this.scheduler.control.update({
-        resources: resources,
-        events: data.events
+    this.planningService
+      .getUsersDayPilotData()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        this.scheduler.control.update({
+          resources: resources,
+          events: data.events,
+        });
       });
-    });
   }
 
+  // ----------------User Courant -------------//
 
-// ----------------User Courant -------------//
-
-public currentUser: any = {
+  public currentUser: any = {
     first_name: '',
     last_name: '',
     email: '',
     phone_number: '',
     is_active: true,
-    is_superuser: true
+    is_superuser: true,
   };
 
-constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {}
   // 2. ÉTAPE A : On charge les données au démarrage
   ngOnInit() {
     this.userService.getUserMe().subscribe({
       next: (data) => {
         this.currentUser = data;
       },
-      
-      error: (err) => console.error('Erreur chargement', err)
+
+      error: (err) => console.error('Erreur chargement', err),
     });
-    console.log("je charge les data");
+    console.log('je charge les data');
   }
 
   // TODO à ajouter la photo de profile dans le backend
@@ -207,95 +216,80 @@ constructor(private userService: UserService) {}
   });
   }*/
 
+  public toastMessage: string = '';
+  public toastType: 'success' | 'error' = 'success';
+  public showToast: boolean = false;
+
+  public showSuccess = false;
 
   saveProfile() {
-  const profileData = {
-    first_name: this.currentUser.first_name,
-    last_name: this.currentUser.last_name,
-    email: this.currentUser.email,
-    phone_number: this.currentUser.phone_number || "",
-    is_active: true // Très important si le schéma l'exige
-  };
+    const profileData = {
+      first_name: this.currentUser.first_name,
+      last_name: this.currentUser.last_name,
+      email: this.currentUser.email,
+      phone_number: this.currentUser.phone_number || '',
+      is_active: true,
+    };
 
-  this.userService.updateUserMe(profileData).subscribe({
-    next: (res: any) => {
-      console.log('Réponse du serveur :', res);
+    this.userService.updateUserMe(profileData).subscribe({
+      next: (res: any) => {
+        this.showSuccess = true;
 
-      Swal.fire({
-        title: 'Profil Mis à Jour !',
-        text: 'Vos modifications ont été enregistrées avec succès.',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false,
-        position: 'center',
-        didOpen: () => {
-          const container = Swal.getContainer();
-          if (container) container.style.zIndex = '9999';
-        },
-      });
+        // On ferme la modale après 1.5 seconde pour laisser l'utilisateur voir le succès
+        setTimeout(() => {
+          this.visibleCreate = false;
+          this.showSuccess = false;
+          this.cdr.detectChanges();
+        }, 1500);
+      },
+      error: (err: any) => {
+        console.error('Erreur serveur :', err);
+        alert('Erreur lors de la mise à jour');
+      },
+    });
+  }
 
-      this.visibleCreate = false;
-      this.cdr.detectChanges();
-    },
-    error: (err: any) => {
-      console.error('Erreur serveur :', err);
-      Swal.fire(
-        'Erreur',
-        "Le serveur n'a pas pu mettre à jour votre profil. Vérifiez votre connexion.",
-        'error'
-      );
-    },
-  });
-}
+  //-----------les initiales------------------//
 
+  get userInitials(): string {
+    const p = this.currentUser?.first_name || '';
+    return (p.charAt(0) + p.charAt(1)).toUpperCase() || '??';
+  }
 
-//-----------les initiales------------------//
-
-
-get userInitials(): string {
-  const p = this.currentUser?.first_name || '';
-  return (p.charAt(0) + p.charAt(1)).toUpperCase() || '??';
-}
-
-//------------------------------------------------//
-  
-
+  //------------------------------------------------//
 
   // --- Logique de la Modal de Profil ---
   public visibleCreate = false;
   public imagePreview: string | ArrayBuffer | null = null;
-
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-
   get weekRangeLabel(): string {
     const start = new DayPilot.Date(this.config().startDate);
     const end = start.addDays(4);
-    return `${start.toString('d MMM', 'fr-fr')} - ${end.toString('d MMM', 'fr-fr')}`;
+    return `${start.toString('d MMM', 'fr-fr')} - ${end.toString(
+      'd MMM',
+      'fr-fr'
+    )}`;
   }
   // --- Méthodes de la Modal ---
   toggleCreateModal() {
-    console.log("je suis dans toggle");
-    // On bascule l'affichage
     this.visibleCreate = !this.visibleCreate;
 
-    // Si on ferme la modal, on peut réinitialiser l'aperçu
     if (!this.visibleCreate) {
-        this.imagePreview = null;
+      this.imagePreview = null;
     }
-}
+  }
 
- onFileSelected(event: Event) {
+  onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files?.[0]) {
-        const reader = new FileReader();
-        reader.onload = () => this.imagePreview = reader.result;
-        reader.readAsDataURL(input.files[0]);
+      const reader = new FileReader();
+      reader.onload = () => (this.imagePreview = reader.result);
+      reader.readAsDataURL(input.files[0]);
     }
-}
-
+  }
 }
