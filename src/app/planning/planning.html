@@ -165,19 +165,36 @@
       </div>
 
       <div class="modal-footer border-0 pb-4 bg-white d-flex justify-content-center gap-3">
-        
-        <div class="modal-footer border-0 pb-4 bg-white d-flex flex-column align-items-center">
-  <div *ngIf="showSuccess" class="text-success small fw-bold mb-2 animate-fade-in">
-    <i class="bi bi-check-circle-fill me-1"></i> Profil mis à jour avec succès !
-  </div>
 
-  <button (click)="saveProfile()" 
-          class="btn btn-gradient-custom px-5 shadow-sm fw-bold"
-          [disabled]="showSuccess">
-    <span *ngIf="!showSuccess">Enregistrer les modifications</span>
-    <span *ngIf="showSuccess">Chargement...</span>
-  </button>
-</div>
+        <div class="modal-footer border-0 pb-4 bg-white d-flex flex-column align-items-center">
+          <div *ngIf="showSuccess" class="text-success small fw-bold mb-2 animate-fade-in">
+            <i class="bi bi-check-circle-fill me-1"></i> Profil mis à jour avec succès !
+          </div>
+
+          <div class="status-message-container">
+            <div *ngIf="showSuccess" class="status-alert success-style">
+              <i class="pi pi-check-circle"></i> Profil mis à jour avec succès !
+            </div>
+
+            <div *ngIf="showError" class="status-alert error-style">
+              <i class="pi pi-exclamation-triangle"></i> Échec de la mise à jour.
+            </div>
+          </div>
+
+          <button (click)="saveProfile()" class="btn btn-gradient-custom px-5 shadow-sm fw-bold"
+            [disabled]="isUpdating || showSuccess">
+
+            <span *ngIf="!isUpdating && !showSuccess">Enregistrer les modifications</span>
+
+            <span *ngIf="isUpdating">
+              <i class="pi pi-spin pi-spinner"></i> Chargement...
+            </span>
+
+            <span *ngIf="showSuccess">
+              <i class="pi pi-check"></i> Terminé
+            </span>
+          </button>
+        </div>
       </div>
 
     </div>

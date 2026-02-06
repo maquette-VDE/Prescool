@@ -220,8 +220,9 @@ export class Planning implements AfterViewInit, OnDestroy {
   public toastType: 'success' | 'error' = 'success';
   public showToast: boolean = false;
 
-  public showSuccess = false;
-
+  isUpdating: boolean = false;
+  showSuccess: boolean = false;
+  showError: boolean = false;
   saveProfile() {
     const profileData = {
       first_name: this.currentUser.first_name,
@@ -233,20 +234,35 @@ export class Planning implements AfterViewInit, OnDestroy {
 
     this.userService.updateUserMe(profileData).subscribe({
       next: (res: any) => {
+        this.isUpdating = false;
         this.showSuccess = true;
-
-        // On ferme la modale après 1.5 seconde pour laisser l'utilisateur voir le succès
-        setTimeout(() => {
-          this.visibleCreate = false;
-          this.showSuccess = false;
-          this.cdr.detectChanges();
-        }, 1500);
+        this.closeWithDelay();
       },
       error: (err: any) => {
-        console.error('Erreur serveur :', err);
-        alert('Erreur lors de la mise à jour');
+        this.isUpdating = false;
+        this.showError = true;
+        this.closeWithDelay();
       },
     });
+  }
+
+  private closeWithDelay() {
+    setTimeout(() => {
+      this.visibleCreate = false;
+      this.showSuccess = false;
+      this.showError = false;
+      this.cdr.detectChanges();
+    }, 1500);
+  }
+
+  // Fonction utilitaire pour éviter de répéter le setTimeout
+  private handleModalClosure() {
+    setTimeout(() => {
+      this.visibleCreate = false;
+      this.showSuccess = false;
+      this.showError = false; // On reset l'erreur
+      this.cdr.detectChanges();
+    }, 1500);
   }
 
   //-----------les initiales------------------//
