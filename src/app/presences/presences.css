@@ -343,6 +343,17 @@
   align-items: center;
   justify-content: space-between;
   min-height: 40px;
+  overflow: hidden;     
+  text-overflow: ellipsis;
+}
+
+.fc-timegrid-event {
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  justify-content: space-between;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .fc-daygrid-event.event-present {
