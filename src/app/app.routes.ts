@@ -7,7 +7,9 @@ import { ConfirmeConsultant } from './confirme-consultant/confirme-consultant';
 import { Presences } from './presences/presences';
 import { SideNav } from './side-nav/side-nav';
 import { Planning } from './planning/planning';
+import { Consultant } from './consultant/consultant';
 import {Dashboard} from  './dashboard/dashboard';
+import {Aide} from  './aide/aide';
 import {Statistics} from  './statistics/statistics';
 import {Settings} from  './settings/settings';
 
@@ -35,6 +37,8 @@ export const routes: Routes = [
         
         {path : 'dashboard', component : Dashboard },
         {path : 'annonces', component : Annonces},
+        {path : 'aide', component : Aide},
+        {path : 'consultant', component : Consultant},
         
         {path : 'confirm-consultant', component : ConfirmeConsultant},
         {
