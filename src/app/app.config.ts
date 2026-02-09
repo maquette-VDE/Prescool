@@ -5,9 +5,11 @@ import { provideRouter } from '@angular/router';
 
 
 import { routes } from './app.routes';
-import { provideHttpClient} from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { registerReducer } from './store/register.reducer';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 
 export const appConfig: ApplicationConfig = {
@@ -15,7 +17,14 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptorsFromDi() 
+    ),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     provideStore({
       userData : registerReducer
     }),

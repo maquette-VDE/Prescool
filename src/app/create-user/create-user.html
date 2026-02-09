@@ -52,21 +52,40 @@
             L'email n'est pas valide
           </div>
         }
-        <div class="form-group">
+        <div class="form-group password-wrapper">
           <label for="password">Mot de passe</label>
-          <input type="password" id="password" name="password" formControlName="password" placeholder="Mot de passe" >
+          <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password" name="password"
+          formControlName="password"
+          autocomplete="off"
+          (focus)="isPasswordFocused = true"
+          (blur)="onPasswordBlur()"
+          (input)="hasTypedPassword = !!$any($event.target).value"
+          placeholder="Mot de passe"
+          >
+          <button
+            *ngIf="hasTypedPassword && isPasswordFocused && hasBlurredOnce"
+            type="button"
+            class="toggle-password"
+            (mousedown)="$event.preventDefault()"
+            (click)="showPassword = !showPassword"
+            aria-label="Afficher le mot de passe"
+            >
+            👁
+          </button>
         </div>
         @if (hasError('password', 'required')) {
           <div class="error">
             Mot de passe obligatoire
           </div>
         }
-        @if (hasError('password', 'pattern')) {
+        @if (hasError('password', 'pattern') || hasError('password', 'minlength')) {
           <div class="error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 9 20 20"  width="18px">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"  width="18px">
               <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/>
             </svg>
-            Doit contenir au moins une lettre majuscule, un chiffre et 8 caractères
+            Doit contenir au minimum 8 caractères dont une lettre majuscule, un chiffre et un caractère spécial
           </div>
         }
         <div class="form-group">
@@ -85,8 +104,20 @@
         }
         <div class="form-group">
           <label for="phone">Téléphone</label>
-          <input type="text" id="phone" name="phone" formControlName="phone">
+          <input
+          type="tel"
+          id="phone"
+          name="phone"
+          formControlName="phone"
+          (keydown)="blockNonDigits($event)"
+          (paste)="onPhonePaste($event)"
+          >
         </div>
+        @if (hasPhoneError()) {
+          <div class="error errorPhone">
+            Le numéro de téléphone n'est pas valide
+          </div>
+         }
         <div class="log">
           <button class="login" (click)="suivant()" [disabled]="userForm.invalid">Suivant</button>
           <p>déja un compte? <a (click)="login()"  class="gradient">Je me connecte</a></p>

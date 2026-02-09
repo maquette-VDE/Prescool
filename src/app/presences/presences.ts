@@ -7,6 +7,8 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import frLocale from '@fullcalendar/core/locales/fr';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ViewChild } from '@angular/core';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 
 interface CalendarEvent {
   id: string;
@@ -17,6 +19,8 @@ interface CalendarEvent {
   reason?: string;   // Raison (maladie, etc.)
   startTime?: string; // Heure de début (ex: 09:00)
   endTime?: string;   // Heure de fin (ex: 17:00)
+  depart?: boolean; //depart anticpe
+  heureDepart?: string; // heure de depart
 }
 
 interface StatusModalState {
@@ -25,6 +29,8 @@ interface StatusModalState {
   selectedStatus: 'present' | 'absent' | 'late' | null;
   reason: string;
   lateTime: string;
+  depart : boolean;
+  heureDepart : string
 }
 
 @Component({
@@ -49,6 +55,10 @@ export class Presences {
     { id: crypto.randomUUID(), title: 'En retard - "on doit aller chercher mes enfants"', date: '2025-11-26', type: 'late', reason: 'on doit aller chercher mes enfants', lateTime: '17:30' }
   ];
 
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+
+  currentView: 'dayGridMonth' | 'timeGridWeek' = 'dayGridMonth';
+
   searchQuery = '';
   statusModal: StatusModalState = {
     isOpen: false,
@@ -56,6 +66,8 @@ export class Presences {
     selectedStatus: null,
     reason: '',
     lateTime: '09:00',
+    depart : false,
+    heureDepart : '15:00'
   };
   isFilterMode = false;
 
@@ -108,6 +120,7 @@ export class Presences {
 
     // Événement quand les dates affichées changent
     datesSet: (info) => {
+      this.currentView = info.view.type as 'dayGridMonth' | 'timeGridWeek';
       this.onDatesChanged(info.start);
     },
 
@@ -200,6 +213,11 @@ export class Presences {
       } else if (e.startTime) {
         displayTitle += ` ${e.startTime}`;
       }
+      if (e.depart && e.heureDepart) {
+        displayTitle += ` : Départ anticipé ${e.heureDepart}`;
+      } else if (e.depart) {
+        displayTitle += ` : Départ anticipé`;
+        }
     } else if (e.type === 'absent') {
       if (e.reason) {
         displayTitle = `Absent(e): "${e.reason}"`;
@@ -223,6 +241,10 @@ export class Presences {
       title: displayTitle,
       start: e.date,
       className: css,
+      extendedProps: {
+        depart: e.depart,
+        heureDepart: e.heureDepart
+      }
     };
   }
 
@@ -264,6 +286,8 @@ export class Presences {
       selectedStatus: null,
       reason: '',
       lateTime: '09:00',
+      depart : false,
+      heureDepart : '15:00',
     };
   }
 
@@ -324,6 +348,8 @@ export class Presences {
       type: status,
       reason: this.statusModal.reason || undefined,
       lateTime: status === 'late' ? this.statusModal.lateTime : undefined,
+      depart: this.statusModal.depart,
+      heureDepart: this.statusModal.heureDepart,
     };
 
     if (existingEventIndex >= 0) {
@@ -391,5 +417,14 @@ export class Presences {
   onSearchChanged(query: string) {
     this.searchQuery = query;
     this.refreshCalendar();
+  }
+  /*============================================================
+    🎯 Switch de vue 
+    ============================================================ */
+  switchToMonth() {
+    this.calendarComponent.getApi().changeView('dayGridMonth');
+  }
+  switchToWeek() {
+    this.calendarComponent.getApi().changeView('timeGridWeek'); 
   }
 }

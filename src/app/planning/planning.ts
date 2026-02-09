@@ -1,71 +1,117 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions } from '@fullcalendar/core';
-import { map, Subject, takeUntil, tap } from 'rxjs';
+import { Component, ViewChild, AfterViewInit, signal, inject, OnDestroy, computed } from '@angular/core';
+import { DayPilot, DayPilotModule, DayPilotSchedulerComponent } from '@daypilot/daypilot-lite-angular';
 import { ActivatedRoute } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { PlanningService } from '../services/planning/planning-service';
+import { SchedulerUtils } from './scheduler-utils';
+import * as bootstrap from 'bootstrap';
 
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
-import { Profile } from '../interfaces/profile';
-import { Ressource } from '../interfaces/ressource';
-import { Events } from '../interfaces/events';
 
 @Component({
   selector: 'app-planning',
-  imports: [FullCalendarModule],
+  standalone: true,
+  imports: [DayPilotModule],
   templateUrl: './planning.html',
-  styleUrl: './planning.css',
+  styleUrls: ['./planning.css'],
 })
-export class Planning implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-  private route = inject(ActivatedRoute);
+export class Planning implements AfterViewInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly planningService = inject(PlanningService);
+  private readonly destroy$ = new Subject<void>();
 
-  ressources: Ressource[] = [];
-  events: Events[] = [];
+  readonly profiles = signal<DayPilot.ResourceData[]>([]);
+  readonly searchQuery = signal<string>('');
+  readonly today = new DayPilot.Date();
 
-  calendarOptions: CalendarOptions = {
-    plugins: [resourceTimelinePlugin],
-    initialView: 'resourceTimelineWeek',
-    resourceAreaHeaderContent: 'Profils',
-    locale: 'fr',
-    hiddenDays: [0, 6], // 0 = dimanche, 6 = samedi
-    slotLabelContent: (arg) => {
-      const date = arg.date;
+  readonly filteredProfiles = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    return this.profiles().filter(p =>
+      p['name']?.toLowerCase().includes(query) ||
+      p['tags']['code']?.toLowerCase().includes(query)
+    );
+  });
 
-      return {
-        html: `
-      <div class="slot-label">
-        <div class="slot-date">${date.getDate()}</div>
-        <div class="slot-day">
-          ${date.toLocaleDateString('fr-FR', { weekday: 'long' })}
-        </div>
-      </div>
-    `,
-      };
-    },
-    eventContent: (arg) => {
-      return { html: arg.event.title };
-    },
-    slotDuration: { days: 1 },
-    resources: [],
-    events: [],
-  };
+  @ViewChild('scheduler') scheduler!: DayPilotSchedulerComponent;
 
-  ngOnInit(): void {
-    this.route.data
-      .pipe(
-        map((data) => data['profiles'] as Profile[]),
-        tap((profiles) => console.log(profiles)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((profiles) => {
-        this.ressources = profiles.map((profile) => profile.ressource);
-        this.events = profiles.map((profile) => profile.events);
-        this.calendarOptions = {
-          ...this.calendarOptions,
-          resources: this.ressources,
-          events: this.events,
-        };
+  config = signal<DayPilot.SchedulerConfig>({
+    timeHeaders : [
+      { groupBy: 'Day', format: 'dddd d'},
+    ],
+    headerHeight: 60,
+    locale: 'fr-fr',
+    scale: 'Day',
+    startDate: DayPilot.Date.today().firstDayOfWeek(1),
+    days: 5,
+    rowHeaderWidth: 200,
+    eventHeight: 80,
+    cellWidth: 155,
+    theme: 'rounded',
+    onBeforeEventRender: (args) => SchedulerUtils.renderEvent(args),
+    onBeforeRowHeaderRender: (args) => SchedulerUtils.renderResource(args),
+  });
+
+  translateDateToFr(date: DayPilot.Date, format: string): string {
+    return date.toString(format, 'fr-fr');
+  }
+
+  ngAfterViewInit(): void {
+    const data = this.route.snapshot.data['planningData'];
+      this.profiles.set(data.resources);
+      this.scheduler.control.update({
+        resources: data.resources,
+        events: data.events
       });
+
+      if (data.events.length > 0) {
+        this.scheduler.control.scrollTo(data.events[0].start);
+      }
+  }
+
+  ngAfterViewChecked() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+    tooltipTriggerList.forEach(tooltipTriggerEl => {
+      if (!bootstrap.Tooltip.getInstance(tooltipTriggerEl)) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      }
+    });
+  }
+
+  changeWeek(step: number): void {
+    this.config.update(prev => ({
+      ...prev,
+      startDate: new DayPilot.Date(prev.startDate).addDays(step * 7).firstDayOfWeek(1)
+    }));
+    this.refreshData();
+  }
+
+  onSearchChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery.set(input.value);
+    this.refreshData();
+  }
+
+  private refreshData(): void {
+    const resources = this.filteredProfiles().map(p => ({
+      id: p['id'],
+      name: p['name'],
+      tags: p['tags']
+    }));
+
+    this.planningService.getUsersDayPilotData().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(data => {
+      this.scheduler.control.update({
+        resources: resources,
+        events: data.events
+      });
+    });
+  }
+
+  get weekRangeLabel(): string {
+    const start = new DayPilot.Date(this.config().startDate);
+    const end = start.addDays(4);
+    return `${start.toString('d MMM', 'fr-fr')} - ${end.toString('d MMM', 'fr-fr')}`;
   }
 
   ngOnDestroy(): void {

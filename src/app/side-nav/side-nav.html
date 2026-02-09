@@ -1,94 +1,83 @@
-<div class="d-flex min-vh-100">
-  <div
-    id="sideBarMenu"
-    class="d-none d-lg-block border-end p-3 bg-white"
-    style="width: 250px"
+<div class="d-flex min-vh-100 bg-white">
+  <aside
+    class="d-none d-lg-flex flex-column border-end bg-white"
+    style="width: 300px; position: sticky; top: 0; height: 100vh;"
   >
     <ng-container *ngTemplateOutlet="navContent"></ng-container>
-  </div>
+  </aside>
 
   <div class="flex-grow-1 d-flex flex-column">
-    <nav class="navbar navbar-light bg-light d-lg-none px-3 border-bottom">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#mobileMenu"
-      >
-        <span class="navbar-toggler-icon"></span>
+    <nav class="navbar navbar-light bg-white d-lg-none px-3 border-bottom">
+      <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+        <i class="bi bi-list fs-3"></i>
       </button>
-      <span class="fw-bold">VILLAGE DE L'EMPLOI</span>
+      <img src="logo-vde-sans-texte.png" alt="logo" style="height: 30px;" class="ms-2">
     </nav>
 
-    <div class="p-4">
+    <main class="p-4">
       <router-outlet></router-outlet>
-    </div>
+    </main>
   </div>
 </div>
 
-<div
-  class="offcanvas offcanvas-start d-lg-none"
-  tabindex="-1"
-  id="mobileMenu"
-  style="width: 250px"
->
-  <div class="offcanvas-header border-bottom">
+<div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileMenu" style="width: 250px">
+  <div class="offcanvas-header justify-content-end p-2">
     <button
       type="button"
-      class="btn-close"
+      class="btn-close shadow-none"
       data-bs-dismiss="offcanvas"
+      aria-label="Close"
+      style="font-size: 0.8rem;"
     ></button>
   </div>
-  <div class="offcanvas-body">
+  <div class="offcanvas-body p-0">
     <ng-container *ngTemplateOutlet="navContent"></ng-container>
   </div>
 </div>
 
 <ng-template #navContent>
-  <div class="d-flex gap-1 mb-4">
-    <img src="logo-vde-sans-texte.png" alt="logo" class="w-25" />
-    <div class="d-flex flex-column">
-      <span class="fw-bold fs-5 text-muted">VILLAGE</span>
-      <span class="fw-bold fs-12 text-muted">DE L'EMPLOI</span>
+  <div class="p-4">
+    <div class="mb-5">
+       <div class="d-flex gap-1">
+            <img src="logo-vde-sans-texte.png" alt="logo" class="w-25 h-25">
+            <div class="d-flex flex-column">
+                <span class="fw-bold fs-5 text-muted">VILLAGE</span>
+                <span class="fw-bold fs-12 text-muted">DE L'EMPLOI</span>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <h5 class="fs-14 text-uppercase text-secondary small">Menu Principal</h5>
-  <ul class="nav flex-column gap-1">
-    <li class="nav-item">
-      <a
-        class="nav-link d-flex align-items-center gap-2 text-muted p-2 rounded"
-        routerLink="dashboard"
-        routerLinkActive="bg-light text-primary fw-bold"
-      >
-        <i class="bi bi-ui-radios-grid"></i> <span>Tableau de bord</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a
-        class="nav-link d-flex align-items-center gap-2 text-muted p-2 rounded"
-        routerLink="consultants"
-        routerLinkActive="bg-light text-primary fw-bold"
-      >
-        <i class="bi bi-person"></i> <span>Consultant</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a
-        class="nav-link d-flex align-items-center gap-2 text-muted p-2 rounded"
-        routerLink="presences"
-        routerLinkActive="bg-light text-primary fw-bold"
-      >
-        <i class="bi bi-calendar2-week"></i> <span>Présences</span>
-      </a>
-    </li>
-    <li class="nav-item mt-auto pt-4">
-      <a
-        class="nav-link d-flex align-items-center gap-2 text-danger p-2"
-        routerLink="logout"
-      >
-        <i class="bi bi-box-arrow-left"></i> <span>Se déconnecter</span>
-      </a>
-    </li>
-  </ul>
+    <p class="fw-bold text-dark mb-4" style="font-size: 0.9rem;">Menu Principal</p>
+
+    <ul class="nav flex-column gap-3">
+      <ng-container *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-grid', label: 'Tableau de bord' }"></ng-container>
+      <ng-container *ngTemplateOutlet="navItem; context: { route: 'consultants', icon: 'bi-person', label: 'Consultants' }"></ng-container>
+      <ng-container *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"></ng-container>
+      <ng-container *ngTemplateOutlet="navItem; context: { route: 'statistics', icon: 'bi-graph-up', label: 'Statistiques' }"></ng-container>
+      <ng-container *ngTemplateOutlet="navItem; context: { route: 'annonces', icon: 'bi-chat-left', label: 'Annonces' }"></ng-container>
+      <ng-container *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"></ng-container>
+      <ng-container *ngTemplateOutlet="navItem; context: { route: 'settings', icon: 'bi-gear', label: 'Paramètres' }"></ng-container>
+
+      <li class="nav-item mt-5">
+        <a class="nav-link d-flex align-items-center gap-3 p-0 text-secondary border-0 bg-transparent" routerLink="logout">
+          <i class="bi bi-box-arrow-left fs-5"></i>
+          <span style="font-size: 0.95rem;">Se déconnecter</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</ng-template>
+
+<ng-template #navItem let-route="route" let-icon="icon" let-label="label">
+  <li class="nav-item">
+    <a
+      class="nav-link d-flex align-items-center gap-3 p-0 border-0 bg-transparent transition-all"
+      [routerLink]="route"
+      routerLinkActive="active-vde"
+      [routerLinkActiveOptions]="{exact: true}"
+    >
+      <i class="bi {{icon}} fs-5 icon-vde"></i>
+      <span class="label-vde" style="font-size: 0.95rem;">{{label}}</span>
+    </a>
+  </li>
 </ng-template>
