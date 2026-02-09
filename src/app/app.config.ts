@@ -1,9 +1,5 @@
-import { UserDataState } from './store/user.state';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
-
-
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
@@ -17,6 +13,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    
+    // Configuration HTTP avec support des Intercepteurs de classe
     provideHttpClient(
       withInterceptorsFromDi() 
     ),
@@ -25,6 +23,7 @@ export const appConfig: ApplicationConfig = {
       useClass: AuthInterceptor,
       multi: true
     },
+
     provideStore({
       userData : registerReducer
     }),
