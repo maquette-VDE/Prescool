@@ -47,7 +47,7 @@ export const routes: Routes = [
         resolve: { planningData: planningResolver },
       },
       {
-        path: 'consultants',
+        path: 'consultant',
         component: Consultant,
         resolve: {
           consultants: consultantResolver,
