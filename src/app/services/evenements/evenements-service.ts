@@ -16,6 +16,7 @@ export class EvenementsService {
   month = String(this.now.getMonth() + 1).padStart(2, '0'); // Mois commence à 0
   day = String(this.now.getDate()).padStart(2, '0');
 
+  // [TO DO] : A ajouter toDay à l'appel de l'API à la place de JourDeTest
   toDay = `${this.year}-${this.month}-${this.day}`;
   JourDeTest = `2026-01-15`;
 

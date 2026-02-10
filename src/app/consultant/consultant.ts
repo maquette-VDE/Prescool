@@ -64,4 +64,12 @@ export class Consultant {
       this.goToPage(this.currentPage() - 1);
     }
   }
+
+  constructor() {
+    effect(() => {
+      console.log("consultants :", this.consultants()),
+      console.log("évènements :", this.evenements()),
+      console.log("consultantsData :", this.consultantsData())
+    })
+  }
 }
