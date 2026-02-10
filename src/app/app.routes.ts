@@ -17,35 +17,44 @@ import {Annonces} from  './annonces/annonces';
 import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
+import { consultantResolver } from './resolvers/consultant/consultant-resolver';
+import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { Erreur } from './erreur/erreur';
 
 export const routes: Routes = [
-    {path : '', component : Acceuil},
-    {path : 'login', component : Login},
-    {path : 'create-user', component : CreateUser},
-    {path : 'confirm-expert', component : ConfirmeExpert},
-    {path : 'settings', component : Settings},
-    {path : 'wait-confirmation', component : WaitConfirmation},
-    {path : 'error', component : Erreur},
-    {
-      path: 'sidenav',
-      component: SideNav,
-      children: [
-        { path: 'presences', component: Presences, canActivate: [roleGuard] },
-        {path : 'statistics', component : Statistics},
-        {path : 'settings', component : Settings},
-        
-        {path : 'dashboard', component : Dashboard },
-        {path : 'annonces', component : Annonces},
-        {path : 'aide', component : Aide},
-        {path : 'consultant', component : Consultant},
-        
-        {path : 'confirm-consultant', component : ConfirmeConsultant},
-        {
-          path: 'planning',
-          component: Planning,
-          resolve: { planningData: planningResolver },
+  { path: '', component: Acceuil },
+  { path: 'login', component: Login },
+  { path: 'create-user', component: CreateUser },
+  { path: 'confirm-expert', component: ConfirmeExpert },
+  { path: 'confirm-consultant', component: ConfirmeConsultant },
+  {path : 'settings', component : Settings},
+  { path: 'wait-confirmation', component: WaitConfirmation },
+  {path : 'error', component : Erreur},
+  {
+    path: 'sidenav',
+    component: SideNav,
+    children: [
+      { path: 'presences', component: Presences, canActivate: [roleGuard] },
+      {path : 'statistics', component : Statistics},
+      {path : 'settings', component : Settings},
+      {path : 'dashboard', component : Dashboard },
+      {path : 'annonces', component : Annonces},
+      {path : 'aide', component : Aide},
+      {path : 'confirm-consultant', component : ConfirmeConsultant},
+      {
+        path: 'planning',
+        component: Planning,
+        resolve: { planningData: planningResolver },
+      },
+      {
+        path: 'consultant',
+        component: Consultant,
+        resolve: {
+          consultants: consultantResolver,
+          evenements: evenementsResolver,
         },
-      ],
-    }
-];
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange'
+      },
+    ],
+  },
+]
