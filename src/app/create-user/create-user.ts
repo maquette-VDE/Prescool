@@ -35,7 +35,7 @@ export class CreateUser {
   isPasswordFocused = false; // vrai si l'input est focus
 
   toExpert() {
-    this.role = UserRole.EXPERT;
+    this.role = UserRole.INSTRUCTEUR;
     this.isConsultant = false;
   }
 
@@ -77,7 +77,7 @@ export class CreateUser {
 
     if (this.role === UserRole.CONSULTANT) {
       this.toConsultant();
-    } else if (this.role === UserRole.EXPERT) {
+    } else if (this.role === UserRole.INSTRUCTEUR) {
       this.toExpert();
     }
 
@@ -116,7 +116,7 @@ export class CreateUser {
 
       if (this.role === UserRole.CONSULTANT) {
         this.router.navigateByUrl('confirm-consultant');
-      } else if (this.role === UserRole.EXPERT) {
+      } else if (this.role === UserRole.INSTRUCTEUR) {
         this.router.navigateByUrl('confirm-expert');
       }
     }

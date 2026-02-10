@@ -10,14 +10,17 @@ import { Planning } from './planning/planning';
 import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
+import { Consultant } from './consultant/consultant';
+import { consultantResolver } from './resolvers/consultant/consultant-resolver';
+import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 
 export const routes: Routes = [
-    {path : '', component : Acceuil},
-    {path : 'login', component : Login},
-    {path : 'create-user', component : CreateUser},
-    {path : 'confirm-expert', component : ConfirmeExpert},
-    {path : 'confirm-consultant', component : ConfirmeConsultant},
-    {path : 'wait-confirmation', component : WaitConfirmation},
+  { path: '', component: Acceuil },
+  { path: 'login', component: Login },
+  { path: 'create-user', component: CreateUser },
+  { path: 'confirm-expert', component: ConfirmeExpert },
+  { path: 'confirm-consultant', component: ConfirmeConsultant },
+  { path: 'wait-confirmation', component: WaitConfirmation },
   {
     path: 'sidenav',
     component: SideNav,
@@ -28,6 +31,15 @@ export const routes: Routes = [
         component: Planning,
         resolve: { planningData: planningResolver },
       },
+      {
+        path: 'consultants',
+        component: Consultant,
+        resolve: {
+          consultants: consultantResolver,
+          evenements: evenementsResolver,
+        },
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange'
+      },
     ],
-  }
+  },
 ];

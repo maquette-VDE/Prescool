@@ -26,12 +26,12 @@ export class ConfirmeExpert {
   ){}
 
   user$!: any;
-  expert: Expert = new Expert('','','','','',UserRole.EXPERT);
-  role: UserRole | null = null; 
+  expert: Expert = new Expert('','','','','',UserRole.INSTRUCTEUR);
+  role: UserRole | null = null;
   expertForm!: FormGroup;
 
   ngOnInit() {
-      
+
       this.store.select(selectRole).subscribe(role => {
         this.role = role;
       });
@@ -41,7 +41,7 @@ export class ConfirmeExpert {
       });
 
     }
-  
+
     retour(){
 
       this.router.navigateByUrl('create-user')
@@ -49,7 +49,7 @@ export class ConfirmeExpert {
 
     login() {
     if (!this.role) {
-      return; 
+      return;
     }
     this.router.navigate(
       ['login'],
@@ -60,13 +60,13 @@ export class ConfirmeExpert {
     inscription() {
       if (!this.role) {
         console.error('Role is not defined');
-        return; 
+        return;
       }
 
       this.expert = this.subscriptionService.initialize(
-        this.expert, 
-        this.store, 
-        this.role, 
+        this.expert,
+        this.store,
+        this.role,
         this.expertForm
       ) as Expert;
 

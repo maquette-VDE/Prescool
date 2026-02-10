@@ -19,19 +19,19 @@ export class RoleService {
       case 'student':
         return UserRole.CONSULTANT;
       case 'encadrant':
-        return UserRole.EXPERT;
+        return UserRole.INSTRUCTEUR;
       case 'admin':
         return UserRole.ADMIN;
       default:
         return null;
     }
   }
-  
+
   toString(role: UserRole): string {
     switch(role) {
       case UserRole.CONSULTANT:
         return 'student';
-      case UserRole.EXPERT:
+      case UserRole.INSTRUCTEUR:
         return 'encadrant';
       case UserRole.ADMIN:
         return 'admin';
@@ -58,5 +58,5 @@ export class RoleService {
       })
     );
   }
-  
+
 }

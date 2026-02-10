@@ -34,7 +34,7 @@ export class Login {
   this.route.queryParams.subscribe(params => {
     const roleParam = params['role'];
 
-    if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.EXPERT) {
+    if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.INSTRUCTEUR) {
       this.role = roleParam;
     } else {
       this.role = null;
