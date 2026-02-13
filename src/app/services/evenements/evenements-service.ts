@@ -17,6 +17,7 @@ export class EvenementsService {
   day = String(this.now.getDate()).padStart(2, '0');
 
   toDay = `${this.year}-${this.month}-${this.day}`;
+  // toDay = '2026-02-10';
 
   readonly limit = 100;
 
