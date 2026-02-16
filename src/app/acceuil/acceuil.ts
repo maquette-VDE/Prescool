@@ -27,7 +27,7 @@ export class Acceuil {
   }
 
   createExperts() {
-    this.store.dispatch(actualRole({ role: UserRole.EXPERT }));
+    this.store.dispatch(actualRole({ role: UserRole.INSTRUCTEUR }));
     this.router.navigateByUrl('create-user')
   }
 

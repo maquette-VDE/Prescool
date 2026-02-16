@@ -15,57 +15,68 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="dashboard"
-                            routerLinkActive="active-link">
+                                routerLinkActive="active-link">
                                 <i class="bi bi-ui-radios-grid"></i>
                                 <span>Tableau de bord</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="consultants"
-                            routerLinkActive="active-link">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="consultant"
+                                routerLinkActive="active-link">
                                 <i class="bi bi-person"></i>
                                 <span>Consultant</span>
                             </a>
                         </li>
+                        @if (hasRole('admin')|| hasRole('instructor')) {
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="planning"
+                                routerLinkActive="active-link">
+                                <i class="bi bi-check2-square"></i>
+                                <span>Planning</span>
+                            </a>
+                        </li>
+                        }
+
+                        @if (hasRole('student') || hasRole('consultant')) {
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="presences"
-                            routerLinkActive="active-link">
+                                routerLinkActive="active-link">
                                 <i class="bi bi-calendar2-week"></i>
                                 <span>Présences</span>
                             </a>
                         </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="statistics"
-                            routerLinkActive="active-link">
+                                routerLinkActive="active-link">
                                 <i class="bi bi-file-bar-graph"></i>
                                 <span>Statistiques</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="annonces"
-                            routerLinkActive="active-link">
+                                routerLinkActive="active-link">
                                 <i class="bi bi-chat-right-dots"></i>
                                 <span>Annonces</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="help"
-                            routerLinkActive="active-link">
+                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="aide"
+                                routerLinkActive="active-link">
                                 <i class="bi bi-question-circle"></i>
                                 <span>Aide</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="settings"
-                            routerLinkActive="active-link">
+                                routerLinkActive="active-link">
                                 <i class="bi bi-gear"></i>
                                 <span>Paramètres</span>
                             </a>
                         </li>
                         <li class="nav-item mt-4">
                             <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="#"
-                            (click)="onLogout()"
-                            routerLinkActive="active-link">
+                                (click)="onLogout()" routerLinkActive="active-link">
                                 <i class="bi bi-box-arrow-left"></i>
                                 <span>Se déconnecter</span>
                             </a>
