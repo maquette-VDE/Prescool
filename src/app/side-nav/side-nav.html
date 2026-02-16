@@ -1,4 +1,5 @@
 <div class="d-flex min-vh-100 bg-white">
+  <!-- SIDEBAR DESKTOP -->
   <aside
     class="d-none d-lg-flex flex-column border-end bg-white"
     style="width: 300px; position: sticky; top: 0; height: 100vh;"
@@ -6,28 +7,44 @@
     <ng-container *ngTemplateOutlet="navContent"></ng-container>
   </aside>
 
+  <!-- CONTENU -->
   <div class="flex-grow-1 d-flex flex-column">
+    <!-- NAVBAR MOBILE -->
     <nav class="navbar navbar-light bg-white d-lg-none px-3 border-bottom">
-      <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+      <button
+        class="btn p-0"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mobileMenu"
+      >
         <i class="bi bi-list fs-3"></i>
       </button>
-      <img src="logo-vde-sans-texte.png" alt="logo" style="height: 30px;" class="ms-2">
+      <img
+        src="logo-vde-sans-texte.png"
+        alt="logo"
+        style="height: 30px;"
+        class="ms-2"
+      />
     </nav>
 
-    <main class="p-4">
+    <main class="p-4 flex-grow-1">
       <router-outlet></router-outlet>
     </main>
   </div>
 </div>
 
-<div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileMenu" style="width: 250px">
+<!-- OFFCANVAS MOBILE -->
+<div
+  class="offcanvas offcanvas-start d-lg-none"
+  tabindex="-1"
+  id="mobileMenu"
+  style="width: 260px"
+>
   <div class="offcanvas-header justify-content-end p-2">
     <button
       type="button"
       class="btn-close shadow-none"
       data-bs-dismiss="offcanvas"
-      aria-label="Close"
-      style="font-size: 0.8rem;"
     ></button>
   </div>
   <div class="offcanvas-body p-0">
@@ -35,49 +52,97 @@
   </div>
 </div>
 
+<!-- NAV CONTENT FACTORISÉ -->
 <ng-template #navContent>
   <div class="p-4">
+    <!-- LOGO -->
     <div class="mb-5">
-       <div class="d-flex gap-1">
-            <img src="logo-vde-sans-texte.png" alt="logo" class="w-25 h-25">
-            <div class="d-flex flex-column">
-                <span class="fw-bold fs-5 text-muted">VILLAGE</span>
-                <span class="fw-bold fs-12 text-muted">DE L'EMPLOI</span>
-            </div>
+      <div class="d-flex gap-2 align-items-center">
+        <img src="logo-vde-sans-texte.png" alt="logo" style="width: 45px" />
+        <div class="d-flex flex-column">
+          <span class="fw-bold text-muted">VILLAGE</span>
+          <span class="fw-bold text-muted" style="font-size: 0.8rem;">
+            DE L'EMPLOI
+          </span>
         </div>
+      </div>
     </div>
 
-    <p class="fw-bold text-dark mb-4" style="font-size: 0.9rem;">Menu Principal</p>
+    <p class="fw-bold text-dark mb-4" style="font-size: 0.9rem;">
+      Menu Principal
+    </p>
 
-    <ul class="nav flex-column gap-3">
-      <ng-container *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-grid', label: 'Tableau de bord' }"></ng-container>
-      <ng-container *ngTemplateOutlet="navItem; context: { route: 'consultant', icon: 'bi-person', label: 'Consultant' }"></ng-container>
-      <ng-container *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"></ng-container>
-      <ng-container *ngTemplateOutlet="navItem; context: { route: 'statistics', icon: 'bi-graph-up', label: 'Statistiques' }"></ng-container>
-      <ng-container *ngTemplateOutlet="navItem; context: { route: 'annonces', icon: 'bi-chat-left', label: 'Annonces' }"></ng-container>
-      <ng-container *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"></ng-container>
-      <ng-container *ngTemplateOutlet="navItem; context: { route: 'settings', icon: 'bi-gear', label: 'Paramètres' }"></ng-container>
+    <ul class="nav flex-column gap-2">
+      <!-- Dashboard -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-ui-radios-grid', label: 'Tableau de bord' }"
+      ></ng-container>
 
-      <li class="nav-item mt-5">
-        <a class="nav-link d-flex align-items-center gap-3 p-0 text-secondary border-0 bg-transparent" routerLink="logout">
-          <i class="bi bi-box-arrow-left fs-5"></i>
-          <span style="font-size: 0.95rem;">Se déconnecter</span>
+      <!-- Consultant -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'consultant', icon: 'bi-person', label: 'Consultant' }"
+      ></ng-container>
+
+      <!-- Planning (admin/instructor) -->
+      @if (hasRole('admin') || hasRole('instructor')) {
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'planning', icon: 'bi-check2-square', label: 'Planning' }"
+      ></ng-container>
+      }
+
+      <!-- Présences (student/consultant) -->
+      @if (hasRole('student') || hasRole('consultant')) {
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"
+      ></ng-container>
+      }
+
+      <!-- Statistiques -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'statistics', icon: 'bi-file-bar-graph', label: 'Statistiques' }"
+      ></ng-container>
+
+      <!-- Annonces -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'annonces', icon: 'bi-chat-right-dots', label: 'Annonces' }"
+      ></ng-container>
+
+      <!-- Aide -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"
+      ></ng-container>
+
+      <!-- Paramètres -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'settings', icon: 'bi-gear', label: 'Paramètres' }"
+      ></ng-container>
+
+      <!-- Logout -->
+      <li class="nav-item mt-4">
+        <a
+          class="nav-link d-flex align-items-center gap-3 text-muted"
+          (click)="onLogout()"
+        >
+          <i class="bi bi-box-arrow-left"></i>
+          <span>Se déconnecter</span>
         </a>
       </li>
     </ul>
   </div>
 </ng-template>
 
+<!-- NAV ITEM TEMPLATE -->
 <ng-template #navItem let-route="route" let-icon="icon" let-label="label">
   <li class="nav-item">
     <a
-      class="nav-link d-flex align-items-center gap-3 p-0 border-0 bg-transparent transition-all"
+      class="nav-link d-flex align-items-center gap-3 text-muted"
       [routerLink]="route"
-      routerLinkActive="active-vde"
-      [routerLinkActiveOptions]="{exact: true}"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      data-bs-dismiss="offcanvas"
     >
-      <i class="bi {{icon}} fs-5 icon-vde"></i>
-      <span class="label-vde" style="font-size: 0.95rem;">{{label}}</span>
+      <i class="bi {{ icon }}"></i>
+      <span>{{ label }}</span>
     </a>
   </li>
 </ng-template>

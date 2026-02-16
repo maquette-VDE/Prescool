@@ -1,1 +1,121 @@
-<p>consultant works!</p>
+<div>
+  <h3>Les consultants</h3>
+  <p>Consultez la liste des consultants en mission ou en attente d'une mission</p>
+</div>
+
+<div class="col-md-1 mt-5">
+  <select id="categorySelecte" aria-label="categorySelecte" class="w-auto form-select select-light-arrow bg-dark text-light rounded-pill" (change)="selectedFilter.set(($any($event.target)).value || null)">
+    <option [selected]="!selectedFilter()" value="">Filtrer</option>
+    <option [selected]="selectedFilter() === 'present'" value="present">Présent(e)</option>
+    <option [selected]="selectedFilter() === 'absent'" value="absent">Absent(e)</option>
+    <option [selected]="selectedFilter() === 'mission'" value="mission">En mission</option>
+    <option [selected]="selectedFilter() === 'late'" value="late">En retard</option>
+    <option [selected]="selectedFilter() === 'excused'" value="excused">Excusé(e)</option>
+  </select>
+</div>
+
+@if (filteredConsultants().length > 0) {
+  <table class="table table-hover table-sm mt-5 border-top border-bottom">
+    <tbody>
+      @for (consultant of filteredConsultants(); track consultant.id) {
+        @let evenement = eventsByConsultant().get(consultant.id);
+        <tr>
+          <td class="pt-3 pb-3">
+            <div class="d-flex align-items-center gap-2">
+              <div style="height: 20px;">
+                <span class="rounded-circle bg-secondary opacity-50 d-inline-block" style="width:20px; height:20px;"></span>
+              </div>
+              <div class="d-flex flex-column lh-1">
+                <span class="fw-semibold">{{ consultant.last_name }}</span>
+                <span class="text-secondary">{{ consultant.code }}</span>
+              </div>
+            </div>
+          </td>
+          <td class="pt-3 pb-3">Arrivé(e) le</td>
+          <td class="pt-3 pb-3">
+            <div
+              [class.text-success]="evenement?.attendance_status === 'present'"
+              [class.text-danger]="evenement?.attendance_status === 'absent'"
+              [class.text-warning]="evenement?.attendance_status === 'late'"
+              [class.text-info]="evenement?.attendance_status === 'mission'"
+              [class.text-secondary]="evenement?.attendance_status === 'excused'"
+            >
+              <span>
+                @switch (evenement?.attendance_status) {
+                  @case ('present') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-success">Présent(e)</span>
+                  }
+                  @case ('absent') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-danger">Absent(e)</span>
+                  }
+                  @case ('mission') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-info">En mission</span>
+                  }
+                  @case ('excused') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-secondary">Excusé(e)</span>
+                  }
+                  @case ('late') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-warning">En retard</span>
+                  }
+                  @default {
+                    <span></span>
+                  }
+                }
+              </span>
+            </div>
+          </td>
+          <td class="pt-3 pb-3">
+            <div class="d-flex gap-3 align-items-center"
+              [class.text-success]="evenement?.attendance_status === 'present'"
+              [class.text-danger]="evenement?.attendance_status === 'absent'"
+              [class.text-warning]="evenement?.attendance_status === 'late'"
+              [class.text-info]="evenement?.attendance_status === 'mission'"
+              [class.text-secondary]="evenement?.attendance_status === 'excused'"
+            >
+              <i class="bi bi-phone-vibrate"
+                (mouseenter)="hoveredConsultantId.set(consultant.id)"
+                (mouseleave)="hoveredConsultantId.set(null)"></i>
+              <i class="bi bi-chat-dots"></i>
+              <span class="" [class.opacity-0]="hoveredConsultantId() !== consultant.id">
+                {{ consultant.phone_number }}
+              </span>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <!-- Bouton Précédent -->
+    <li class="page-item" [class.disabled]="currentPage() === 0">
+      <button class="page-link" (click)="prevPage()">< Précédent</button>
+    </li>
+
+    <!-- Numéros de page -->
+     @for (p of [].constructor(totalPages()); track $index) {
+      <li class="page-item" [class.active]="currentPage() === $index">
+      <button class="page-link" (click)="goToPage($index)">
+        {{ $index + 1 }}
+      </button>
+    </li>
+     }
+
+    <!-- Bouton Suivant -->
+    <li class="page-item" [class.disabled]="currentPage() === totalPages() - 1">
+      <button class="page-link" (click)="nextPage()">Suivant ></button>
+    </li>
+  </ul>
+</nav>
+}
+@else {
+  <div class="fs-5 d-flex justify-content-center mt-5 text-secondary">
+    <p>Aucun consultant trouvé !</p>
+  </div>
+}

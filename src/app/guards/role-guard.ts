@@ -15,7 +15,7 @@ export const roleGuard: CanActivateFn = (route, state) => {
       if (role === UserRole.CONSULTANT) {
         return true; //accès autorisé
       }
-      else if(role === UserRole.EXPERT) {
+      else if(role === UserRole.INSTRUCTEUR) {
         return router.parseUrl('/sidenav/planning'); //redirection
       }
       return false;

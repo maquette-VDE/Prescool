@@ -17,10 +17,22 @@ import { AuthService } from '../services/auth/auth.service';
   styleUrl: './side-nav.css',
 })
 export class SideNav {
-  authService = inject(AuthService)
+  authService = inject(AuthService);
+  user: any = null;
 
-  onLogout(){
+  onLogout() {
     this.authService.logout();
   }
+  ngOnInit() {
+    this.authService.user$.subscribe((data) => {
+      this.user = data;
+    });
+  }
 
+  hasRole(roleName: string): boolean {
+  if (!this.user || !this.user.roles) return false;
+  return this.user.roles.some((r: string) => 
+    r.toLowerCase() === roleName.toLowerCase()
+  );
+}
 }
