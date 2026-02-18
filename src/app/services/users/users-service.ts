@@ -7,13 +7,13 @@ import { UserRole } from '../../models/userRole';
 @Injectable({
   providedIn: 'root',
 })
-export class ConsultantService {
+export class UsersService {
   private readonly http = inject(HttpClient);
 
-  getConsultants(page: number, limit: number): Observable<UsersApiResponse> {
+  getUsers(url: string): Observable<UsersApiResponse> {
     return this.http
       .get<any>(
-        `https://prez-cool-staging.appsolutions224.com/api/v1/users?role_names=${UserRole.CONSULTANT}&role_names=${UserRole.ETUDIANT}&limit=${limit}&page=${page}`,
+        url,
       )
       .pipe(map((response) => response as UsersApiResponse));
   }
