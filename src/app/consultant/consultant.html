@@ -4,18 +4,20 @@
 </div>
 
 <div class="col-md-1 mt-5">
-  <select id="categorySelecte" aria-label="categorySelecte" class="form-select select-light-arrow bg-dark text-light rounded-pill">
-    <option value="" selected disabled>Filtrer</option>
-    <option value="present">Présent(e)</option>
-    <option value="absent">Absent(e)</option>
-    <option value="mission">En mission</option>
+  <select id="categorySelecte" aria-label="categorySelecte" class="w-auto form-select select-light-arrow bg-dark text-light rounded-pill" (change)="selectedFilter.set(($any($event.target)).value || null)">
+    <option [selected]="!selectedFilter()" value="">Filtrer</option>
+    <option [selected]="selectedFilter() === 'present'" value="present">Présent(e)</option>
+    <option [selected]="selectedFilter() === 'absent'" value="absent">Absent(e)</option>
+    <option [selected]="selectedFilter() === 'mission'" value="mission">En mission</option>
+    <option [selected]="selectedFilter() === 'late'" value="late">En retard</option>
+    <option [selected]="selectedFilter() === 'excused'" value="excused">Excusé(e)</option>
   </select>
 </div>
 
-@if (consultants().length > 0) {
+@if (filteredConsultants().length > 0) {
   <table class="table table-hover table-sm mt-5 border-top border-bottom">
     <tbody>
-      @for (consultant of consultants(); track $index) {
+      @for (consultant of filteredConsultants(); track consultant.id) {
         @let evenement = eventsByConsultant().get(consultant.id);
         <tr>
           <td class="pt-3 pb-3">
@@ -93,7 +95,7 @@
   <ul class="pagination">
     <!-- Bouton Précédent -->
     <li class="page-item" [class.disabled]="currentPage() === 0">
-      <button class="page-link" (click)="prevPage()">Précédent</button>
+      <button class="page-link" (click)="prevPage()">< Précédent</button>
     </li>
 
     <!-- Numéros de page -->
@@ -107,10 +109,13 @@
 
     <!-- Bouton Suivant -->
     <li class="page-item" [class.disabled]="currentPage() === totalPages() - 1">
-      <button class="page-link" (click)="nextPage()">Suivant</button>
+      <button class="page-link" (click)="nextPage()">Suivant ></button>
     </li>
   </ul>
 </nav>
-
-
+}
+@else {
+  <div class="fs-5 d-flex justify-content-center mt-5 text-secondary">
+    <p>Aucun consultant trouvé !</p>
+  </div>
 }

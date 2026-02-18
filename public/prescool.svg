@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 400">
+
+  <defs>
+    <!-- Dégradé bleu -->
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5bb0ff"/>
+      <stop offset="50%" stop-color="#2f7be5"/>
+      <stop offset="100%" stop-color="#1c4fc4"/>
+    </linearGradient>
+
+    <!-- Dégradé orange -->
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffcc4d"/>
+      <stop offset="50%" stop-color="#ff8c2f"/>
+      <stop offset="100%" stop-color="#ff3b2f"/>
+    </linearGradient>
+
+    <!-- Ombre légère -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- TEXTE -->
+  <g font-family="Arial Black, Poppins, sans-serif"
+     font-weight="900"
+     font-size="200"
+     text-anchor="middle"
+     dominant-baseline="middle"
+     filter="url(#shadow)">
+
+    <!-- Partie Pres -->
+    <text x="520" y="200"
+          fill="url(#blueGrad)"
+          stroke="white"
+          stroke-width="25"
+          paint-order="stroke">
+      Pres
+    </text>
+
+    <!-- Partie c -->
+    <text x="820" y="200"
+          fill="url(#orangeGrad)"
+          stroke="white"
+          stroke-width="25"
+          paint-order="stroke">
+      c
+    </text>
+
+    <!-- O multicolore -->
+    <g transform="translate(950,200)">
+      <circle r="95" fill="white"/>
+      <g>
+        <path d="M0,0 L0,-85 A85,85 0 0,1 60,-60 Z" fill="#ff3b2f"/>
+        <path d="M0,0 L60,-60 A85,85 0 0,1 85,0 Z" fill="#ff8c2f"/>
+        <path d="M0,0 L85,0 A85,85 0 0,1 60,60 Z" fill="#ffd93b"/>
+        <path d="M0,0 L60,60 A85,85 0 0,1 0,85 Z" fill="#6bdc5c"/>
+        <path d="M0,0 L0,85 A85,85 0 0,1 -60,60 Z" fill="#39c0ed"/>
+        <path d="M0,0 L-60,60 A85,85 0 0,1 -85,0 Z" fill="#2f7be5"/>
+        <path d="M0,0 L-85,0 A85,85 0 0,1 -60,-60 Z" fill="#7b5cff"/>
+        <path d="M0,0 L-60,-60 A85,85 0 0,1 0,-85 Z" fill="#ff4dc4"/>
+      </g>
+      <circle r="45" fill="white"/>
+    </g>
+
+    <!-- Partie ol -->
+    <text x="1130" y="200"
+          fill="url(#orangeGrad)"
+          stroke="white"
+          stroke-width="25"
+          paint-order="stroke">
+      ol
+    </text>
+
+  </g>
+
+</svg>
