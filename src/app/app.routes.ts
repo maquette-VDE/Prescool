@@ -20,6 +20,8 @@ import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
 import { consultantResolver } from './resolvers/consultant/consultant-resolver';
 import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { Erreur } from './erreur/erreur';
+import { Equipes } from './equipes/equipes';
+import { Projets } from './projets/projets';
 
 export const routes: Routes = [
   { path: '', component: Acceuil },
@@ -41,6 +43,8 @@ export const routes: Routes = [
       {path : 'annonces', component : Annonces},
       {path : 'aide', component : Aide},
       {path : 'confirm-consultant', component : ConfirmeConsultant},
+      {path : 'projets', component : Projets},
+      {path : 'equipes', component : Equipes},
       {
         path: 'planning',
         component: Planning,

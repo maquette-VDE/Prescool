@@ -111,6 +111,16 @@
         *ngTemplateOutlet="navItem; context: { route: 'settings', icon: 'bi-gear', label: 'Paramètres' }"
       ></ng-container>
 
+      <!-- Equipes -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'equipes', icon: 'bi-people-fill', label: 'Equipes' }"
+      ></ng-container>
+
+      <!-- Projets -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'projets', icon: 'bi-folder-fill', label: 'Projets' }"
+      ></ng-container>
+
       <!-- Logout -->
       <li class="nav-item mt-4">
         <a
