@@ -1,23 +1,21 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { RoleService } from '../services/role/role-service';
-import { map, take } from 'rxjs';
+import { map } from 'rxjs';
 import { UserRole } from '../models/userRole';
 
-export const roleGuard: CanActivateFn = (route, state) => {
+export const instructorGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const roleService = inject(RoleService);
 
   return roleService.getRole$().pipe(
-    take(1),
     map(role => {
-      if (role === UserRole.CONSULTANT) {
+      if (role === UserRole.INSTRUCTEUR || role === UserRole.ADMIN || role === UserRole.ENCADRANT) {
         return true; //accès autorisé
-      }
-      else if(role === UserRole.INSTRUCTEUR) {
-        return router.parseUrl('/sidenav/planning'); //redirection
+      } else if (role === UserRole.CONSULTANT || role === UserRole.ETUDIANT || role === UserRole.VISITEUR) {
+        return router.parseUrl('/sidenav/instructor'); //redirection
       }
       return false;
     })
-  );
+  )
 };
