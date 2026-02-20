@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { ResolveFn } from '@angular/router';
 
-import { PlanningData, planningResolver } from './planning-resolver';
+import { instructorsResolver } from './instructors-resolver';
+import { UserApiResponse } from '../../models/user-api.model';
 
-describe('planningResolver', () => {
-  const executeResolver: ResolveFn<PlanningData> = (...resolverParameters) =>
+describe('instructorsResolver', () => {
+  const executeResolver: ResolveFn<UserApiResponse> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() =>
-      planningResolver(...resolverParameters),
+      instructorsResolver(...resolverParameters),
     );
 
   beforeEach(() => {

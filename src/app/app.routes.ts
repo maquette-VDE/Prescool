@@ -20,6 +20,9 @@ import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
 import { consultantResolver } from './resolvers/consultant/consultant-resolver';
 import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { Erreur } from './erreur/erreur';
+import { Instructor } from './instructor/instructor';
+import { instructorGuard } from './guards/instructor-guard';
+import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 
 export const routes: Routes = [
   { path: '', component: Acceuil },
@@ -27,20 +30,20 @@ export const routes: Routes = [
   { path: 'create-user', component: CreateUser },
   { path: 'confirm-expert', component: ConfirmeExpert },
   { path: 'confirm-consultant', component: ConfirmeConsultant },
-  {path : 'settings', component : Settings},
+  { path: 'settings', component: Settings },
   { path: 'wait-confirmation', component: WaitConfirmation },
-  {path : 'error', component : Erreur},
+  { path: 'error', component: Erreur },
   {
     path: 'sidenav',
     component: SideNav,
     children: [
       { path: 'presences', component: Presences, canActivate: [roleGuard] },
-      {path : 'statistics', component : Statistics},
-      {path : 'settings', component : Settings},
-      {path : 'dashboard', component : Dashboard },
-      {path : 'annonces', component : Annonces},
-      {path : 'aide', component : Aide},
-      {path : 'confirm-consultant', component : ConfirmeConsultant},
+      { path: 'statistics', component: Statistics },
+      { path: 'settings', component: Settings },
+      { path: 'dashboard', component: Dashboard },
+      { path: 'annonces', component: Annonces },
+      { path: 'aide', component: Aide },
+      { path: 'confirm-consultant', component: ConfirmeConsultant },
       {
         path: 'planning',
         component: Planning,
@@ -49,12 +52,22 @@ export const routes: Routes = [
       {
         path: 'consultant',
         component: Consultant,
+        canActivate: [instructorGuard],
         resolve: {
           consultants: consultantResolver,
           evenements: evenementsResolver,
         },
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange'
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+      },
+      {
+        path: 'instructor',
+        component: Instructor,
+        resolve: {
+          instructors: instructorsResolver,
+          evenements: evenementsResolver,
+        },
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
     ],
   },
-]
+];
