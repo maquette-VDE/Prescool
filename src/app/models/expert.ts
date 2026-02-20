@@ -13,7 +13,7 @@ export class Expert extends User implements Expert {
         first_name: string,
         last_name: string,
         password: string,
-        role: UserRole,
+        role: UserRole[],
         phone?: string,
     ) {
         super(email, first_name, last_name, password, role, phone);

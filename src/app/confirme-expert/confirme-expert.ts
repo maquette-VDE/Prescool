@@ -26,8 +26,8 @@ export class ConfirmeExpert {
   ){}
 
   user$!: any;
-  expert: Expert = new Expert('','','','','',UserRole.INSTRUCTEUR);
-  role: UserRole | null = null;
+  expert: Expert = new Expert('','','','','',[UserRole.INSTRUCTEUR]);
+  role: UserRole[] | null = null;
   expertForm!: FormGroup;
 
   ngOnInit() {

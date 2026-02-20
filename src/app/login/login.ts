@@ -4,7 +4,9 @@ import { UserRole } from '../models/userRole';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
-import { RoleService } from '../services/role.servcice';
+import { RoleService } from '../services/role/role.servcice';
+import { selectRole } from '../store/register.selectors';
+import { select, Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-login',
@@ -19,9 +21,10 @@ export class Login {
     private route : ActivatedRoute ,
     private auth : AuthService,
     private roleService : RoleService,
+    private store: Store,
   ){}
 
-  role: UserRole | null = null;
+  role: UserRole[] | null = null;
   userRole = UserRole;
   signupLink : string | null = null
   email: string = '';
@@ -37,7 +40,7 @@ export class Login {
     const roleParam = params['role'];
 
     if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.INSTRUCTEUR) {
-      this.role = roleParam;
+      this.role = [roleParam];
     } else {
       this.role = null;
     }
@@ -45,7 +48,7 @@ export class Login {
   });
 
 }
-  switchRole(role: UserRole) {
+  switchRole(role: UserRole[]) {
     this.role = role;
     this.router.navigate([], {
       relativeTo: this.route,
@@ -59,8 +62,11 @@ export class Login {
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false; //Fin de connexion
-        this.roleService.getRole(this.email).subscribe((role) => {
+        this.roleService.getRole().subscribe((role) => {
           this.role = role;
+          this.store.pipe(select(selectRole)).subscribe((role) => {
+            this.role = role || [UserRole.CONSULTANT];
+          });
           this.router.navigateByUrl('sidenav/presences');
         });
       },

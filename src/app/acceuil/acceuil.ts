@@ -27,12 +27,12 @@ export class Acceuil {
   }
 
   createExperts() {
-    this.store.dispatch(actualRole({ role: UserRole.INSTRUCTEUR }));
+    this.store.dispatch(actualRole({ role: [UserRole.INSTRUCTEUR] }));
     this.router.navigateByUrl('create-user')
   }
 
   createConsultant() {
-    this.store.dispatch(actualRole({ role: UserRole.CONSULTANT }));
+    this.store.dispatch(actualRole({ role: [UserRole.CONSULTANT] }));
     this.router.navigateByUrl('create-user')
   }
 }
