@@ -17,8 +17,7 @@ export class Consultant extends RouterPagination<UsersApiResponse> {
   protected override routeDataSignal = computed(
     () => this.consultantRouteData()?.['consultants'] as UsersApiResponse,
   );
-
-
+  
   //Signaux dérivés
   consultants = computed(() => this.routeDataSignal()?.items ?? []);
 

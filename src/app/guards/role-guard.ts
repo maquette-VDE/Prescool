@@ -11,7 +11,6 @@ export const roleGuard: CanActivateFn = (route, state) => {
   return roleService.getRole$().pipe(
     take(1),
     map(role => {
-      console.log("role: ", role);
       if (role === UserRole.CONSULTANT) {
         return true; //accès autorisé
       }

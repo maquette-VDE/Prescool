@@ -10,7 +10,6 @@ export const instructorGuard: CanActivateFn = (route, state) => {
 
   return roleService.getRole$().pipe(
     map(role => {
-      console.log("role: ", role);
       if (role === UserRole.INSTRUCTEUR || role === UserRole.ADMIN || role === UserRole.ENCADRANT) {
         return true; //accès autorisé
       } else if (role === UserRole.CONSULTANT || role === UserRole.ETUDIANT || role === UserRole.VISITEUR) {
