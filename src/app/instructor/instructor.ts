@@ -20,6 +20,11 @@ export class Instructor extends RouterPagination<UsersApiResponse> {
 
   //Signaux dérivés
   instructors = computed(() => this.routeDataSignal()?.items ?? []);
+  // instructors = computed(() => {
+  //   const items = this.routeDataSignal()?.items ?? [];
+  //   // renvoyer une NOUVELLE copie pour que Angular détecte le changement
+  //   return [...items];
+  // });
 
   hoveredInstructorId = signal<number | null>(null);
 }

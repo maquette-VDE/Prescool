@@ -61,6 +61,7 @@ export class Login {
         this.loading = false; //Fin de connexion
         this.roleService.getRole(this.email).subscribe((role) => {
           this.role = role;
+          console.log("Rôle de connexion: ", role);
           this.router.navigateByUrl('sidenav/presences');
         });
       },

@@ -11,10 +11,9 @@ export const instructorGuard: CanActivateFn = (route, state) => {
   return roleService.getRole$().pipe(
     map(role => {
       console.log("role: ", role);
-      if (role === UserRole.INSTRUCTEUR) {
+      if (role === UserRole.INSTRUCTEUR || role === UserRole.ADMIN || role === UserRole.ENCADRANT) {
         return true; //accès autorisé
-      }
-      else if(role === UserRole.CONSULTANT || UserRole.ETUDIANT) {
+      } else if (role === UserRole.CONSULTANT || role === UserRole.ETUDIANT || role === UserRole.VISITEUR) {
         return router.parseUrl('/sidenav/instructor'); //redirection
       }
       return false;
