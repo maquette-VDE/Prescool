@@ -61,7 +61,7 @@ export class Login {
         this.loading = false; //Fin de connexion
         this.roleService.getRole(this.email).subscribe((role) => {
           this.role = role;
-          if (role === UserRole.ADMIN || role === UserRole.EXPERT) {
+          if (role === UserRole.ADMIN || role === UserRole.INSTRUCTEUR) {
             this.router.navigateByUrl('sidenav/planning');
           }
           else if (role === UserRole.CONSULTANT) {

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DayPilot } from '@daypilot/daypilot-lite-angular';
 
 import { UserEvent } from '../../interfaces/events';
@@ -11,72 +11,115 @@ import { PaginatedResponse } from '../../interfaces/paginatedResponse';
 @Injectable({ providedIn: 'root' })
 export class PlanningService {
   private readonly http = inject(HttpClient);
-  private readonly API_BASE = 'https://prez-cool-staging.appsolutions224.com/api/v1';
-
+  private readonly API_BASE =
+    'https://prez-cool-staging.appsolutions224.com/api/v1';
+  private readonly STUDENTS_AND_CONSULTANTS_ROLES = ['student', 'consultant'];
 
   getUsersDayPilotData(
-    page = 0, limit = 4, startFrom?: string, startTo?: string,
-    search?: string, status?: string, specialty?: string
+    page = 0,
+    limit = 10,
+    startFrom?: string,
+    startTo?: string,
+    search?: string,
+    status?: string,
+    specialty?: string,
   ): Observable<any> {
+    let params = new HttpParams()
+      .set('limit', limit.toString())
+      .set('page', page.toString());
+
+    if (search) {
+      params = params
+        .set('first_name', search)
+        .set('last_name', search)
+        .set('code', search);
+    }
+    if (status) {
+      params = params.set('event_type', 'presence');
+      params = params.set('attendance_status', status);
+      params = params.set('event_start_from', startFrom ?? '');
+      params = params.set('event_end_to', startTo ?? '');
+    }
+    if (specialty) params = params.set('specialty_codes', specialty);
+
+    this.STUDENTS_AND_CONSULTANTS_ROLES.forEach((role) => {
+      params = params.append('role_names', role);
+    });
+
     return forkJoin({
-      users: this.fetchUsers(search, status, specialty),
-      events: this.fetchEvents(0, 100, startFrom, startTo)
+      users: this.fetchUsers(params),
+      specialities: this.getSpecialties(),
     }).pipe(
-      map(({ users, events }) => ({
-        events: this.mapEvents(events.items),
-        resources: this.mapResources(users.items, events.items),
-        pagination: { total: users.total, pages: users.pages }
-      }))
+      switchMap(({ users, specialities }) => {
+        return this.fetchEvents(users.items, startFrom!, startTo!).pipe(
+          map((events) => ({
+            events: this.mapEvents(events.items),
+            resources: this.mapResources(users.items),
+            pagination: {
+              total: users.total,
+              pages: users.pages,
+            },
+            specialties: specialities.items,
+          })),
+        );
+      }),
     );
   }
 
-
-  private fetchUsers(search?: string, status?: string, code?: string): Observable<PaginatedResponse<UserItem>> {
-    let params = new HttpParams().set('limit', '100').set('page', '0');
-    if (search) params = params.set('first_name', search).set('last_name', search);
-    if (status) params = params.set('status', status);
-    if (code) params = params.set('code', code);
-
-    return this.http.get<PaginatedResponse<UserItem>>(`${this.API_BASE}/users`, { params });
+  private fetchUsers(
+    params: HttpParams,
+  ): Observable<PaginatedResponse<UserItem>> {
+    return this.http.get<PaginatedResponse<UserItem>>(
+      `${this.API_BASE}/users`,
+      { params },
+    );
   }
 
-  private fetchEvents(page: number, limit: number, from?: string, to?: string): Observable<PaginatedResponse<UserEvent>> {
-    let params = new HttpParams().set('limit', limit.toString()).set('page', page.toString());
+  private fetchEvents(
+    users: UserItem[],
+    from: string,
+    to: string,
+  ): Observable<PaginatedResponse<UserEvent>> {
+    let params = new HttpParams();
     if (from) params = params.set('start_from', from);
     if (to) params = params.set('start_to', to);
+    users.forEach((user) => {
+      params = params.append('user_codes', user.code ?? '');
+    });
 
-    return this.http.get<PaginatedResponse<UserEvent>>(`${this.API_BASE}/events`, { params });
+    return this.http.get<PaginatedResponse<UserEvent>>(
+      `${this.API_BASE}/events`,
+      { params },
+    );
   }
 
   getSpecialties(): Observable<any> {
-    return this.http.get(`${this.API_BASE}/specialties`);
+    return this.http.get(`${this.API_BASE}/specialties?limit=20`);
   }
 
-
   private mapEvents(events: UserEvent[]): DayPilot.EventData[] {
-    return events.map(event => ({
+    return events.map((event) => ({
       id: event.id ?? DayPilot.guid(),
       resource: event.user_id?.toString(),
       start: new DayPilot.Date(event.start_time),
       end: new DayPilot.Date(event.end_time),
       text: event.notes || event.title || '',
-      tags: { type: event.attendance_status ?? 'present' }
+      tags: { type: event.attendance_status ?? 'present' },
     }));
   }
 
-  private mapResources(users: UserItem[], events: UserEvent[]): DayPilot.ResourceData[] {
-    const activeUserIds = new Set(events.map(e => e.user_id));
-
-    return Array.from(activeUserIds).map(id => {
-      const user = users.find(u => u.id === id);
-      return {
-        id: id?.toString() ?? '',
-        name: user ? `${user.first_name}` : `Utilisateur ${id}`,
-        tags: {
-          code: user?.code ?? '',
-          phone_number: user?.phone_number ?? ''
-        }
-      };
-    });
-  }
+  private mapResources(
+  users: UserItem[],
+): DayPilot.ResourceData[] {
+  return users.map((user) => {
+    return {
+      id: user.id?.toString() ?? '',
+      name: `${user.first_name}`,
+      tags: {
+        code: user.code ?? '',
+        phone_number: user.phone_number ?? '',
+      },
+    };
+  });
+}
 }
