@@ -22,6 +22,9 @@ import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { Erreur } from './erreur/erreur';
 import { Equipes } from './equipes/equipes';
 import { Projets } from './projets/projets';
+import { Instructor } from './instructor/instructor';
+import { instructorGuard } from './guards/instructor-guard';
+import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 
 export const routes: Routes = [
   { path: '', component: Acceuil },
@@ -29,9 +32,9 @@ export const routes: Routes = [
   { path: 'create-user', component: CreateUser },
   { path: 'confirm-expert', component: ConfirmeExpert },
   { path: 'confirm-consultant', component: ConfirmeConsultant },
-  {path : 'settings', component : Settings},
+  { path: 'settings', component: Settings },
   { path: 'wait-confirmation', component: WaitConfirmation },
-  {path : 'error', component : Erreur},
+  { path: 'error', component: Erreur },
   {
     path: 'sidenav',
     component: SideNav,
@@ -53,12 +56,22 @@ export const routes: Routes = [
       {
         path: 'consultant',
         component: Consultant,
+        canActivate: [instructorGuard],
         resolve: {
           consultants: consultantResolver,
           evenements: evenementsResolver,
         },
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange'
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+      },
+      {
+        path: 'instructor',
+        component: Instructor,
+        resolve: {
+          instructors: instructorsResolver,
+          evenements: evenementsResolver,
+        },
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
     ],
   },
-]
+];

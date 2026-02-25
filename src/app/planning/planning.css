@@ -9,6 +9,13 @@
   z-index: 10;
 }
 
+  .hover-bg-light:hover:not(:disabled) {
+    background-color: #f8f9fa;
+  }
+  .hover-bg-light:disabled {
+    color: #dee2e6 !important;
+  }
+
 .week-selector {
   min-width: 200px;
   justify-content: space-between;
@@ -199,6 +206,7 @@
   background-color: #000 !important;
 }
 
+
 .no-caret::after {
   display: none !important;
   content: none !important;
@@ -230,7 +238,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 4px solid white !important; 
+  border: 4px solid white !important;
   background: linear-gradient(45deg, #C94B91, #57C4EB) !important;
 }
 
@@ -255,7 +263,7 @@
     height: 10px;
     border-left: 2px solid currentColor;
     border-bottom: 2px solid currentColor;
-    transform: rotate(45deg); 
+    transform: rotate(45deg);
     margin-left: 4px;
   }
 }
@@ -301,7 +309,7 @@
 
 /* Empêche le bouton de bouger quand le message apparaît */
 .status-message-container {
-  min-height: 45px; 
+  min-height: 45px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -347,4 +355,7 @@
   height: 756px;
   width: 625px;
 }
+
+
+
 

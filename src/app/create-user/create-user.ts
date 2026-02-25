@@ -24,10 +24,10 @@ export class CreateUser {
   ) {}
 
   userForm!: FormGroup;
-  role: UserRole | null = null;
+  role: UserRole[] | null = null;
   isConsultant: boolean = true;
   user$: any = {};
-  user: User = new User('', '', '', '', UserRole.CONSULTANT);
+  user: User = new User('', '', '', '', [UserRole.CONSULTANT]);
 
   showPassword = false;
   hasBlurredOnce = false;
@@ -35,12 +35,12 @@ export class CreateUser {
   isPasswordFocused = false; // vrai si l'input est focus
 
   toExpert() {
-    this.role = UserRole.INSTRUCTEUR;
+    this.role = [UserRole.INSTRUCTEUR];
     this.isConsultant = false;
   }
 
   toConsultant() {
-    this.role = UserRole.CONSULTANT;
+    this.role = [UserRole.CONSULTANT];
     this.isConsultant = true;
   }
 
@@ -72,12 +72,12 @@ export class CreateUser {
     );
 
     this.store.pipe(select(selectRole)).subscribe((role) => {
-      this.role = role || UserRole.CONSULTANT;
+      this.role = role || [UserRole.CONSULTANT];
     });
 
-    if (this.role === UserRole.CONSULTANT) {
+    if (this.role?.includes(UserRole.CONSULTANT)) {
       this.toConsultant();
-    } else if (this.role === UserRole.INSTRUCTEUR) {
+    } else if (this.role?.includes(UserRole.INSTRUCTEUR)) {
       this.toExpert();
     }
 
@@ -112,11 +112,11 @@ export class CreateUser {
         }),
       );
 
-      this.store.dispatch(actualRole({ role: this.role as UserRole }));
+      this.store.dispatch(actualRole({ role: this.role as UserRole[] }));
 
-      if (this.role === UserRole.CONSULTANT) {
+      if (this.role?.includes(UserRole.CONSULTANT)) {
         this.router.navigateByUrl('confirm-consultant');
-      } else if (this.role === UserRole.INSTRUCTEUR) {
+      } else if (this.role?.includes(UserRole.INSTRUCTEUR)) {
         this.router.navigateByUrl('confirm-expert');
       }
     }

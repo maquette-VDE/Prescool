@@ -18,7 +18,7 @@ export class RegisterService {
     private apiConfig: ApiConfigService,
   ) {}
 
-  initialize(user: Consultant | Expert, store : Store, role : UserRole, form : FormGroup): Consultant | Expert {
+  initialize(user: Consultant | Expert, store : Store, role : UserRole[], form : FormGroup): Consultant | Expert {
     
     store.select(selectStep1User).subscribe( userData => {
       user.last_name = userData.last_name ;
@@ -29,7 +29,7 @@ export class RegisterService {
       user.role = role;
     });
 
-    if (role === UserRole.CONSULTANT) {
+    if (role.includes(UserRole.CONSULTANT)) {
       const consultant = user as Consultant;
       consultant.code = form.value.code || '';
       consultant.arrivedAt = form.value.arrivedAt || new Date();
