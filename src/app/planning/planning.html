@@ -35,10 +35,10 @@
 
         <div
           class="rounded-circle d-flex align-items-center justify-content-center me-md-2 text-white fw-bold shadow-sm"
-          style="width: 35px; 
-            height: 35px; 
-            font-size: 0.8rem; 
-            background-color: #000 !important; 
+          style="width: 35px;
+            height: 35px;
+            font-size: 0.8rem;
+            background-color: #000 !important;
             flex-shrink: 0;">
           {{ userInitials }}
         </div>
@@ -52,11 +52,11 @@
         <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-3 mt-2" [class.show]="isMenuOpen"
           style="right: 0; top: 100%; min-width: 200px;" [style.display]="isMenuOpen ? 'block' : 'none'">
           <li class="d-flex flex-column align-items-center text-center">
-            <div class="rounded-circle d-flex align-items-center justify-content-center mb-2 shadow-sm" style="width: 60px; 
-              height: 60px; 
-              background-color: #000 !important; 
-              color: #FFF !important; 
-              font-weight: bold; 
+            <div class="rounded-circle d-flex align-items-center justify-content-center mb-2 shadow-sm" style="width: 60px;
+              height: 60px;
+              background-color: #000 !important;
+              color: #FFF !important;
+              font-weight: bold;
               font-size: 1.1rem;">
               {{ userInitials }}
             </div>
@@ -106,8 +106,29 @@
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
+
+    <div class="position-relative">
+      <select  class="form-select custom-filter-select rounded-pill shadow-sm border pr-3"
+              (change)="onSpecialtyChange($event)">
+            <option value="">Toutes les spécialités</option>
+        @for (speciality of specialties(); track $index) {
+          <option value="{{ speciality.code }}">{{ speciality.name }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="position-relative">
+      <select class="form-select custom-filter-select rounded-pill shadow-sm border pr-3"
+              (change)="onEventStatusChange($event)">
+          <option value="">Tous les statuts</option>
+        @for (status of statusList; track $index) {
+          <option value="{{ status[0] }}">{{ status[1] }}</option>
+        }
+      </select>
+    </div>
   </div>
 </div>
+@if(totalPages() > 0) {
 <daypilot-scheduler [config]="config()" #scheduler></daypilot-scheduler>
 <!-------------------------model--------------------------->
 
@@ -200,3 +221,43 @@
     </div>
   </div>
 </div>
+
+<div class="w-full d-flex justify-content-center py-4 border-top">
+  <div
+    class="d-flex align-items-center bg-white shadow-sm border rounded-pill px-2 py-1"
+    style="gap: 10px"
+  >
+    <button
+      (click)="goToPage(currentPage() - 1)"
+      [disabled]="currentPage() === 0"
+      class="btn btn-link text-dark p-0 d-flex align-items-center justify-content-center rounded-circle hover-bg-light"
+      style="width: 35px; height: 35px; text-decoration: none; border: none"
+    >
+      <i class="bi bi-chevron-left"></i>
+    </button>
+
+    <div
+      class="d-flex align-items-center px-3 border-start border-end"
+      style="height: 25px"
+    >
+      <span class="fw-bold text-primary me-1">{{ currentPage() + 1 }}</span>
+      <span class="text-muted small">/ {{ totalPages() }}</span>
+    </div>
+
+    <button
+      (click)="goToPage(currentPage() + 1)"
+      [disabled]="currentPage() >= totalPages() - 1"
+      class="btn btn-link text-dark p-0 d-flex align-items-center justify-content-center rounded-circle hover-bg-light"
+      style="width: 35px; height: 35px; text-decoration: none; border: none"
+    >
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+</div>
+}
+@else {
+  <div class="d-flex justify-content-center align-items-center flex-column gap-3 py-5">
+    Aucun resultat trouvé
+  </div>
+}
+
