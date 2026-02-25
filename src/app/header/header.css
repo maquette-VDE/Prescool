@@ -1,0 +1,429 @@
+
+:host {
+  display: block;
+  width: 100%;
+  background-color: transparent !important; 
+  border-radius: 0 !important;
+  z-index: 1000;
+  overflow: visible !important; 
+  z-index: 9999 !important;
+}
+
+
+/* --- Container du Header --- */
+.header-container {
+  display: block !important;
+  width: 100% !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  background: white;
+
+  
+  /* Forces le calcul du padding à l'intérieur de la boîte */
+  box-sizing: border-box !important;
+  
+  /* On définit des paddings généreux */
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+}
+
+/* Supprime les marges de la ligne Bootstrap qui cassent le padding */
+.header-container .row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100%;
+}
+
+/* --- Barre de recherche --- */
+.search-bar {
+  max-width: 500px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50px !important; /* Arrondi pour la recherche */
+}
+
+.search-bar:focus-within {
+  border-color: #000 !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.05) !important;
+}
+
+.search-bar input::placeholder {
+  color: #adb5bd;
+  font-size: 0.9rem;
+}
+
+/* --- Élément utilisateur (User Pill) --- */
+.user-pill {
+  transition: background-color 0.2s;
+  cursor: pointer;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 5px 15px;
+}
+
+.user-pill:hover {
+  background-color: #f8f9fa !important;
+}
+
+/* --- Dropdown --- */
+.dropdown-menu.show {
+  z-index: 3000 !important;
+  position: absolute !important;
+}
+
+.dropdown-menu {
+  z-index: 1100 !important;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .header-container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  h2 {
+    font-size: 1.1rem !important;
+  }
+}
+
+
+::ng-deep .rounded_corner_inner::before {
+  content: "Consultants";
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  font-weight: bold;
+  color: #333;
+  z-index: 10;
+}
+
+.week-selector {
+  min-width: 200px;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .rounded_timeheadercol_inner,
+::ng-deep .rounded_timeheader_cell_inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-top: 1px solid #e0e0e0 !important;
+}
+
+::ng-deep .rounded_rowheader_inner {
+
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  padding: 0 !important;
+}
+
+.modal.show {
+  z-index: 1060;
+}
+.modal-backdrop.show {
+  z-index: 1050;
+}
+
+::ng-deep .rounded_rowheader_inner>div {
+  width: 100%;
+}
+
+.week-selector button {
+  border: none;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.week-selector button:hover {
+  opacity: 0.7;
+}
+
+::ng-deep .rounded_rowheader_inner>div,
+::ng-deep .rounded_rowheader_inner_text {
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep .rounded_timeheader_float {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep .rounded_timeheader_float_inner {
+  width: 100% !important;
+  text-align: center !important;
+  display: block !important;
+}
+
+::ng-deep .rounded_corner_inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: bold !important;
+}
+
+::ng-deep .rounded_rowheader_inner_text>div {
+  width: 100%;
+}
+
+
+.scheduler_white_main {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+::ng-deep .rounded_event_inner {
+  border: 1px solid !important;
+}
+
+::ng-deep .rounded_corner_inner {
+
+  border: 1px solid #e0e0e0;
+}
+
+::ng-deep .rounded_divider_horizontal {
+  border-top: 0px solid #e0e0e0 !important;
+}
+
+.dropdown-menu.show {
+  z-index: 3000 !important;
+  position: absolute !important;
+}
+
+::ng-deep .rounded_cell {
+  background-color: #ffffff !important;
+  border-right: 1px solid #ececec !important;
+  border-bottom: 1px solid #ececec !important;
+}
+
+::ng-deep .rounded_rowheader {
+  background-color: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+}
+
+::ng-deep .rounded_rowheader_inner {
+  display: flex;
+  align-items: center;
+  padding-left: 10px !important;
+  font-weight: 500;
+}
+
+::ng-deep .rounded_timeheader_cell {
+  background-color: #fcfcfc !important;
+  border-right: 1px solid #ececec !important;
+  border-bottom: 1px solid #ececec !important;
+  color: #666;
+}
+
+::ng-deep .rounded_event_inner {
+  border: 1px solid !important;
+  border-radius: inherit !important;
+  margin-inline: 5px !important;
+  height: 100% !important;
+}
+
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.1rem !important;
+  }
+
+  .search-section {
+    margin-top: 10px;
+  }
+}
+
+.user-pill:active {
+  background-color: #f1f1f1 !important;
+  transform: scale(0.98);
+}
+
+.search-bar:focus-within {
+  border-color: #000 !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.05) !important;
+}
+
+.header-container {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.search-bar {
+  max-width: 500px;
+  background-color: #f8f9fa;
+}
+
+.search-bar input::placeholder {
+  color: #adb5bd;
+  font-size: 0.9rem;
+}
+
+
+
+.user-pill {
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.user-pill:hover {
+  background-color: #f8f9fa !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.bg-dark {
+  background-color: #000 !important;
+}
+
+.no-caret::after {
+  display: none !important;
+  content: none !important;
+}
+
+.no-caret {
+  text-decoration: none;
+}
+
+.btn-gradient-custom {
+  background: linear-gradient(45deg, #C94B91, #57C4EB) !important;
+  border: none !important;
+  color: white !important;
+  transition: transform 0.2s, filter 0.2s;
+
+  &:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    color: white !important;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.avatar-gradient {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 4px solid white !important; 
+  background: linear-gradient(45deg, #C94B91, #57C4EB) !important;
+}
+
+.btn-back-minimal {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  gap: 10px;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+    transform: translateX(-2px);
+  }
+
+  .chevron-left {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg); 
+    margin-left: 4px;
+  }
+}
+
+.btn-gradient-custom:hover {
+    transform: translateY(-2px); /* Petit saut au survol */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #333333 0%, #000000 100%);
+    color: white;
+}
+
+.btn-gradient-custom:active {
+    transform: translateY(0);
+}
+
+/* Animation fluide pour le message de succès */
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Style des champs au focus (optionnel pour le look) */
+.form-control:focus {
+    border-bottom: 2px solid #000 !important;
+    box-shadow: none;
+    background-color: #f8f9fa !important;
+}
+
+/* Empêche le bouton de bouger quand le message apparaît */
+.status-message-container {
+  min-height: 45px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.status-alert {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+  animation: slideDown 0.3s ease-out;
+}
+
+.success-style {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.error-style {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Style pour le spinner dans le bouton */
+.pi-spinner {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+
+.createClientModal{
+  background:#CCCCCC;
+  height: 756px;
+  width: 625px;
+}
+

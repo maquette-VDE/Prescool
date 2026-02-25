@@ -3,6 +3,8 @@ import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgTemplateOutlet } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
+import { ToastComponent } from '../toast/toast';
+import { HeaderComponent } from '../header/header';
 
 @Component({
   selector: 'app-side-nav',
@@ -11,7 +13,9 @@ import { AuthService } from '../services/auth/auth.service';
     RouterOutlet,
     RouterLinkActive,
     CommonModule,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    HeaderComponent,
+    ToastComponent
   ],
   templateUrl: './side-nav.html',
   styleUrl: './side-nav.css',
