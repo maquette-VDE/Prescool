@@ -62,18 +62,16 @@ export class Login {
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false; //Fin de connexion
-        this.roleService.getRole().subscribe((role) => {
-          this.role = role;
-          this.store.pipe(select(selectRole)).subscribe((roles: UserRole[]) => {
-            const userRoles = roles ?? [UserRole.CONSULTANT];
+        this.roleService.getRole().subscribe((roles: UserRole[] | null) => {
 
-            if (userRoles.includes(UserRole.ADMIN) || userRoles.includes(UserRole.INSTRUCTEUR)) {
-              this.router.navigateByUrl('sidenav/planning');
-            }
-            else if (userRoles.includes(UserRole.CONSULTANT)) {
-              this.router.navigateByUrl('sidenav/presences');
-            }
-          });
+          const userRoles: UserRole[] = roles ?? [UserRole.CONSULTANT];
+
+          if (userRoles.includes(UserRole.ADMIN) || userRoles.includes(UserRole.INSTRUCTEUR)) {
+            this.router.navigateByUrl('sidenav/planning');
+          }
+          else if (userRoles.includes(UserRole.CONSULTANT)) {
+            this.router.navigateByUrl('sidenav/presences');
+          }
         });
       },
       error: (err) => {
