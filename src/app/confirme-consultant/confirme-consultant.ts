@@ -28,10 +28,10 @@ export class ConfirmeConsultant {
               private subscriptionService: RegisterService,
   ){}
 
-  role: UserRole | null = null; 
+  role: UserRole[] | null = null; 
   consultantForm!: FormGroup;  
-  user: User = new User('','','','',UserRole.CONSULTANT);
-  consultant: Consultant = new Consultant('',new Date(),false,'','','','',UserRole.CONSULTANT);
+  user: User = new User('','','','',[UserRole.CONSULTANT]);
+  consultant: Consultant = new Consultant('',new Date(),false,'','','','',[UserRole.CONSULTANT]);
   mission: boolean = false;
   ngOnInit() {
     this.store.select(selectStep2Consultant).subscribe(userData => {
@@ -57,7 +57,7 @@ export class ConfirmeConsultant {
       arrivedAt: this.consultantForm.value.arrivedAt || '',
       gotMission: this.consultantForm.value.gotMission || false
     }));
-    this.store.dispatch(actualRole({ role: UserRole.CONSULTANT }));
+    this.store.dispatch(actualRole({ role: [UserRole.CONSULTANT] }));
     this.router.navigateByUrl('create-user');
     
   }

@@ -18,7 +18,7 @@ export class Consultant extends User implements Consultant {
     first_name: string,
     last_name: string,
     password: string,
-    role: UserRole,
+    role: UserRole[],
     phone?: string,
     
     ) {
