@@ -2,17 +2,14 @@ import { Component, inject, OnInit, HostListener, computed, ChangeDetectorRef, s
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/planning/user.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { DayPilot } from '@daypilot/daypilot-lite-angular';
-import { NgTemplateOutlet } from '@angular/common';
-
-
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgTemplateOutlet,],
+  imports: [CommonModule, FormsModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
   
@@ -85,7 +82,7 @@ ngOnInit() {
     });
   }
 
-  
+
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
     return this.profiles().filter(

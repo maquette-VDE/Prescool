@@ -1,8 +1,3 @@
-<div>
-  <h3>Les consultants</h3>
-  <p>Consultez la liste des consultants en mission ou en attente d'une mission</p>
-</div>
-
 <div class="col-md-1 mt-5">
   <select id="categorySelecte" aria-label="categorySelecte" class="w-auto form-select select-light-arrow bg-dark text-light rounded-pill" (change)="selectedFilter.set(($any($event.target)).value || null)">
     <option [selected]="!selectedFilter()" value="">Filtrer</option>
