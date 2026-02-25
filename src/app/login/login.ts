@@ -4,7 +4,7 @@ import { UserRole } from '../models/userRole';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
-import { RoleService } from '../services/role/role.servcice';
+import { RoleService } from '../services/role/role-service';
 import { selectRole } from '../store/register.selectors';
 import { select, Store } from '@ngrx/store';
 

@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { RoleService } from '../services/role/role.servcice';
+import { RoleService } from '../services/role/role-service';
 import { map, take } from 'rxjs';
 import { UserRole } from '../models/userRole';
 
