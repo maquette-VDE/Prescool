@@ -1,95 +1,142 @@
-<div class="d-flex">
-    <!--SideNav-->
-    <div id="sideBarMenu" class="min-vh-100 p-3 border-end border-1" style="width: 250px;">
-        <div class="d-flex gap-1">
-            <img src="logo-vde-sans-texte.png" alt="logo" class="w-25 h-25">
-            <div class="d-flex flex-column">
-                <span class="fw-bold fs-5 text-muted">VILLAGE</span>
-                <span class="fw-bold fs-12 text-muted">DE L'EMPLOI</span>
-            </div>
-        </div>
-        <div class="menuContainer">
-            <h5 class="fs-14 mt-4">Menu Principal</h5>
-            <div class="">
-                <div class="">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="dashboard"
-                                routerLinkActive="active-link">
-                                <i class="bi bi-ui-radios-grid"></i>
-                                <span>Tableau de bord</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="consultant"
-                                routerLinkActive="active-link">
-                                <i class="bi bi-person"></i>
-                                <span>Consultant</span>
-                            </a>
-                        </li>
-                        @if (hasRole('admin')|| hasRole('instructor')) {
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="planning"
-                                routerLinkActive="active-link">
-                                <i class="bi bi-check2-square"></i>
-                                <span>Planning</span>
-                            </a>
-                        </li>
-                        }
+<div class="d-flex min-vh-100 bg-white">
+  <!-- SIDEBAR DESKTOP -->
+  <aside
+    class="d-none d-lg-flex flex-column border-end bg-white"
+    style="width: 300px; position: sticky; top: 0; height: 100vh;"
+  >
+    <ng-container *ngTemplateOutlet="navContent"></ng-container>
+  </aside>
 
-                        @if (hasRole('student') || hasRole('consultant')) {
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="presences"
-                                routerLinkActive="active-link">
-                                <i class="bi bi-calendar2-week"></i>
-                                <span>Présences</span>
-                            </a>
-                        </li>
-                        }
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="statistics"
-                                routerLinkActive="active-link">
-                                <i class="bi bi-file-bar-graph"></i>
-                                <span>Statistiques</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="annonces"
-                                routerLinkActive="active-link">
-                                <i class="bi bi-chat-right-dots"></i>
-                                <span>Annonces</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="aide"
-                                routerLinkActive="active-link">
-                                <i class="bi bi-question-circle"></i>
-                                <span>Aide</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="settings"
-                                routerLinkActive="active-link">
-                                <i class="bi bi-gear"></i>
-                                <span>Paramètres</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mt-4">
-                            <a class="nav-link d-flex align-items-center gap-2 text-muted" routerLink="#"
-                                (click)="onLogout()" routerLinkActive="active-link">
-                                <i class="bi bi-box-arrow-left"></i>
-                                <span>Se déconnecter</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+  <!-- CONTENU -->
+  <div class="flex-grow-1 d-flex flex-column">
+    <!-- NAVBAR MOBILE -->
+    <nav class="navbar navbar-light bg-white d-lg-none px-3 border-bottom">
+      <button
+        class="btn p-0"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mobileMenu"
+      >
+        <i class="bi bi-list fs-3"></i>
+      </button>
+      <img
+        src="prescool.svg"
+        alt="logo"
+        style="height: 30px;"
+        class="ms-2"
+      />
+    </nav>
 
-            </div>
-        </div>
-    </div>
-
-    <!-- Contenu -->
-    <div class="flex-grow-1 p-4">
-        <router-outlet></router-outlet>
-    </div>
+    <main class="p-4 flex-grow-1">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>
+
+<!-- OFFCANVAS MOBILE -->
+<div
+  class="offcanvas offcanvas-start d-lg-none"
+  tabindex="-1"
+  id="mobileMenu"
+  style="width: 260px"
+>
+  <div class="offcanvas-header justify-content-end p-2">
+    <button
+      type="button"
+      class="btn-close shadow-none"
+      data-bs-dismiss="offcanvas"
+    ></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <ng-container *ngTemplateOutlet="navContent"></ng-container>
+  </div>
+</div>
+
+<!-- NAV CONTENT FACTORISÉ -->
+<ng-template #navContent>
+  <div class="p-4">
+    <!-- LOGO -->
+    <div class="mb-5">
+      <div class="">
+        <img src="prescool.svg" alt="logo" style="width: 200px" />
+      </div>
+    </div>
+
+    <p class="fw-bold text-dark mb-4" style="font-size: 0.9rem;">
+      Menu Principal
+    </p>
+
+    <ul class="nav flex-column gap-2">
+      <!-- Dashboard -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-ui-radios-grid', label: 'Tableau de bord' }"
+      ></ng-container>
+
+      <!-- Consultant -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'consultant', icon: 'bi-person', label: 'Consultant' }"
+      ></ng-container>
+
+      <!-- Planning (admin/instructor) -->
+      @if (hasRole('admin') || hasRole('instructor')) {
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'planning', icon: 'bi-check2-square', label: 'Planning' }"
+      ></ng-container>
+      }
+
+      <!-- Présences (student/consultant) -->
+      @if (hasRole('student') || hasRole('consultant')) {
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"
+      ></ng-container>
+      }
+
+      <!-- Statistiques -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'statistics', icon: 'bi-file-bar-graph', label: 'Statistiques' }"
+      ></ng-container>
+
+      <!-- Annonces -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'annonces', icon: 'bi-chat-right-dots', label: 'Annonces' }"
+      ></ng-container>
+
+      <!-- Aide -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"
+      ></ng-container>
+
+      <!-- Paramètres -->
+      <ng-container
+        *ngTemplateOutlet="navItem; context: { route: 'settings', icon: 'bi-gear', label: 'Paramètres' }"
+      ></ng-container>
+
+      <!-- Logout -->
+      <li class="nav-item mt-4">
+        <a
+          class="nav-link d-flex align-items-center gap-3 text-muted"
+          (click)="onLogout()"
+        >
+          <i class="bi bi-box-arrow-left"></i>
+          <span>Se déconnecter</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</ng-template>
+
+<!-- NAV ITEM TEMPLATE -->
+<ng-template #navItem let-route="route" let-icon="icon" let-label="label">
+  <li class="nav-item">
+    <a
+      class="nav-link d-flex align-items-center gap-3 text-muted"
+      [routerLink]="route"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      data-bs-dismiss="offcanvas"
+    >
+      <i class="bi {{ icon }}"></i>
+      <span>{{ label }}</span>
+    </a>
+  </li>
+</ng-template>

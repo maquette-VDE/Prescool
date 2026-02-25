@@ -14,7 +14,7 @@ export const registerUser = createAction(
 
 export const actualRole = createAction(
   '[Register] Set Actual Role',
-  props<{ role: UserRole }>()
+  props<{ role: UserRole[]; }>()
 );
 
 export const registerConsultant = createAction(

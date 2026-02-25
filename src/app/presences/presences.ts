@@ -103,12 +103,15 @@ export class Presences {
     businessHours: {
       daysOfWeek: [1, 2, 3, 4, 5], // lundi → vendredi
       startTime: '08:00',
-      endTime: '18:00',
+      endTime: '19:00',
     },
+    slotMinTime: '08:00:00',
+    slotMaxTime: '19:00:00',
+    scrollTime: '08:00:00',
 
+    nowIndicator: true,
     selectable: true,
     editable: false,
-
     events: [],
 
     // IMPORTANT 🔥 création événement

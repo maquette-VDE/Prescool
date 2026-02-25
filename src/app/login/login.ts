@@ -4,7 +4,9 @@ import { UserRole } from '../models/userRole';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
-import { RoleService } from '../services/role.servcice';
+import { RoleService } from '../services/role/role-service';
+import { selectRole } from '../store/register.selectors';
+import { select, Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-login',
@@ -15,15 +17,16 @@ import { RoleService } from '../services/role.servcice';
 export class Login {
 
   constructor(
-    private router : Router,
-    private route : ActivatedRoute ,
-    private auth : AuthService,
-    private roleService : RoleService,
-  ){}
+    private router: Router,
+    private route: ActivatedRoute,
+    private auth: AuthService,
+    private roleService: RoleService,
+    private store: Store,
+  ) { }
 
-  role: UserRole | null = null;
+  role: UserRole[] | null = null;
   userRole = UserRole;
-  signupLink : string | null = null
+  signupLink: string | null = null
   email: string = '';
   password: string = '';
 
@@ -33,19 +36,19 @@ export class Login {
   loading: boolean = false; //Variable pour le loader
 
   ngOnInit() {
-  this.route.queryParams.subscribe(params => {
-    const roleParam = params['role'];
+    this.route.queryParams.subscribe(params => {
+      const roleParam = params['role'];
 
-    if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.INSTRUCTEUR) {
-      this.role = roleParam;
-    } else {
-      this.role = null;
-    }
-    this.signupLink = '/create-user';
-  });
+      if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.INSTRUCTEUR) {
+        this.role = [roleParam];
+      } else {
+        this.role = null;
+      }
+      this.signupLink = '/create-user';
+    });
 
-}
-  switchRole(role: UserRole) {
+  }
+  switchRole(role: UserRole[]) {
     this.role = role;
     this.router.navigate([], {
       relativeTo: this.route,
@@ -59,14 +62,18 @@ export class Login {
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false; //Fin de connexion
-        this.roleService.getRole(this.email).subscribe((role) => {
+        this.roleService.getRole().subscribe((role) => {
           this.role = role;
-          if (role === UserRole.ADMIN || role === UserRole.INSTRUCTEUR) {
-            this.router.navigateByUrl('sidenav/planning');
-          }
-          else if (role === UserRole.CONSULTANT) {
-            this.router.navigateByUrl('sidenav/presences');
-          }
+          this.store.pipe(select(selectRole)).subscribe((roles: UserRole[]) => {
+            const userRoles = roles ?? [UserRole.CONSULTANT];
+
+            if (userRoles.includes(UserRole.ADMIN) || userRoles.includes(UserRole.INSTRUCTEUR)) {
+              this.router.navigateByUrl('sidenav/planning');
+            }
+            else if (userRoles.includes(UserRole.CONSULTANT)) {
+              this.router.navigateByUrl('sidenav/presences');
+            }
+          });
         });
       },
       error: (err) => {
