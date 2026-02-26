@@ -97,8 +97,8 @@ export const routes: Routes = [
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
-      {path : 'projets', component : Projets},
-      {path : 'equipes', component : Equipes},
+      {path : 'projets', component : Projets, data: { title: 'Projets', subtitle: '' }},
+      {path : 'equipes', component : Equipes, data: { title: 'Équipes', subtitle: '' } },
     ],
   },
   // Route "catch-all" en cas d'URL inconnue
