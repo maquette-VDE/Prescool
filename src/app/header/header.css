@@ -1,0 +1,154 @@
+/* --- CONFIGURATION GLOBALE --- */
+:host {
+  display: block;
+  width: 100%;
+  z-index: 9999 !important;
+  background-color: transparent !important;
+}
+
+/* --- CONTAINER DU HEADER --- */
+.header-container {
+  display: block !important;
+  width: 100% !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box !important;
+  padding: 20px 30px !important;
+  border-bottom: none !important; 
+  box-shadow: none !important;
+}
+
+.header-container .row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100%;
+}
+
+/* --- BARRE DE RECHERCHE (Fixé sans trait) --- */
+.search-bar {
+  max-width: 500px;
+  background-color: #f8f9fa !important;
+  border-radius: 50px !important;
+  border: 1px solid #e0e0e0 !important;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+/* L'input à l'intérieur de la search-bar */
+.search-bar .form-control {
+  background-color: #f8f9fa !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  font-size: 0.95rem;
+}
+
+/* --- CORRECTION DU CONFLIT : Suppression du trait noir au focus --- */
+.search-bar .form-control:focus {
+  border: none !important;
+  border-bottom: none !important; /* Annule le conflit avec la ligne 185 */
+  box-shadow: none !important;
+  outline: none !important;
+  background-color: #f8f9fa !important;
+}
+
+.search-bar input::placeholder {
+  color: #adb5bd;
+  font-size: 0.9rem;
+}
+
+/* --- COMPOSANTS UTILISATEUR & ÉLÉMENTS GRAPHIQUES --- */
+.user-pill {
+  transition: all 0.2s;
+  cursor: pointer;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 5px 15px;
+  border-radius: 50px;
+}
+
+.user-pill:hover {
+  background-color: #f8f9fa !important;
+}
+.dropdown-menu.show {
+  z-index: 3000 !important;
+  position: absolute !important;
+}
+
+.dropdown-menu {
+  z-index: 1100 !important;
+}
+
+.user-pill:active {
+  transform: scale(0.98);
+}
+
+.avatar-gradient {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 4px solid white !important;
+  background: linear-gradient(45deg, #C94B91, #57C4EB) !important;
+}
+
+.btn-gradient-custom {
+  background: linear-gradient(45deg, #C94B91, #57C4EB) !important;
+  border: none !important;
+  color: white !important;
+  transition: all 0.2s;
+}
+
+.btn-gradient-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  filter: brightness(1.1);
+}
+
+/* --- FORMULAIRES CLASSIQUES (Garde le trait noir ici) --- */
+.form-control:focus {
+  border-bottom: 2px solid #000 !important;
+  box-shadow: none;
+  background-color: #f8f9fa !important;
+}
+
+/* --- SCHEDULER & COMPOSANTS SPÉCIFIQUES (Ng-Deep) --- */
+::ng-deep .rounded_corner_inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: bold !important;
+  border: 1px solid #e0e0e0;
+}
+
+::ng-deep .rounded_rowheader_inner {
+  display: flex !important;
+  align-items: center !important;
+  padding-left: 10px !important;
+  font-weight: 500;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 15px !important;
+  }
+  
+  h2 {
+    font-size: 1.1rem !important;
+  }
+
+  .search-section {
+    margin-top: 10px;
+    width: 100%;
+  }
+}
+
+/* --- UTILITAIRES --- */
+.cursor-pointer { cursor: pointer; }
+.no-caret::after { display: none !important; }
+.animate-fade-in { animation: fadeIn 0.4s ease-in-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

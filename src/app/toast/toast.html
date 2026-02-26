@@ -1,0 +1,8 @@
+<div class="custom-toast" [class.show]="toastService.show()" [class.error]="toastService.type() === 'error'">
+  <div class="toast-content">
+    <i class="bi" [class.bi-check-circle-fill]="toastService.type() === 'success'" 
+                 [class.bi-exclamation-triangle-fill]="toastService.type() === 'error'"></i>
+    <span>{{ toastService.message() }}</span>
+  </div>
+  <div class="toast-progress" *ngIf="toastService.show()"></div>
+</div>
