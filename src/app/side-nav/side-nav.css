@@ -30,14 +30,14 @@
 
 /* Désactiver toute transition globale sur .nav-link */
 .nav-link {
-  color: #8e8e8e;
+  color: #faf5f5;
   transition: none;
   font-size: 0.75rem;
 }
 
 /* Lors de la sélection d'un élément (actif) */
 .nav-link.active {
-  background-color: #004085;
+  background-color: #eff7fe;
   color: white;
   border-left: 4px solid #007bff;
   padding-left: 10px;
@@ -46,7 +46,7 @@
 
 /* Lors du survol (hover) */
 .nav-link:hover {
-  background-color: #0056b3;
+  background-color: #627a93;
   color: white;
   transition: none;
 }
@@ -54,7 +54,7 @@
 /* Lors de l'élément non actif survolé */
 .nav-link:not(.active):hover {
   background-color: #e7f1ff;
-  color: #003366;
+  color: #eff7ff;
   transition: none;
 }
 
@@ -63,5 +63,5 @@
   background: transparent;
   outline: none;
   color: white;
-  background-color: #004085;
+  background-color: #fefefe;
 }
