@@ -12,39 +12,12 @@
   background: #fff;
 }
 
-
-
-/* ============================================================
-   🎯 SECTION 2 — HEADER (Titre + Sous-titre)
-   ============================================================ */
-
-.presences-page-header-main {
+.presences-view-switch {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  justify-content: center;
+  align-items: center; 
+  text-align: center;
 }
-
-.presences-page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-
-.presences-title {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #111;
-}
-
-.presences-subtitle {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-
 
 /* ============================================================
    🎯 SECTION 3 — TOOLBAR PRINCIPALE
@@ -142,39 +115,6 @@
 .pill-chevron {
   font-size: 0.7rem;
 }
-
-
-
-/* ---------- 3.2 Barre de recherche (au centre) ---------- */
-
-.presences-toolbar-center {
-  flex: 1;
-  min-width: 250px;
-}
-
-.search-input {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 999px;
-  background-color: #f5f5f5;
-  padding: 0.35rem 0.9rem;
-}
-
-.search-icon {
-  font-size: 0.9rem;
-  opacity: 0.7;
-}
-
-.search-field {
-  border: none;
-  background: transparent;
-  outline: none;
-  font-size: 0.85rem;
-  width: 100%;
-}
-
-
 
 /* ---------- 3.3 Partie droite : Boutons Actions ---------- */
 

@@ -1,21 +1,5 @@
 <div class="presences-wrapper">
 
-  <!-- =======================================================
-       SECTION : Header (Titre + Sous-titre)
-       ======================================================= -->
-  <header class="presences-page-header">
-    <div class="presences-page-header-main">
-      <h1 class="presences-title">Présences</h1>
-      <p class="presences-subtitle">
-        Gérez et consultez votre présentiel.
-      </p>
-    </div>
-    <div class="presences-view-switch">
-      <button class="btn btn-primary" [class.active]="currentView === 'dayGridMonth'" (click)="switchToMonth()">Mois</button>
-      <button class="btn btn-primary" [class.active]="currentView === 'timeGridWeek'" (click)="switchToWeek()">Semaine</button>
-    </div>
-  </header>
-
 
   <!-- =======================================================
        SECTION : Toolbar (Date + Filtre + Recherche + Actions)
@@ -47,17 +31,9 @@
 
 
     <!-- ---------- PARTIE CENTRALE : RECHERCHE ---------- -->
-    <div class="presences-toolbar-center">
-      <div class="search-input">
-        <span class="search-icon">🔍</span>
-
-        <input
-          class="search-field"
-          type="text"
-          placeholder="Rechercher un événement..."
-          (input)="onSearchChanged($event.target.value)"
-        />
-      </div>
+     <div class="presences-view-switch">
+      <button class="btn btn-primary" [class.active]="currentView === 'dayGridMonth'" (click)="switchToMonth()">Mois</button>
+      <button class="btn btn-primary" [class.active]="currentView === 'timeGridWeek'" (click)="switchToWeek()">Semaine</button>
     </div>
 
 

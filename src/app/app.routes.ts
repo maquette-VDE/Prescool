@@ -8,12 +8,11 @@ import { Presences } from './presences/presences';
 import { SideNav } from './side-nav/side-nav';
 import { Planning } from './planning/planning';
 import { Consultant } from './consultant/consultant';
-import {Dashboard} from  './dashboard/dashboard';
-import {Aide} from  './aide/aide';
-import {Statistics} from  './statistics/statistics';
-import {Settings} from  './settings/settings';
-
-import {Annonces} from  './annonces/annonces';
+import { Dashboard } from './dashboard/dashboard';
+import { Aide } from './aide/aide';
+import { Statistics } from './statistics/statistics';
+import { Settings } from './settings/settings';
+import { Annonces } from './annonces/annonces';
 import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
@@ -39,30 +38,56 @@ export const routes: Routes = [
     path: 'sidenav',
     component: SideNav,
     children: [
-      { path: 'presences', component: Presences, canActivate: [roleGuard] },
-      {path : 'statistics', component : Statistics},
-      {path : 'settings', component : Settings},
-      {path : 'dashboard', component : Dashboard },
-      {path : 'annonces', component : Annonces},
-      {path : 'aide', component : Aide},
-      {path : 'confirm-consultant', component : ConfirmeConsultant},
-      {path : 'projets', component : Projets},
-      {path : 'equipes', component : Equipes},
       {
-        path: 'planning',
-        component: Planning,
-        resolve: { planningData: planningResolver },
+        path: 'presences',
+        component: Presences,
+        data: {
+          title: 'La liste de présence',
+          subtitle: 'Consultez la présence des consultants',canActivate: [roleGuard]
+        }
       },
-      {
-        path: 'consultant',
+      { 
+        path: 'dashboard', 
+        component: Dashboard,
+        data: { title: 'Tableau de bord', subtitle: 'Aperçu global de votre activité' } 
+      },
+      { 
+        path: 'annonces', 
+        component: Annonces,
+        data: { title: 'Tableau d’annonces', subtitle: 'Gérez les dernières actualités' } 
+      },
+      { 
+        path: 'statistics', 
+        component: Statistics,
+        data: { title: 'Statistiques', subtitle: 'Analyse des données' } 
+      },
+      { 
+        path: 'planning', 
+        component: Planning, 
+        resolve: { planningData: planningResolver },
+        data: { title: 'Planning', subtitle: 'Gestion de l’emploi du temps' }
+      },
+      { 
+        path: 'consultant', 
         component: Consultant,
-        canActivate: [instructorGuard],
+        data: { title: 'Consultants', subtitle: 'Liste des membres' ,},canActivate: [instructorGuard],
         resolve: {
           consultants: consultantResolver,
           evenements: evenementsResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
+      { 
+        path: 'settings', // Corrigé "Settings" en minuscule pour être uniforme
+        component: Settings,
+        data: { title: 'Paramètres', subtitle: 'Configuration de votre compte' }
+      },
+      { 
+        path: 'aide', 
+        component: Aide,
+        data: { title: 'Aide', subtitle: 'Centre d’assistance' } 
+      },
+      { path: 'confirm-consultant', component: ConfirmeConsultant },
       {
         path: 'instructor',
         component: Instructor,
@@ -72,6 +97,10 @@ export const routes: Routes = [
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
+      {path : 'projets', component : Projets},
+      {path : 'equipes', component : Equipes},
     ],
   },
+  // Route "catch-all" en cas d'URL inconnue
+  { path: '**', redirectTo: 'error' }
 ];
