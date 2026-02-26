@@ -19,6 +19,8 @@ import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
 import { consultantResolver } from './resolvers/consultant/consultant-resolver';
 import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { Erreur } from './erreur/erreur';
+import { Equipes } from './equipes/equipes';
+import { Projets } from './projets/projets';
 import { Instructor } from './instructor/instructor';
 import { instructorGuard } from './guards/instructor-guard';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
@@ -95,6 +97,8 @@ export const routes: Routes = [
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
+      {path : 'projets', component : Projets, data: { title: 'Projets', subtitle: '' }},
+      {path : 'equipes', component : Equipes, data: { title: 'Équipes', subtitle: '' } },
     ],
   },
   // Route "catch-all" en cas d'URL inconnue
