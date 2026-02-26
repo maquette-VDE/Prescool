@@ -17,16 +17,16 @@ import { select, Store } from '@ngrx/store';
 export class Login {
 
   constructor(
-    private router : Router,
-    private route : ActivatedRoute ,
-    private auth : AuthService,
-    private roleService : RoleService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private auth: AuthService,
+    private roleService: RoleService,
     private store: Store,
-  ){}
+  ) { }
 
   role: UserRole[] | null = null;
   userRole = UserRole;
-  signupLink : string | null = null
+  signupLink: string | null = null
   email: string = '';
   password: string = '';
 
@@ -36,18 +36,18 @@ export class Login {
   loading: boolean = false; //Variable pour le loader
 
   ngOnInit() {
-  this.route.queryParams.subscribe(params => {
-    const roleParam = params['role'];
+    this.route.queryParams.subscribe(params => {
+      const roleParam = params['role'];
 
-    if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.INSTRUCTEUR) {
-      this.role = [roleParam];
-    } else {
-      this.role = null;
-    }
-    this.signupLink = '/create-user';
-  });
+      if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.INSTRUCTEUR) {
+        this.role = [roleParam];
+      } else {
+        this.role = null;
+      }
+      this.signupLink = '/create-user';
+    });
 
-}
+  }
   switchRole(role: UserRole[]) {
     this.role = role;
     this.router.navigate([], {
@@ -62,12 +62,16 @@ export class Login {
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false; //Fin de connexion
-        this.roleService.getRole().subscribe((role) => {
-          this.role = role;
-          this.store.pipe(select(selectRole)).subscribe((role) => {
-            this.role = role || [UserRole.CONSULTANT];
-          });
-          this.router.navigateByUrl('sidenav/presences');
+        this.roleService.getRole().subscribe((roles: UserRole[] | null) => {
+
+          const userRoles: UserRole[] = roles ?? [UserRole.CONSULTANT];
+
+          if (userRoles.includes(UserRole.ADMIN) || userRoles.includes(UserRole.INSTRUCTEUR)) {
+            this.router.navigateByUrl('sidenav/planning');
+          }
+          else if (userRoles.includes(UserRole.CONSULTANT)) {
+            this.router.navigateByUrl('sidenav/presences');
+          }
         });
       },
       error: (err) => {
@@ -85,5 +89,6 @@ export class Login {
       }
     });
   }
+
 
 }
