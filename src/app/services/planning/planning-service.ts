@@ -97,16 +97,20 @@ export class PlanningService {
     return this.http.get(`${this.API_BASE}/specialties?limit=20`);
   }
 
-  private mapEvents(events: UserEvent[]): DayPilot.EventData[] {
-    return events.map((event) => ({
-      id: event.id ?? DayPilot.guid(),
-      resource: event.user_id?.toString(),
-      start: new DayPilot.Date(event.start_time),
-      end: new DayPilot.Date(event.end_time),
-      text: event.notes || event.title || '',
-      tags: { type: event.attendance_status ?? 'present' },
-    }));
-  }
+private toDayPilotDate(dateStr: string): DayPilot.Date {
+  return new DayPilot.Date(new Date(dateStr).toISOString());
+}
+
+private mapEvents(events: UserEvent[]): DayPilot.EventData[] {
+  return events.map((event) => ({
+    id: event.id ?? DayPilot.guid(),
+    resource: event.user_id?.toString(),
+    start: this.toDayPilotDate(event.start_time),
+    end: this.toDayPilotDate(event.end_time),
+    text: event.notes || event.title || '',
+    tags: { type: event.attendance_status ?? 'present' },
+  }));
+}
 
   private mapResources(
   users: UserItem[],
