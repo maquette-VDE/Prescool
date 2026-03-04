@@ -156,10 +156,31 @@
           </div>
 
           <div class="col-12">
+            <label class="form-label fw-semibold mb-1">Mot de passe actuel</label>
+            <input type="password" [(ngModel)]="ActuPassword" name="ActuelPassword"
+              placeholder="mettez votre password actuel"
+              class="form-control form-control-sm border-primary shadow-sm" />
+          </div>
+
+          <div class="col-12">
             <label class="form-label fw-semibold mb-1">Nouveau mot de passe</label>
             <input type="password" [(ngModel)]="currentUser.password" name="password"
+              #password="ngModel"
               placeholder="Laisser vide pour ne pas modifier"
               class="form-control form-control-sm border-primary shadow-sm" />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold mb-1">Confirmer mot de passe</label>
+            <input type="password" [(ngModel)]="confirmPassword" name="ConfirmPassword"
+              #confirmPass="ngModel"
+              placeholder="Remplir si nouveau mot de passe si non laisser vide"
+              class="form-control form-control-sm border-primary shadow-sm" />
+
+              <div *ngIf="confirmPassword && currentUser.password && confirmPassword !== currentUser.password"
+                class="text-danger mt-1">
+                Les mots de passe ne correspondent pas.
+              </div>
           </div>
         </form>
       </div>

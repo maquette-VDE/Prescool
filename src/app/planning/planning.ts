@@ -42,6 +42,8 @@ export class Planning implements AfterViewInit, OnDestroy {
   readonly profiles = signal<DayPilot.ResourceData[]>([]);
   readonly searchQuery = signal<string>('');
   readonly today = new DayPilot.Date();
+  confirmPassword : string = '';
+  ActuPassword : string = '';
 
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
