@@ -67,7 +67,7 @@ export class ConfirmeConsultant {
       return; 
     }
     this.router.navigate(
-      ['login'],
+      [''],
       { queryParams: {role: this.role } }
     );
   }

@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { Acceuil } from './acceuil/acceuil';
 import { Login } from './login/login';
 import { ConfirmeExpert } from './confirme-expert/confirme-expert';
 import { CreateUser } from './create-user/create-user';
@@ -26,8 +25,7 @@ import { instructorGuard } from './guards/instructor-guard';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 
 export const routes: Routes = [
-  { path: '', component: Acceuil },
-  { path: 'login', component: Login },
+  { path: '', component: Login },
   { path: 'create-user', component: CreateUser },
   { path: 'confirm-expert', component: ConfirmeExpert },
   { path: 'confirm-consultant', component: ConfirmeConsultant },
