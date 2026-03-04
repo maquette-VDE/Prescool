@@ -1,0 +1,9 @@
+/* Bordure du haut du tableau */
+.table tbody tr:first-child td {
+  border-top: 1px solid #000;
+}
+
+/* Bordure du bas du tableau */
+.table tbody tr:last-child td {
+  border-bottom: 1px solid #000;
+}

@@ -6,7 +6,7 @@ export interface User {
   email: string;
   password: string;
   phone?: string;
-  role: UserRole;
+  role: UserRole [];
 }
 
 export class User implements User {
@@ -15,7 +15,7 @@ export class User implements User {
     last_name: string,
     first_name: string,
     password: string,
-    role: UserRole,
+    role: UserRole [],
     phone?: string,
     ) {
         this.email = email;

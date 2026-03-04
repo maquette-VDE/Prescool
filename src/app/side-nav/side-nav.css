@@ -11,9 +11,7 @@
 }
 
 .nav-link {
-  color: #8e8e8e !important;
-  transition: color 0.2s ease;
-  font-size: 0.75rem !important;
+  transition: none; /* Désactiver la transition */
 }
 
 .icon-vde {
@@ -30,11 +28,40 @@
   -webkit-text-stroke: 0.5px #000;
 }
 
-.nav-link:hover {
-  color: #444 !important;
+/* Désactiver toute transition globale sur .nav-link */
+.nav-link {
+  color: #faf5f5;
+  transition: none;
+  font-size: 0.75rem;
 }
 
+/* Lors de la sélection d'un élément (actif) */
+.nav-link.active {
+  background-color: #eff7fe;
+  color: white;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+  font-weight: bold;
+}
+
+/* Lors du survol (hover) */
+.nav-link:hover {
+  background-color: #627a93;
+  color: white;
+  transition: none;
+}
+
+/* Lors de l'élément non actif survolé */
+.nav-link:not(.active):hover {
+  background-color: #e7f1ff;
+  color: #eff7ff;
+  transition: none;
+}
+
+/* Lors de l'élément ayant le focus ou étant actif (sans contour) */
 .nav-link:focus, .nav-link:active {
-  background: transparent !important;
-  outline: none !important;
+  background: transparent;
+  outline: none;
+  color: white;
+  background-color: #fefefe;
 }

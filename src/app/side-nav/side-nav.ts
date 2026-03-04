@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { NgTemplateOutlet } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
 
+import { HeaderComponent } from '../header/header';
+
 @Component({
   selector: 'app-side-nav',
   imports: [
@@ -11,7 +13,8 @@ import { AuthService } from '../services/auth/auth.service';
     RouterOutlet,
     RouterLinkActive,
     CommonModule,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    HeaderComponent,
   ],
   templateUrl: './side-nav.html',
   styleUrl: './side-nav.css',
