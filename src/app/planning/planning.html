@@ -129,7 +129,10 @@
   </div>
 </div>
 @if(totalPages() > 0) {
-<daypilot-scheduler [config]="config()" #scheduler></daypilot-scheduler>
+<div [class.opacity-50]="isLoading()" style="transition: opacity 0.3s ease;">
+  <daypilot-scheduler #scheduler [config]="config()"
+  [events]="config().events!" ></daypilot-scheduler>
+</div>
 <!-------------------------model--------------------------->
 
 

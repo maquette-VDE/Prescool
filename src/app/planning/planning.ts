@@ -18,7 +18,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PlanningService } from '../services/planning/planning-service';
 import { SchedulerUtils } from './scheduler-utils';
-import { PlanningData } from '../resolvers/planning/planning-resolver';
 import { HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -63,6 +62,7 @@ export class Planning implements AfterViewInit, OnDestroy {
   readonly specialties = signal<Speciality[]>([]);
   selectedSpecialties = signal<string[]>([]);
   selectedStatuses = signal<string[]>([]);
+  readonly isLoading = signal<boolean>(false);
 
   readonly filteredProfiles = computed(() => {
     const query = this.searchQuery().toLowerCase();
@@ -86,6 +86,8 @@ export class Planning implements AfterViewInit, OnDestroy {
     eventHeight: 80,
     cellWidth: 155,
     theme: 'rounded',
+    resources: [], 
+  events: [],
     onBeforeEventRender: (args) => SchedulerUtils.renderEvent(args),
     onBeforeRowHeaderRender: (args) => SchedulerUtils.renderResource(args),
   });
@@ -96,6 +98,7 @@ export class Planning implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const data = this.route.snapshot.data['planningData'];
+    
     this.totalPages.set(data.pagination.pages);
     this.specialties.set(data.specialties);
     this.profiles.set(data.resources);
@@ -147,11 +150,9 @@ export class Planning implements AfterViewInit, OnDestroy {
   }
 
   private refreshData(): void {
-    if (!this.isViewInitialized) return;
-    if (!this.scheduler || !this.scheduler.control) {
-      console.warn("Le scheduler n'est pas encore prêt.");
-      return;
-    }
+    if (!this.scheduler?.control) return;
+
+    this.isLoading.set(true);
 
     let startDate = this.config().startDate as DayPilot.Date;
     const endDate = startDate?.addDays(4);
@@ -167,14 +168,25 @@ export class Planning implements AfterViewInit, OnDestroy {
         this.selectedSpecialty(),
       )
       .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        this.specialties.set(data.specialties);
+      .subscribe( {
+        next: (data) => {
+          this.specialties.set(data.specialties);
         this.totalPages.set(data.pagination.pages);
-        if(this.totalPages() !== 0) {
-        this.scheduler.control.update({
-          resources: data.resources,
-          events: data.events,
-        });}
+        
+        const resources = data.resources || [];
+        const events = data.events || [];
+
+        this.config.update(prev => ({ ...prev, resources, events }));
+        
+        this.scheduler.control.update({ resources, events });
+        
+        this.isLoading.set(false);
+        this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error(err);
+          this.isLoading.set(false);
+        }
       });
   }
 

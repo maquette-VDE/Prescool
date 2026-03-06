@@ -98,11 +98,17 @@ export class PlanningService {
   }
 
   private mapEvents(events: UserEvent[]): DayPilot.EventData[] {
+    const sanitizeDate = (dateStr: string) => {
+      if (!dateStr) return new DayPilot.Date();
+      return dateStr.includes('.') 
+        ? dateStr.split('.')[0] + 'Z'
+        : dateStr;
+    };
     return events.map((event) => ({
       id: event.id ?? DayPilot.guid(),
       resource: event.user_id?.toString(),
-      start: new DayPilot.Date(event.start_time),
-      end: new DayPilot.Date(event.end_time),
+      start: sanitizeDate(event.start_time),
+      end: sanitizeDate(event.end_time),
       text: event.notes || event.title || '',
       tags: { type: event.attendance_status ?? 'present' },
     }));
