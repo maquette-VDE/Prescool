@@ -97,11 +97,6 @@
       ></ng-container>
       }
 
-      <!-- Statistiques -->
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'statistics', icon: 'bi-file-bar-graph', label: 'Statistiques' }"
-      ></ng-container>
-
       <!-- Annonces -->
       <ng-container
         *ngTemplateOutlet="navItem; context: { route: 'annonces', icon: 'bi-chat-right-dots', label: 'Annonces' }"
@@ -112,19 +107,9 @@
         *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"
       ></ng-container>
 
-      <!-- Paramètres -->
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'settings', icon: 'bi-gear', label: 'Paramètres' }"
-      ></ng-container>
-
       <!-- Equipes -->
       <ng-container
         *ngTemplateOutlet="navItem; context: { route: 'equipes', icon: 'bi-people-fill', label: 'Equipes' }"
-      ></ng-container>
-
-      <!-- Projets -->
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'projets', icon: 'bi-folder-fill', label: 'Projets' }"
       ></ng-container>
 
       <!-- Logout -->
