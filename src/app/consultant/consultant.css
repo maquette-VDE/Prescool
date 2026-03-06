@@ -13,3 +13,49 @@
   border-bottom: 1px solid #000;
 }
 
+/* Centrer la pagination */
+.text-center {
+  text-align: center;
+}
+
+/* Style des boutons de pagination */
+.pagination {
+  display: inline-flex;
+  justify-content: center;
+  padding-left: 0;
+  list-style: none;
+  border-radius: 0.25rem;
+}
+
+.page-item {
+  margin: 0 5px;
+}
+
+.page-link {
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  color: #003366; /* Couleur noir ou marine */
+  background-color: #f8f9fa;
+  font-family: 'Arial', sans-serif;
+  font-size: 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.page-link:hover {
+  background-color: #003366; /* Couleur au survol */
+  color: #fff; /* Texte blanc au survol */
+}
+
+/* Ajouter une couleur différente pour le bouton actif */
+.page-item.active .page-link {
+  background-color: #003366;
+  color: white;
+}
+
+.page-item.disabled .page-link {
+  background-color: #f8f9fa;
+  color: #ccc;
+  cursor: not-allowed;
+}
+

@@ -6,7 +6,7 @@ export interface UserDataState {
     last_name: string;
     first_name: string; 
     phone?: string;
-    role: UserRole;
+    role: UserRole[];
     diplome?: string;
     code?: string;
     arrivedAt?: Date;
@@ -20,7 +20,7 @@ export const initialUserDataState: UserDataState = {
     last_name: '',
     first_name: '',
     phone: undefined,
-    role: UserRole.CONSULTANT,
+    role: [UserRole.CONSULTANT],
     diplome: undefined,
     code: undefined,
     arrivedAt: undefined,

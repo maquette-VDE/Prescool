@@ -100,7 +100,7 @@ export class PlanningService {
   private mapEvents(events: UserEvent[]): DayPilot.EventData[] {
     const sanitizeDate = (dateStr: string) => {
       if (!dateStr) return new DayPilot.Date();
-      return dateStr.includes('.') 
+      return dateStr.includes('.')
         ? dateStr.split('.')[0] + 'Z'
         : dateStr;
     };

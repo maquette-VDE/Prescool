@@ -2,9 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { ResolveFn } from '@angular/router';
 
 import { evenementsResolver } from './evenements-resolver';
+import { UserEvent } from '../../interfaces/events';
 
 describe('evenementsResolver', () => {
-  const executeResolver: ResolveFn<boolean> = (...resolverParameters) => 
+  const executeResolver: ResolveFn<UserEvent[]> = (...resolverParameters) =>
       TestBed.runInInjectionContext(() => evenementsResolver(...resolverParameters));
 
   beforeEach(() => {

@@ -1,0 +1,17 @@
+body {
+  background-color: #ffffff !important;
+  margin: 0;
+  height: 100vh;
+}
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Prend toute la hauteur de l'écran */
+}
+
+.content-area {
+  flex-grow: 1;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
