@@ -39,4 +39,22 @@ export class Consultant extends RouterPagination<UsersApiResponse> {
   });
 
   hoveredConsultantId = signal<number | null>(null);
+
+  changePageSize(size: number): void {
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams: { page: 0, limit: size },
+    queryParamsHandling: 'merge',
+    });
+  }
+
+  getVisiblePages(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(1, this.currentPage() - 1);
+    const end = Math.min(this.totalPages() - 2, this.currentPage() + 1);
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
 }
