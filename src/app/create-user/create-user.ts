@@ -90,7 +90,7 @@ export class CreateUser {
       return;
     }
 
-    this.router.navigate(['login'], { queryParams: { role: this.role } });
+    this.router.navigate([''], { queryParams: { role: this.role } });
   }
 
   hasError(controlName: string, error: string) {

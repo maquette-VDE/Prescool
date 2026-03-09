@@ -5,8 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { RoleService } from '../services/role/role-service';
-import { selectRole } from '../store/register.selectors';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-login',
@@ -37,25 +36,25 @@ export class Login {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      const roleParam = params['role'];
+      // const roleParam = params['role'];
 
-      if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.INSTRUCTEUR) {
-        this.role = [roleParam];
-      } else {
-        this.role = null;
-      }
+      // if (roleParam === UserRole.CONSULTANT || roleParam === UserRole.INSTRUCTEUR) {
+      //   this.role = [roleParam];
+      // } else {
+      //   this.role = null;
+      // }
       this.signupLink = '/create-user';
     });
 
   }
-  switchRole(role: UserRole[]) {
-    this.role = role;
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { role: role },
-      queryParamsHandling: 'merge' // fusionne avec d'autres query params si nécessaire
-    });
-  }
+  // switchRole(role: UserRole[]) {
+  //   this.role = role;
+  //   this.router.navigate([], {
+  //     relativeTo: this.route,
+  //     queryParams: { role: role },
+  //     queryParamsHandling: 'merge' // fusionne avec d'autres query params si nécessaire
+  //   });
+  // }
 
   onLogin() {
     this.loading = true; //Connexion en cours

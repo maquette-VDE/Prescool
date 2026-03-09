@@ -52,7 +52,7 @@ export class ConfirmeExpert {
       return;
     }
     this.router.navigate(
-      ['login'],
+      [''],
       { queryParams: {role: this.role } }
       );
     }
