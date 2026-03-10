@@ -8,6 +8,7 @@ import {
   OnDestroy,
   computed,
   ChangeDetectorRef,
+  ElementRef,
 } from '@angular/core';
 import {
   DayPilot,
@@ -47,7 +48,6 @@ export class Planning implements AfterViewInit, OnDestroy {
   private readonly planningService = inject(PlanningService);
   private readonly destroy$ = new Subject<void>();
   private readonly cdr = inject(ChangeDetectorRef);
-  private isViewInitialized = false;
   public isMenuOpen = false;
   readonly profiles = signal<DayPilot.ResourceData[]>([]);
   readonly searchQuery = signal<string>('');
@@ -74,6 +74,9 @@ export class Planning implements AfterViewInit, OnDestroy {
   });
 
   @ViewChild('scheduler') scheduler!: DayPilotSchedulerComponent;
+  @ViewChild('eventModal') eventModalElement!: ElementRef;
+  private bsModal: any;
+  readonly selectedEvent = signal<any>(null);
 
   config = signal<DayPilot.SchedulerConfig>({
     timeHeaders: [{ groupBy: 'Day', format: 'dddd d' }],
@@ -86,11 +89,74 @@ export class Planning implements AfterViewInit, OnDestroy {
     eventHeight: 80,
     cellWidth: 155,
     theme: 'rounded',
-    resources: [], 
-  events: [],
+    resources: [],
+    events: [],
     onBeforeEventRender: (args) => SchedulerUtils.renderEvent(args),
     onBeforeRowHeaderRender: (args) => SchedulerUtils.renderResource(args),
+    onEventClicked: (args) => {
+      this.selectedEvent.set({
+        ...args.e.data,
+        resourceName: this.profiles().find((p) => p.id === args.e.resource())
+          ?.name,
+      });
+
+      if (!this.bsModal) {
+      const element = this.eventModalElement.nativeElement;
+      if (element) {
+        this.bsModal = new bootstrap.Modal(element, {
+          backdrop: 'static',
+          keyboard: true
+        });
+      }
+    }
+
+    if (this.bsModal) {
+      this.bsModal.show();
+    } else {
+      console.error("L'élément de la modal n'a pas été trouvé dans le DOM.");
+    }
+    },
   });
+
+  openCustomModal() {
+    const modalElement = document.getElementById('eventDetailModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  updateEvent() {
+    const data = this.selectedEvent();
+    this.planningService.updateEvent(data).subscribe({
+      next: () => {
+        this.scheduler.control.events.update(data);
+        this.bsModal.hide();
+      },
+      error: (err) => console.error('Erreur update', err),
+    });
+  }
+
+  deleteEvent() {
+    const eventId = this.selectedEvent().id;
+    if (confirm('Voulez-vous vraiment supprimer cette présence ?')) {
+      this.planningService.deleteEvent(eventId).subscribe({
+        next: () => {
+          this.scheduler.control.events.remove(eventId);
+          this.bsModal.hide();
+        },
+        error: (err) => console.error('Erreur suppression', err),
+      });
+    }
+  }
+
+  closeModal() {
+    const modalElement = document.getElementById('eventDetailModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) modal.hide();
+    }
+  }
 
   translateDateToFr(date: DayPilot.Date, format: string): string {
     return date.toString(format, 'fr-fr');
@@ -98,7 +164,7 @@ export class Planning implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const data = this.route.snapshot.data['planningData'];
-    
+
     this.totalPages.set(data.pagination.pages);
     this.specialties.set(data.specialties);
     this.profiles.set(data.resources);
@@ -110,7 +176,6 @@ export class Planning implements AfterViewInit, OnDestroy {
     if (data.events.length > 0) {
       this.scheduler.control.scrollTo(data.events[0].start);
     }
-    this.isViewInitialized = true;
   }
 
   ngAfterViewChecked() {
@@ -168,25 +233,25 @@ export class Planning implements AfterViewInit, OnDestroy {
         this.selectedSpecialty(),
       )
       .pipe(takeUntil(this.destroy$))
-      .subscribe( {
+      .subscribe({
         next: (data) => {
           this.specialties.set(data.specialties);
-        this.totalPages.set(data.pagination.pages);
-        
-        const resources = data.resources || [];
-        const events = data.events || [];
+          this.totalPages.set(data.pagination.pages);
 
-        this.config.update(prev => ({ ...prev, resources, events }));
-        
-        this.scheduler.control.update({ resources, events });
-        
-        this.isLoading.set(false);
-        this.cdr.detectChanges();
+          const resources = data.resources || [];
+          const events = data.events || [];
+
+          this.config.update((prev) => ({ ...prev, resources, events }));
+
+          this.scheduler.control.update({ resources, events });
+
+          this.isLoading.set(false);
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error(err);
           this.isLoading.set(false);
-        }
+        },
       });
   }
 
@@ -360,8 +425,6 @@ export class Planning implements AfterViewInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-
 
   onEventStatusChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;

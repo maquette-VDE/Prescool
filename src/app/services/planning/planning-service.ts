@@ -93,6 +93,18 @@ export class PlanningService {
     );
   }
 
+  updateEvent(event: any): Observable<any> {
+    const updatedEvent: any = {
+      title: event.text,
+      attendance_status: event.tags.type,
+    }
+    return this.http.put(`${this.API_BASE}/events/${event.id}`, updatedEvent);
+  }
+
+  deleteEvent(eventId: string): Observable<any> {
+    return this.http.delete(`${this.API_BASE}/events/${eventId}`);
+  }
+
   getSpecialties(): Observable<any> {
     return this.http.get(`${this.API_BASE}/specialties?limit=20`);
   }
@@ -115,17 +127,17 @@ export class PlanningService {
   }
 
   private mapResources(
-  users: UserItem[],
-): DayPilot.ResourceData[] {
-  return users.map((user) => {
-    return {
-      id: user.id?.toString() ?? '',
-      name: `${user.first_name}`,
-      tags: {
-        code: user.code ?? '',
-        phone_number: user.phone_number ?? '',
-      },
-    };
-  });
-}
+    users: UserItem[],
+  ): DayPilot.ResourceData[] {
+    return users.map((user) => {
+      return {
+        id: user.id?.toString() ?? '',
+        name: `${user.first_name}`,
+        tags: {
+          code: user.code ?? '',
+          phone_number: user.phone_number ?? '',
+        },
+      };
+    });
+  }
 }

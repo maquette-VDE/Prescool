@@ -182,6 +182,54 @@
     </button>
   </div>
 </div>
+
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true" #eventModal>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventModalLabel">Gérer l'événement</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body" if="selectedEvent()">
+        @if(selectedEvent()) {
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Statut de présence</label>
+            <select class="form-select" [(ngModel)]="selectedEvent().tags.type" name="status">
+              <option *ngFor="let status of statusList" [value]="status[0]">
+                {{ status[1] }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedEvent().text" name="description">
+          </div>
+
+          <div class="alert alert-info small">
+            <i class="bi bi-info-circle me-2"></i>
+            Description : <strong>{{ selectedEvent().text }}</strong><br>
+            Événement pour : <strong>{{ selectedEvent().resourceName }}</strong><br>
+            Le : {{ selectedEvent().start | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+        </form>
+      }
+      </div>
+
+      <div class="modal-footer d-flex justify-content-between">
+        <button type="button" class="btn btn-outline-danger" (click)="deleteEvent()">
+          <i class="bi bi-trash me-1"></i> Supprimer
+        </button>
+        <div>
+          <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-primary" (click)="updateEvent()">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 }
 @else {
   <div class="d-flex justify-content-center align-items-center flex-column gap-3 py-5">
