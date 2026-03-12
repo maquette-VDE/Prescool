@@ -390,4 +390,5 @@ export class Planning implements AfterViewInit, OnDestroy {
       reader.readAsDataURL(input.files[0]);
     }
   }
+
 }

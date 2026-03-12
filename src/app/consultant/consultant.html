@@ -102,27 +102,64 @@
     </tbody>
 </table>
 
-<nav aria-label="Page navigation" class="text-center">
-  <ul class="pagination">
-    <!-- Bouton Précédent -->
-    <li class="page-item" [class.disabled]="currentPage() === 0">
-      <button class="page-link" (click)="prevPage()">< Précédent</button>
-    </li>
+<nav aria-label="Page navigation" class="d-flex justify-content-center align-items-center gap-2 mt-3">
+  
+  <!-- Bouton Précédent -->
+  <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+    [disabled]="currentPage() === 0"
+    (click)="prevPage()">
+    &lsaquo; Précédent
+  </button>
 
-    <!-- Numéros de page -->
-     @for (p of [].constructor(totalPages()); track $index) {
-      <li class="page-item" [class.active]="currentPage() === $index">
-      <button class="page-link" (click)="goToPage($index)">
-        {{ $index + 1 }}
-      </button>
-    </li>
-     }
+  <!-- Page 1 -->
+  <button class="btn btn-sm rounded"
+    [class.btn-outline-primary]="currentPage() === 0"
+    [class.btn-link]="currentPage() !== 0"
+    (click)="goToPage(0)">1</button>
 
-    <!-- Bouton Suivant -->
-    <li class="page-item" [class.disabled]="currentPage() === totalPages() - 1">
-      <button class="page-link" (click)="nextPage()">Suivant ></button>
-    </li>
-  </ul>
+  <!-- Ellipse gauche -->
+  @if (currentPage() > 2) {
+    <span class="text-secondary">...</span>
+  }
+
+  <!-- Pages autour de la page courante -->
+  @for (p of getVisiblePages(); track p) {
+    @if (p !== 0 && p !== totalPages() - 1) {
+      <button class="btn btn-sm rounded"
+        [class.btn-outline-primary]="currentPage() === p"
+        [class.btn-link]="currentPage() !== p"
+        (click)="goToPage(p)">{{ p + 1 }}</button>
+    }
+  }
+
+  <!-- Ellipse droite -->
+  @if (currentPage() < totalPages() - 3) {
+    <span class="text-secondary">...</span>
+  }
+
+  <!-- Dernière page -->
+  @if (totalPages() > 1) {
+    <button class="btn btn-sm rounded"
+      [class.btn-outline-primary]="currentPage() === totalPages() - 1"
+      [class.btn-link]="currentPage() !== totalPages() - 1"
+      (click)="goToPage(totalPages() - 1)">{{ totalPages() }}</button>
+  }
+
+  <!-- Bouton Suivant -->
+  <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+    [disabled]="currentPage() === totalPages() - 1"
+    (click)="nextPage()">
+    Suivant &rsaquo;
+  </button>
+
+  <!-- Sélecteur de lignes par page -->
+  <select class="form-select form-select-sm w-auto rounded-pill border-primary text-primary ms-3"
+    (change)="changePageSize(+$any($event.target).value)">
+    <option value="10">Afficher 10 lignes</option>
+    <option value="25">Afficher 25 lignes</option>
+    <option value="50">Afficher 50 lignes</option>
+  </select>
+
 </nav>
 
 }
