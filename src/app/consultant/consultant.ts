@@ -2,11 +2,12 @@ import { Component, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersApiResponse } from '../interfaces/userItem';
 import { RouterPagination } from '../shared/base/router-pagination.abstract';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-consultant',
   standalone: true,
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './consultant.html',
   styleUrl: './consultant.css',
 })
@@ -19,7 +20,7 @@ export class Consultant extends RouterPagination<UsersApiResponse> {
   );
 
   consultants = computed(() => this.routeDataSignal()?.items ?? []);
-  
+
   // --- Gestion des Filtres (Tableau pour multi-sélection) ---
   selectedFilters = signal<string[]>([]);
 
@@ -65,7 +66,7 @@ export class Consultant extends RouterPagination<UsersApiResponse> {
     }
     return pages;
   }
-  
+
   // --- Méthodes d'action ---
   getFilterLabel(value: string): string {
     return this.filterLabels[value] ?? value;

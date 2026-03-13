@@ -6,6 +6,7 @@ export interface UserItem {
   is_active: boolean;
   email: string;
   phone_number: string;
+  arrival_date: string;
 }
 
 export interface UsersApiResponse {
