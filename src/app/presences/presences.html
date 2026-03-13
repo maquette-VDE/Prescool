@@ -23,7 +23,7 @@
 
       <!-- Pilule : Filtre (statique pour l'instant) -->
       <button class="pill pill-filter" type="button" (click)="openStatusModal(null)">
-        Présent(e) / Absent(e)
+      <span class="pill-text">Présent(e) / Absent(e)</span>
         <span class="pill-chevron">▾</span>
       </button>
 
@@ -76,7 +76,7 @@
        ======================================================= -->
   <div class="status-modal-overlay" *ngIf="statusModal.isOpen" (click)="closeStatusModal()">
     <div class="status-modal-content" (click)="$event.stopPropagation()">
-      
+
       <!-- En-tête du modal -->
       <div class="status-modal-header">
         <h2 class="status-modal-title">
@@ -87,12 +87,12 @@
 
       <!-- Corps du modal -->
       <div class="status-modal-body">
-        
+
         <!-- Boutons de sélection du statut -->
         <div class="status-buttons-group">
-          
+
           <!-- Bouton Présent(e) -->
-          <button 
+          <button
             class="status-button status-button-present"
             [class.active]="statusModal.selectedStatus === 'present'"
             (click)="selectStatus('present')"
@@ -103,7 +103,7 @@
           </button>
 
           <!-- Bouton En retard -->
-          <button 
+          <button
             class="status-button status-button-late"
             [class.active]="statusModal.selectedStatus === 'late'"
             (click)="selectStatus('late')"
@@ -114,7 +114,7 @@
           </button>
 
           <!-- Bouton Absent(e) -->
-          <button 
+          <button
             class="status-button status-button-absent"
             [class.active]="statusModal.selectedStatus === 'absent'"
             (click)="selectStatus('absent')"
@@ -132,20 +132,20 @@
           <div *ngIf="statusModal.selectedStatus === 'present'" class="status-field">
             <label class="status-field-label">
               <input type="checkbox" [(ngModel)]="statusModal.depart" />Départ anticipé
-            </label> 
+            </label>
 
               <label *ngIf="statusModal.depart" class="status-field-label">
                 Heure de départ :
                 <input type="time" class="status-field-input" [(ngModel)]="statusModal.heureDepart" />
               </label>
           </div>
-          
+
           <!-- Pour "En retard" : champ heure d'arrivée -->
           <div *ngIf="statusModal.selectedStatus === 'late'" class="status-field">
             <label class="status-field-label">Heure d'arrivée</label>
-            <input 
-              type="time" 
-              class="status-field-input" 
+            <input
+              type="time"
+              class="status-field-input"
               [(ngModel)]="statusModal.lateTime"
               placeholder="09:00"
             />
@@ -156,9 +156,9 @@
             <label class="status-field-label">
               {{ statusModal.selectedStatus === 'absent' ? 'Raison de mon absence' : 'Raison de mon retard' }}
             </label>
-            <input 
-              type="text" 
-              class="status-field-input" 
+            <input
+              type="text"
+              class="status-field-input"
               [(ngModel)]="statusModal.reason"
               [placeholder]="statusModal.selectedStatus === 'absent' ? 'ex: maladie' : 'ex: rendez-vous'"
             />
@@ -170,17 +170,17 @@
 
       <!-- Pied de page du modal -->
       <div class="status-modal-footer">
-        <button 
-          class="status-modal-btn status-modal-btn-cancel" 
-          type="button" 
+        <button
+          class="status-modal-btn status-modal-btn-cancel"
+          type="button"
           (click)="closeStatusModal()"
         >
           Annuler
         </button>
-        <button 
+        <button
           class="status-modal-btn status-modal-btn-confirm"
           [class.disabled]="!statusModal.selectedStatus"
-          type="button" 
+          type="button"
           (click)="confirmStatus()"
           [disabled]="!statusModal.selectedStatus"
         >
@@ -196,7 +196,7 @@
        ======================================================= -->
   <div class="delete-modal-overlay" *ngIf="deleteModal.isOpen" (click)="closeDeleteModal()">
     <div class="delete-modal-content" (click)="$event.stopPropagation()">
-      
+
       <!-- En-tête du modal -->
       <div class="delete-modal-header">
         <h2 class="delete-modal-title">Supprimer l'événement</h2>
@@ -216,16 +216,16 @@
 
       <!-- Pied de page du modal -->
       <div class="delete-modal-footer">
-        <button 
-          class="delete-modal-btn delete-modal-btn-cancel" 
-          type="button" 
+        <button
+          class="delete-modal-btn delete-modal-btn-cancel"
+          type="button"
           (click)="closeDeleteModal()"
         >
           Annuler
         </button>
-        <button 
-          class="delete-modal-btn delete-modal-btn-confirm" 
-          type="button" 
+        <button
+          class="delete-modal-btn delete-modal-btn-confirm"
+          type="button"
           (click)="confirmDelete()"
         >
           Supprimer
