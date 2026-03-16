@@ -28,7 +28,7 @@ export class Consultant extends RouterPagination<UsersApiResponse> {
   private readonly filterLabels: Record<string, string> = {
     'present': 'Présent(e)',
     'absent': 'Absent(e)',
-    'mission': 'En mission',
+    'en_mission': 'En mission',
     'late': 'En retard',
     'excused': 'Excusé(e)'
   };
