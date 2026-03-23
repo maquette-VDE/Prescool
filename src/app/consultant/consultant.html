@@ -1,9 +1,13 @@
 <div class="mt-5 d-flex flex-wrap align-items-center gap-2">
   <select id="categorySelecte"
     class="w-auto form-select select-light-arrow bg-dark text-light rounded-pill border-secondary"
+  <select id="categorySelecte"
+    class="w-auto form-select select-light-arrow bg-dark text-light rounded-pill border-secondary"
     (change)="toggleFilter(($any($event.target)).value); ($any($event.target)).value = ''">
 
+
     <option value="" selected disabled>Filtrer par...</option>
+
 
     @if (!selectedFilters().includes('present')) { <option value="present">Présent(e)</option> }
     @if (!selectedFilters().includes('absent')) { <option value="absent">Absent(e)</option> }
@@ -14,8 +18,11 @@
 
   @for (filter of selectedFilters(); track filter) {
     <button type="button"
+    <button type="button"
       class="btn bg-dark text-light rounded-pill border-secondary px-3 d-inline-flex align-items-center text-nowrap">
       {{ getFilterLabel(filter) }}
+      <span class="ms-2 fw-bold text-danger-hover"
+            (click)="removeFilter(filter)"
       <span class="ms-2 fw-bold text-danger-hover"
             (click)="removeFilter(filter)"
             style="cursor:pointer; font-size: 1.2rem; line-height: 1;">
@@ -42,7 +49,7 @@
               </div>
             </div>
           </td>
-          <td class="pt-3 pb-3">Arrivé(e) le</td>
+          <td class="pt-3 pb-3"><p class="text-secondary">Arrivé(e) le <span class="fw-semibold">{{ consultant.arrival_date | date:'dd/MM/yyyy' }}</span></p></td>
           <td class="pt-3 pb-3">
             <span>
               @switch (evenement?.attendance_status) {

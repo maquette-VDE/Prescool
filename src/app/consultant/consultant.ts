@@ -3,11 +3,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersApiResponse, UserItem } from '../interfaces/userItem';
 import { UserEvent } from '../interfaces/events';
 import { RouterPagination } from '../shared/base/router-pagination.abstract';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-consultant',
   standalone: true,
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './consultant.html',
   styleUrl: './consultant.css',
 })
