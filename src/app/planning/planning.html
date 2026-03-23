@@ -12,15 +12,14 @@
       <div class="d-flex flex-column">
         <span class="fw-bold text-dark small">{{
           translateDateToFr(today, "d MMMM yyyy")
-          }}</span>
+        }}</span>
         <span class="text-muted d-none d-sm-inline" style="font-size: 0.7rem">{{
           weekRangeLabel
-          }}</span>
+        }}</span>
       </div>
     </div>
 
-    <div
-      class="week-selector d-flex align-items-center bg-black text-white rounded-pill px-3 py-1 py-md-2 mx-auto mx-md-0">
+    <div class="week-selector d-flex align-items-center bg-black text-white rounded-pill px-3 py-1 py-md-2 mx-auto mx-md-0">
       <button (click)="changeWeek(-1)" class="btn btn-link text-white p-0 me-3 shadow-none">
         <i class="bi bi-chevron-left"></i>
       </button>
@@ -33,9 +32,9 @@
     </div>
 
     <div class="position-relative">
-      <select  class="form-select custom-filter-select rounded-pill shadow-sm border pr-3"
+      <select class="form-select custom-filter-select rounded-pill shadow-sm border pr-3"
               (change)="onSpecialtyChange($event)">
-            <option value="">Toutes les spécialités</option>
+        <option value="">Toutes les spécialités</option>
         @for (speciality of specialties(); track $index) {
           <option value="{{ speciality.code }}">{{ speciality.name }}</option>
         }
@@ -45,7 +44,7 @@
     <div class="position-relative">
       <select class="form-select custom-filter-select rounded-pill shadow-sm border pr-3"
               (change)="onEventStatusChange($event)">
-          <option value="">Tous les statuts</option>
+        <option value="">Tous les statuts</option>
         @for (status of statusList; track $index) {
           <option value="{{ status[0] }}">{{ status[1] }}</option>
         }
@@ -53,46 +52,72 @@
     </div>
   </div>
 </div>
+
 <daypilot-scheduler [config]="config()" #scheduler></daypilot-scheduler>
-@if(totalPages() > 0) {
 
+@if (totalPages() > 0) {
+  <nav aria-label="Page navigation" class="d-flex justify-content-center align-items-center gap-2 mt-3">
 
-
-<div class="w-full d-flex justify-content-center py-4 border-top">
-  <div
-    class="d-flex align-items-center bg-white shadow-sm border rounded-pill px-2 py-1"
-    style="gap: 10px"
-  >
-    <button
-      (click)="goToPage(currentPage() - 1)"
+    <!-- Bouton Précédent -->
+    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
       [disabled]="currentPage() === 0"
-      class="btn btn-link text-dark p-0 d-flex align-items-center justify-content-center rounded-circle hover-bg-light"
-      style="width: 35px; height: 35px; text-decoration: none; border: none"
-    >
-      <i class="bi bi-chevron-left"></i>
+      (click)="prevPage()">
+      &lsaquo; Précédent
     </button>
 
-    <div
-      class="d-flex align-items-center px-3 border-start border-end"
-      style="height: 25px"
-    >
-      <span class="fw-bold text-primary me-1">{{ currentPage() + 1 }}</span>
-      <span class="text-muted small">/ {{ totalPages() }}</span>
-    </div>
+    <!-- Page 1 -->
+    <button class="btn btn-sm rounded"
+      [class.btn-outline-primary]="currentPage() === 0"
+      [class.btn-link]="currentPage() !== 0"
+      (click)="goToPage(0)">1</button>
 
-    <button
-      (click)="goToPage(currentPage() + 1)"
-      [disabled]="currentPage() >= totalPages() - 1"
-      class="btn btn-link text-dark p-0 d-flex align-items-center justify-content-center rounded-circle hover-bg-light"
-      style="width: 35px; height: 35px; text-decoration: none; border: none"
-    >
-      <i class="bi bi-chevron-right"></i>
+    <!-- Ellipse gauche -->
+    @if (currentPage() > 2) {
+      <span class="text-secondary">...</span>
+    }
+
+    <!-- Pages autour de la page courante -->
+    @for (p of getVisiblePages(); track p) {
+      @if (p !== 0 && p !== totalPages() - 1) {
+        <button class="btn btn-sm rounded"
+          [class.btn-outline-primary]="currentPage() === p"
+          [class.btn-link]="currentPage() !== p"
+          (click)="goToPage(p)">{{ p + 1 }}</button>
+      }
+    }
+
+    <!-- Ellipse droite -->
+    @if (currentPage() < totalPages() - 3) {
+      <span class="text-secondary">...</span>
+    }
+
+    <!-- Dernière page -->
+    @if (totalPages() > 1) {
+      <button class="btn btn-sm rounded"
+        [class.btn-outline-primary]="currentPage() === totalPages() - 1"
+        [class.btn-link]="currentPage() !== totalPages() - 1"
+        (click)="goToPage(totalPages() - 1)">{{ totalPages() }}</button>
+    }
+
+    <!-- Bouton Suivant -->
+    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+      [disabled]="currentPage() === totalPages() - 1"
+      (click)="nextPage()">
+      Suivant &rsaquo;
     </button>
-  </div>
-</div>
+
+    <!-- Sélecteur de lignes par page -->
+    <select class="form-select form-select-sm w-auto rounded-pill border-primary text-primary ms-3"
+      (change)="changePageSize(+$any($event.target).value)">
+      <option value="10">Afficher 10 lignes</option>
+      <option value="25">Afficher 25 lignes</option>
+      <option value="50">Afficher 50 lignes</option>
+    </select>
+
+  </nav>
 }
 @else {
   <div class="d-flex justify-content-center align-items-center flex-column gap-3 py-5">
-    Aucun resultat trouvé
+    Aucun résultat trouvé
   </div>
 }

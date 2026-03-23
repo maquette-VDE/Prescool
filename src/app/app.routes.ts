@@ -37,39 +37,42 @@ export const routes: Routes = [
         component: Presences,
         data: {
           title: 'La liste de présence',
-          subtitle: 'Consultez la présence des consultants',canActivate: [roleGuard]
+          subtitle: 'Consultez la présence des consultants',
+          canActivate: [roleGuard]
         }
       },
-      { 
-        path: 'dashboard', 
+      {
+        path: 'dashboard',
         component: Dashboard,
-        data: { title: 'Tableau de bord', subtitle: 'Aperçu global de votre activité' } 
+        data: { title: 'Tableau de bord', subtitle: 'Aperçu global de votre activité' }
       },
-      { 
-        path: 'annonces', 
+      {
+        path: 'annonces',
         component: Annonces,
-        data: { title: 'Tableau d’annonces', subtitle: 'Gérez les dernières actualités' } 
+        data: { title: 'Tableau d\'annonces', subtitle: 'Gérez les dernières actualités' }
       },
-      { 
-        path: 'planning', 
-        component: Planning, 
+      {
+        path: 'planning',
+        component: Planning,
         resolve: { planningData: planningResolver },
-        data: { title: 'Planning', subtitle: 'Gestion de l’emploi du temps' }
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+        data: { title: 'Planning', subtitle: 'Gestion de l\'emploi du temps' }
       },
-      { 
-        path: 'consultant', 
+      {
+        path: 'consultant',
         component: Consultant,
-        data: { title: 'Consultants', subtitle: 'Liste des membres' ,},canActivate: [instructorGuard],
+        data: { title: 'Consultants', subtitle: 'Liste des membres' },
+        canActivate: [instructorGuard],
         resolve: {
           consultants: consultantResolver,
           evenements: evenementsResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
-      { 
-        path: 'aide', 
+      {
+        path: 'aide',
         component: Aide,
-        data: { title: 'Aide', subtitle: 'Centre d’assistance' } 
+        data: { title: 'Aide', subtitle: 'Centre d\'assistance' }
       },
       { path: 'confirm-consultant', component: ConfirmeConsultant },
       {
@@ -81,9 +84,12 @@ export const routes: Routes = [
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
-      {path : 'equipes', component : Equipes, data: { title: 'Équipes', subtitle: '' } },
+      {
+        path: 'equipes',
+        component: Equipes,
+        data: { title: 'Équipes', subtitle: '' }
+      },
     ],
   },
-  // Route "catch-all" en cas d'URL inconnue
   { path: '**', redirectTo: 'error' }
 ];
