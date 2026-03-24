@@ -10,6 +10,7 @@ import { Consultant } from './consultant/consultant';
 import { Dashboard } from './dashboard/dashboard';
 import { Aide } from './aide/aide';
 import { Annonces } from './annonces/annonces';
+import { AnnonceDetail } from './annonce-detail/annonce-detail';
 import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
@@ -50,6 +51,7 @@ export const routes: Routes = [
         component: Annonces,
         data: { title: 'Tableau d’annonces', subtitle: 'Gérez les dernières actualités' } 
       },
+      { path: 'annonces/:id', component: AnnonceDetail },
       { 
         path: 'planning', 
         component: Planning, 
@@ -82,8 +84,8 @@ export const routes: Routes = [
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
       {path : 'equipes', component : Equipes, data: { title: 'Équipes', subtitle: '' } },
+      
     ],
   },
-  // Route "catch-all" en cas d'URL inconnue
   { path: '**', redirectTo: 'error' }
 ];
