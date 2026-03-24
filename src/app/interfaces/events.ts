@@ -7,7 +7,7 @@ export interface UserEvent {
   event_type: 'presence' | 'absence' | 'formation' | 'mission' | 'meeting' | 'holiday' | 'request';
   notes?: string;
   status: 'scheduled' | 'cancelled' | 'completed';
-  attendance_status: 'present' | 'absent' | 'late' | 'excused'| 'remote' | 'mission';
+  attendance_status: 'present' | 'absent' | 'late' | 'excused'| 'remote' | 'en_mission';
   all_day: boolean;
 }
 
