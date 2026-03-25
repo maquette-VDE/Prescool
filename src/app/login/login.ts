@@ -65,10 +65,10 @@ export class Login {
 
           const userRoles: UserRole[] = roles ?? [UserRole.CONSULTANT];
 
-          if (userRoles.includes(UserRole.ADMIN) || userRoles.includes(UserRole.INSTRUCTEUR)) {
+          if (userRoles.includes(UserRole.ADMIN) || userRoles.includes(UserRole.INSTRUCTEUR) || userRoles.includes(UserRole.ENCADRANT)) {
             this.router.navigateByUrl('sidenav/planning');
           }
-          else if (userRoles.includes(UserRole.CONSULTANT)) {
+          else if (userRoles.includes(UserRole.CONSULTANT) || userRoles.includes(UserRole.ETUDIANT)) {
             this.router.navigateByUrl('sidenav/presences');
           }
         });
