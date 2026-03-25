@@ -5,5 +5,5 @@ export interface UserView {
   email: string;
   code: string;
   is_active: boolean;
-  roles: string[]; // ex: ['admin']
+  roles: string[];
 }

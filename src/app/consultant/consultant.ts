@@ -29,8 +29,14 @@ export class Consultant extends RouterPagination<UsersApiResponse, UserItem> {
   // --- Filtres ---
   selectedFilters = signal<string[]>([]);
 
-  // Fournir les filtres actifs à RouterPagination
-  protected override activeFilters = this.selectedFilters;
+  // Labels pour l'affichage
+  private readonly filterLabels: Record<string, string> = {
+    'present': 'Présent(e)',
+    'absent': 'Absent(e)',
+    'en_mission': 'En mission',
+    'late': 'En retard',
+    'excused': 'Excusé(e)'
+  };
 
   // Fournir la logique de filtre à RouterPagination
   protected override filterFn = (

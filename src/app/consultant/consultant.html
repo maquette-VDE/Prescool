@@ -7,7 +7,7 @@
 
     @if (!selectedFilters().includes('present')) { <option value="present">Présent(e)</option> }
     @if (!selectedFilters().includes('absent')) { <option value="absent">Absent(e)</option> }
-    @if (!selectedFilters().includes('mission')) { <option value="mission">En mission</option> }
+    @if (!selectedFilters().includes('mission')) { <option value="en_mission">En mission</option> }
     @if (!selectedFilters().includes('late')) { <option value="late">En retard</option> }
     @if (!selectedFilters().includes('excused')) { <option value="excused">Excusé(e)</option> }
   </select>
@@ -43,14 +43,38 @@
             </div>
           </td>
           <td class="pt-3 pb-3">
-            <p class="text-secondary">Arrivé(e) le <span class="fw-semibold">{{ consultant.arrival_date | date:'dd/MM/yyyy' }}</span></p>
-          </td>
-          <td class="pt-3 pb-3">
-            <span>
-              @switch (evenement?.attendance_status) {
-                @case ('present') {
-                  <i class="bi bi-check-circle-fill me-2 text-success"></i>
-                  <span class="text-success">Présent(e)</span>
+            <div
+              [class.text-success]="evenement?.attendance_status === 'present'"
+              [class.text-danger]="evenement?.attendance_status === 'absent'"
+              [class.text-warning]="evenement?.attendance_status === 'late'"
+              [class.text-info]="evenement?.attendance_status === 'en_mission'"
+              [class.text-secondary]="evenement?.attendance_status === 'excused'"
+            >
+              <span>
+                @switch (evenement?.attendance_status) {
+                  @case ('present') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-success">Présent(e)</span>
+                  }
+                  @case ('absent') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-danger">Absent(e)</span>
+                  }
+                  @case ('en_mission') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-info">En mission</span>
+                  }
+                  @case ('excused') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-secondary">Excusé(e)</span>
+                  }
+                  @case ('late') {
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span class="text-warning">En retard</span>
+                  }
+                  @default {
+                    <span></span>
+                  }
                 }
                 @case ('absent') {
                   <i class="bi bi-x-circle-fill me-2 text-danger"></i>
@@ -75,7 +99,13 @@
             </span>
           </td>
           <td class="pt-3 pb-3">
-            <div class="d-flex gap-3 align-items-center">
+            <div class="d-flex gap-3 align-items-center"
+              [class.text-success]="evenement?.attendance_status === 'present'"
+              [class.text-danger]="evenement?.attendance_status === 'absent'"
+              [class.text-warning]="evenement?.attendance_status === 'late'"
+              [class.text-info]="evenement?.attendance_status === 'en_mission'"
+              [class.text-secondary]="evenement?.attendance_status === 'excused'"
+            >
               <i class="bi bi-phone-vibrate"
                 (mouseenter)="hoveredConsultantId.set(consultant.id)"
                 (mouseleave)="hoveredConsultantId.set(null)"></i>
