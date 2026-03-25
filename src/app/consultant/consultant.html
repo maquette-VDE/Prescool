@@ -25,10 +25,10 @@
   }
 </div>
 
-@if (filteredConsultants().length > 0) {
+@if (filteredItems().length > 0) {
   <table class="table table-hover table-sm mt-5 border-top border-bottom">
     <tbody>
-      @for (consultant of filteredConsultants(); track consultant.id) {
+      @for (consultant of filteredItems(); track consultant.id) {
         @let evenement = eventsByConsultant().get(consultant.id);
         <tr>
           <td class="pt-3 pb-3">
@@ -42,7 +42,6 @@
               </div>
             </div>
           </td>
-          <td class="pt-3 pb-3"><p class="text-secondary">Arrivé(e) le <span class="fw-semibold">{{ consultant.arrival_date | date:'dd/MM/yyyy' }}</span></p></td>
           <td class="pt-3 pb-3">
             <div
               [class.text-success]="evenement?.attendance_status === 'present'"
@@ -77,8 +76,27 @@
                     <span></span>
                   }
                 }
-              </span>
-            </div>
+                @case ('absent') {
+                  <i class="bi bi-x-circle-fill me-2 text-danger"></i>
+                  <span class="text-danger">Absent(e)</span>
+                }
+                @case ('mission') {
+                  <i class="bi bi-briefcase-fill me-2 text-info"></i>
+                  <span class="text-info">En mission</span>
+                }
+                @case ('excused') {
+                  <i class="bi bi-clock-fill me-2 text-secondary"></i>
+                  <span class="text-secondary">Excusé(e)</span>
+                }
+                @case ('late') {
+                  <i class="bi bi-hourglass-split me-2 text-warning"></i>
+                  <span class="text-warning">En retard</span>
+                }
+                @default {
+                  <span></span>
+                }
+              }
+            </span>
           </td>
           <td class="pt-3 pb-3">
             <div class="d-flex gap-3 align-items-center"
@@ -92,7 +110,7 @@
                 (mouseenter)="hoveredConsultantId.set(consultant.id)"
                 (mouseleave)="hoveredConsultantId.set(null)"></i>
               <i class="bi bi-chat-dots"></i>
-              <span class="" [class.opacity-0]="hoveredConsultantId() !== consultant.id">
+              <span [class.opacity-0]="hoveredConsultantId() !== consultant.id">
                 {{ consultant.phone_number }}
               </span>
             </div>
@@ -100,68 +118,59 @@
         </tr>
       }
     </tbody>
-</table>
+  </table>
 
-<nav aria-label="Page navigation" class="d-flex justify-content-center align-items-center gap-2 mt-3">
+  <nav aria-label="Page navigation" class="d-flex justify-content-center align-items-center gap-2 mt-3">
 
-  <!-- Bouton Précédent -->
-  <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
-    [disabled]="currentPage() === 0"
-    (click)="prevPage()">
-    &lsaquo; Précédent
-  </button>
+    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+      [disabled]="currentPage() === 0"
+      (click)="prevPage()">
+      &lsaquo; Précédent
+    </button>
 
-  <!-- Page 1 -->
-  <button class="btn btn-sm rounded"
-    [class.btn-outline-primary]="currentPage() === 0"
-    [class.btn-link]="currentPage() !== 0"
-    (click)="goToPage(0)">1</button>
-
-  <!-- Ellipse gauche -->
-  @if (currentPage() > 2) {
-    <span class="text-secondary">...</span>
-  }
-
-  <!-- Pages autour de la page courante -->
-  @for (p of getVisiblePages(); track p) {
-    @if (p !== 0 && p !== totalPages() - 1) {
-      <button class="btn btn-sm rounded"
-        [class.btn-outline-primary]="currentPage() === p"
-        [class.btn-link]="currentPage() !== p"
-        (click)="goToPage(p)">{{ p + 1 }}</button>
-    }
-  }
-
-  <!-- Ellipse droite -->
-  @if (currentPage() < totalPages() - 3) {
-    <span class="text-secondary">...</span>
-  }
-
-  <!-- Dernière page -->
-  @if (totalPages() > 1) {
     <button class="btn btn-sm rounded"
-      [class.btn-outline-primary]="currentPage() === totalPages() - 1"
-      [class.btn-link]="currentPage() !== totalPages() - 1"
-      (click)="goToPage(totalPages() - 1)">{{ totalPages() }}</button>
-  }
+      [class.btn-outline-primary]="currentPage() === 0"
+      [class.btn-link]="currentPage() !== 0"
+      (click)="goToPage(0)">1</button>
 
-  <!-- Bouton Suivant -->
-  <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
-    [disabled]="currentPage() === totalPages() - 1"
-    (click)="nextPage()">
-    Suivant &rsaquo;
-  </button>
+    @if (currentPage() > 2) {
+      <span class="text-secondary">...</span>
+    }
 
-  <!-- Sélecteur de lignes par page -->
-  <select class="form-select form-select-sm w-auto rounded-pill border-primary text-primary ms-3"
-    (change)="changePageSize(+$any($event.target).value)">
-    <option value="10">Afficher 10 lignes</option>
-    <option value="25">Afficher 25 lignes</option>
-    <option value="50">Afficher 50 lignes</option>
-  </select>
+    @for (p of getVisiblePages(); track p) {
+      @if (p !== 0 && p !== totalPages() - 1) {
+        <button class="btn btn-sm rounded"
+          [class.btn-outline-primary]="currentPage() === p"
+          [class.btn-link]="currentPage() !== p"
+          (click)="goToPage(p)">{{ p + 1 }}</button>
+      }
+    }
 
-</nav>
+    @if (currentPage() < totalPages() - 3) {
+      <span class="text-secondary">...</span>
+    }
 
+    @if (totalPages() > 1) {
+      <button class="btn btn-sm rounded"
+        [class.btn-outline-primary]="currentPage() === totalPages() - 1"
+        [class.btn-link]="currentPage() !== totalPages() - 1"
+        (click)="goToPage(totalPages() - 1)">{{ totalPages() }}</button>
+    }
+
+    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+      [disabled]="currentPage() === totalPages() - 1"
+      (click)="nextPage()">
+      Suivant &rsaquo;
+    </button>
+
+    <select class="form-select form-select-sm w-auto rounded-pill border-primary text-primary ms-3"
+      (change)="changePageSize(+$any($event.target).value)">
+      <option value="10">Afficher 10 lignes</option>
+      <option value="25">Afficher 25 lignes</option>
+      <option value="50">Afficher 50 lignes</option>
+    </select>
+
+  </nav>
 }
 @else {
   <div class="fs-5 d-flex justify-content-center mt-5 text-secondary">
