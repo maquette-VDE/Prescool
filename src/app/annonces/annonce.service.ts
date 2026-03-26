@@ -11,7 +11,7 @@ private projetsList = signal<Annonce[]>([
     description: 'Migration de l’infrastructure vers Angular 18 et optimisation des requêtes SQL.',
     imageUrl: 'images/crm-project.png',
     date: new Date('2024-03-01'),
-    categorie: 'Développement Web'
+    categorie: 'Développement Web'   
   },
   {
     id: 2,
