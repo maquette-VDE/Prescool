@@ -60,6 +60,10 @@ export class PlanningService {
               pages: users.pages,
             },
             specialties: specialities.items,
+            // ↓ Ajout pour RouterPagination
+            page:  page,
+            limit: limit,
+            pages: users.pages,
           })),
         );
       }),
@@ -97,33 +101,29 @@ export class PlanningService {
     return this.http.get(`${this.API_BASE}/specialties?limit=20`);
   }
 
-private toDayPilotDate(dateStr: string): DayPilot.Date {
-  return new DayPilot.Date(new Date(dateStr).toISOString());
-}
+  private toDayPilotDate(dateStr: string): DayPilot.Date {
+    return new DayPilot.Date(new Date(dateStr).toISOString());
+  }
 
-private mapEvents(events: UserEvent[]): DayPilot.EventData[] {
-  return events.map((event) => ({
-    id: event.id ?? DayPilot.guid(),
-    resource: event.user_id?.toString(),
-    start: this.toDayPilotDate(event.start_time),
-    end: this.toDayPilotDate(event.end_time),
-    text: event.notes || event.title || '',
-    tags: { type: event.attendance_status ?? 'present' },
-  }));
-}
+  private mapEvents(events: UserEvent[]): DayPilot.EventData[] {
+    return events.map((event) => ({
+      id: event.id ?? DayPilot.guid(),
+      resource: event.user_id?.toString(),
+      start: this.toDayPilotDate(event.start_time),
+      end: this.toDayPilotDate(event.end_time),
+      text: event.notes || event.title || '',
+      tags: { type: event.attendance_status ?? 'present' },
+    }));
+  }
 
-  private mapResources(
-  users: UserItem[],
-): DayPilot.ResourceData[] {
-  return users.map((user) => {
-    return {
+  private mapResources(users: UserItem[]): DayPilot.ResourceData[] {
+    return users.map((user) => ({
       id: user.id?.toString() ?? '',
       name: `${user.first_name}`,
       tags: {
         code: user.code ?? '',
         phone_number: user.phone_number ?? '',
       },
-    };
-  });
-}
+    }));
+  }
 }
