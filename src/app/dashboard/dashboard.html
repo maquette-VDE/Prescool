@@ -1,1 +1,57 @@
-<p>dashboard works!</p>
+<div class="stats">
+  <div
+    class="card stat-card"
+    *ngFor="let stat of stats()"
+    [ngClass]="{
+      'stat-consultants': stat.title === 'Consultants',
+      'stat-present': stat.title === 'Présents aujourd’hui',
+      'stat-absent': stat.title === 'Absents aujourd’hui',
+      'stat-late': stat.title === 'En retard',
+      'stat-annonces': stat.title === 'Annonces'
+    }"
+  >
+    <h3>{{ stat.title }}</h3>
+    <p class="value">{{ stat.value }}</p>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- ACCÈS RAPIDES -->
+  <div class="card section-card">
+    <h2>Accès rapides</h2>
+
+    <div class="quick-links">
+      <a class="quick-link" routerLink="/sidenav/consultant">
+        <span class="quick-title">Consultants</span>
+        <span class="quick-subtitle">Voir la liste complète</span>
+      </a>
+
+      <a class="quick-link" routerLink="/sidenav/presences">
+        <span class="quick-title">Présences</span>
+        <span class="quick-subtitle">Consulter les présences</span>
+      </a>
+
+      <a class="quick-link" routerLink="/sidenav/planning">
+        <span class="quick-title">Planning</span>
+        <span class="quick-subtitle">Voir l’emploi du temps</span>
+      </a>
+
+      <a class="quick-link" routerLink="/sidenav/annonces">
+        <span class="quick-title">Annonces</span>
+        <span class="quick-subtitle">Voir toutes les actualités</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ANNONCES -->
+  <div class="card section-card">
+    <h2>Dernières annonces</h2>
+
+    <div *ngFor="let a of annonces().slice(0, 3)" class="item item-column">
+      <div class="annonce-title">{{ a.titre }}</div>
+      <small class="annonce-category">{{ a.categorie }}</small>
+    </div>
+
+    <button class="btn" routerLink="/sidenav/annonces">Voir tout</button>
+  </div>
+</div>
