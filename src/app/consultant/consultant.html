@@ -5,11 +5,11 @@
 
     <option value="" selected disabled>Filtrer par...</option>
 
-    @if (!selectedFilters().includes('present')) { <option value="present">Présent(e)</option> }
-    @if (!selectedFilters().includes('absent')) { <option value="absent">Absent(e)</option> }
-    @if (!selectedFilters().includes('mission')) { <option value="en_mission">En mission</option> }
-    @if (!selectedFilters().includes('late')) { <option value="late">En retard</option> }
-    @if (!selectedFilters().includes('excused')) { <option value="excused">Excusé(e)</option> }
+    @if (!selectedFilters().includes('present'))   { <option value="present">Présent(e)</option> }
+    @if (!selectedFilters().includes('absent'))    { <option value="absent">Absent(e)</option> }
+    @if (!selectedFilters().includes('en_mission')){ <option value="en_mission">En mission</option> }
+    @if (!selectedFilters().includes('late'))      { <option value="late">En retard</option> }
+    @if (!selectedFilters().includes('excused'))   { <option value="excused">Excusé(e)</option> }
   </select>
 
   @for (filter of selectedFilters(); track filter) {
@@ -57,46 +57,27 @@
                     <span class="text-success">Présent(e)</span>
                   }
                   @case ('absent') {
-                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <i class="bi bi-x-circle-fill me-2"></i>
                     <span class="text-danger">Absent(e)</span>
                   }
                   @case ('en_mission') {
-                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <i class="bi bi-briefcase-fill me-2"></i>
                     <span class="text-info">En mission</span>
                   }
                   @case ('excused') {
-                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <i class="bi bi-clock-fill me-2"></i>
                     <span class="text-secondary">Excusé(e)</span>
                   }
                   @case ('late') {
-                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <i class="bi bi-hourglass-split me-2"></i>
                     <span class="text-warning">En retard</span>
                   }
                   @default {
                     <span></span>
                   }
                 }
-                @case ('absent') {
-                  <i class="bi bi-x-circle-fill me-2 text-danger"></i>
-                  <span class="text-danger">Absent(e)</span>
-                }
-                @case ('mission') {
-                  <i class="bi bi-briefcase-fill me-2 text-info"></i>
-                  <span class="text-info">En mission</span>
-                }
-                @case ('excused') {
-                  <i class="bi bi-clock-fill me-2 text-secondary"></i>
-                  <span class="text-secondary">Excusé(e)</span>
-                }
-                @case ('late') {
-                  <i class="bi bi-hourglass-split me-2 text-warning"></i>
-                  <span class="text-warning">En retard</span>
-                }
-                @default {
-                  <span></span>
-                }
-              }
-            </span>
+              </span>
+            </div>
           </td>
           <td class="pt-3 pb-3">
             <div class="d-flex gap-3 align-items-center"
