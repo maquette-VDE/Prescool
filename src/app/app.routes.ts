@@ -39,26 +39,36 @@ export const routes: Routes = [
         data: {
           title: 'La liste de présence',
           subtitle: 'Consultez la présence des consultants',
-          canActivate: [roleGuard]
-        }
+          canActivate: [roleGuard],
+        },
       },
       {
         path: 'dashboard',
         component: Dashboard,
-        data: { title: 'Tableau de bord', subtitle: 'Aperçu global de votre activité' }
+        resolve: {
+          consultants: consultantResolver,
+        },
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+        data: {
+          title: 'Tableau de bord',
+          subtitle: 'Aperçu global de votre activité',
+        },
       },
       {
         path: 'annonces',
         component: Annonces,
-        data: { title: 'Tableau d\'annonces', subtitle: 'Gérez les dernières actualités' }
+        data: {
+          title: "Tableau d'annonces",
+          subtitle: 'Gérez les dernières actualités',
+        },
       },
       { path: 'annonces/:id', component: AnnonceDetail },
-      { 
-        path: 'planning', 
-        component: Planning, 
+      {
+        path: 'planning',
+        component: Planning,
         resolve: { planningData: planningResolver },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-        data: { title: 'Planning', subtitle: 'Gestion de l\'emploi du temps' }
+        data: { title: 'Planning', subtitle: "Gestion de l'emploi du temps" },
       },
       {
         path: 'consultant',
@@ -74,7 +84,7 @@ export const routes: Routes = [
       {
         path: 'aide',
         component: Aide,
-        data: { title: 'Aide', subtitle: 'Centre d\'assistance' }
+        data: { title: 'Aide', subtitle: "Centre d'assistance" },
       },
       { path: 'confirm-consultant', component: ConfirmeConsultant },
       {
@@ -86,9 +96,12 @@ export const routes: Routes = [
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
-      {path : 'equipes', component : Equipes, data: { title: 'Équipes', subtitle: '' } },
-      
+      {
+        path: 'equipes',
+        component: Equipes,
+        data: { title: 'Équipes', subtitle: '' },
+      },
     ],
   },
-  { path: '**', redirectTo: 'error' }
+  { path: '**', redirectTo: 'error' },
 ];
