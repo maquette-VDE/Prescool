@@ -36,10 +36,10 @@
           (click)="isMenuOpen = !isMenuOpen">
 
           <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white fw-bold shadow-sm"
-            style="width: 42px; 
-         height: 42px; 
-         font-size: 0.9rem; 
-         background-color: #000 !important; 
+            style="width: 42px;
+         height: 42px;
+         font-size: 0.9rem;
+         background-color: #000 !important;
          flex-shrink: 0;">
             {{ userInitials }}
           </div>
@@ -57,11 +57,11 @@
             style="right: 0; top: 100%; min-width: 200px; z-index: 9999 !important; position: absolute !important;"
             [style.display]="isMenuOpen ? 'block' : 'none'">
             <li class="d-flex flex-column align-items-center text-center">
-              <div class="rounded-circle d-flex align-items-center justify-content-center mb-2 shadow-sm" style="width: 60px; 
-              height: 60px; 
-              background-color: #000 !important; 
-              color: #FFF !important; 
-              font-weight: bold; 
+              <div class="rounded-circle d-flex align-items-center justify-content-center mb-2 shadow-sm" style="width: 60px;
+              height: 60px;
+              background-color: #000 !important;
+              color: #FFF !important;
+              font-weight: bold;
               font-size: 1.1rem;">
                 {{ userInitials }}
               </div>
@@ -99,39 +99,85 @@
         </div>
 
         <div class="modal-body p-4 bg-white">
-          <form class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label fw-semibold mb-1">Prénom</label>
-              <input type="text" [(ngModel)]="currentUser.first_name" name="first_name" placeholder="Ex: Jean"
-                class="form-control form-control-sm border-0 shadow-sm" style="background:#FFFFFF;" />
-            </div>
+  <form class="row g-3" [formGroup]="userForm" (ngSubmit)="saveProfile()">
 
-            <div class="col-md-6 mb-3">
-              <label class="form-label fw-semibold mb-1 d-block">Nom</label>
-              <input type="text" [(ngModel)]="currentUser.last_name" name="last_name" placeholder="Ex: Dupont"
-                class="form-control form-control-sm border-0 shadow-sm w-100 custom-input-style" />
-            </div>
+    <div class="col-md-6">
+      <label class="form-label fw-semibold mb-1">Prénom</label>
+      <input type="text" formControlName="first_name" placeholder="Ex: Jean"
+        class="form-control form-control-sm border-0 shadow-sm" style="background:#FFFFFF;" />
+      @if (hasError('first_name', 'required')) {
+        <div class="text-danger small mt-1">Le prénom est obligatoire.</div>
+      }
+    </div>
 
-            <div class="col-md-6">
-              <label class="form-label fw-semibold mb-1">Email</label>
-              <input type="email" [(ngModel)]="currentUser.email" name="email" placeholder="exemple@mail.com"
-                class="form-control form-control-sm border-0 shadow-sm" />
-            </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label fw-semibold mb-1 d-block">Nom</label>
+      <input type="text" formControlName="last_name" placeholder="Ex: Dupont"
+        class="form-control form-control-sm border-0 shadow-sm w-100 custom-input-style" />
+      @if (hasError('last_name', 'required')) {
+        <div class="text-danger small mt-1">Le nom est obligatoire.</div>
+      }
+    </div>
 
-            <div class="col-md-6">
-              <label class="form-label fw-semibold mb-1">Téléphone</label>
-              <input type="text" [(ngModel)]="currentUser.phone_number" name="phone_number" placeholder="Ex: +33..."
-                class="form-control form-control-sm border-0 shadow-sm" />
-            </div>
+    <div class="col-md-6">
+      <label class="form-label fw-semibold mb-1">Email</label>
+      <input type="email" formControlName="email" placeholder="exemple@mail.com"
+        class="form-control form-control-sm border-0 shadow-sm" />
+      @if (hasError('email', 'email')) {
+        <div class="text-danger small mt-1">L'adresse email n'est pas valide.</div>
+      }
+    </div>
 
-            <div class="col-12">
-              <label class="form-label fw-semibold mb-1">Nouveau mot de passe</label>
-              <input type="password" [(ngModel)]="currentUser.password" name="password"
-                placeholder="Laisser vide pour ne pas modifier"
-                class="form-control form-control-sm border-primary shadow-sm" />
-            </div>
-          </form>
+    <div class="col-md-6">
+      <label class="form-label fw-semibold mb-1">Téléphone</label>
+      <input type="text" formControlName="phone_number" placeholder="Ex: +33..."
+        class="form-control form-control-sm border-0 shadow-sm" />
+    </div>
+
+    <div class="col-12 mb-3">
+      <label class="form-label fw-bold">Ancien mot de passe</label>
+      <input type="password" formControlName="oldPassword"
+        class="form-control border-primary" placeholder="Saisissez l'actuel">
+
+      @if (errorMessage) {
+        <div class="text-danger small mt-1">
+          <i class="bi bi-exclamation-triangle"></i> {{ errorMessage }}
         </div>
+      }
+    </div>
+
+    <div [style.filter]="userForm.get('oldPassword')?.invalid ? 'blur(4px)' : 'none'"
+         [style.pointer-events]="userForm.get('oldPassword')?.invalid ? 'none' : 'auto'"
+         [style.transition]="'0.3s opacity, 0.3s filter'">
+
+      <div class="col-12 mb-3">
+        <label class="form-label fw-bold">Nouveau mot de passe</label>
+        <input type="password" formControlName="newPassword"
+          (paste)="$event.preventDefault()"
+          class="form-control border-primary" placeholder="Interdiction de coller">
+        @if (hasError('newPassword', 'minlength')) {
+          <div class="text-danger small mt-1">Le mot de passe doit contenir au moins 8 caractères.</div>
+        }
+      </div>
+
+      <div class="col-12 mb-3">
+        <label class="form-label fw-bold">Confirmer le nouveau</label>
+        <input type="password" formControlName="confirmPassword"
+          (paste)="$event.preventDefault()"
+          class="form-control border-primary" placeholder="Saisissez à nouveau">
+
+        @if (userForm.hasError('passwordMismatch') && userForm.get('confirmPassword')?.touched) {
+          <div class="text-danger small mt-1">
+            Les nouveaux mots de passe ne sont pas identiques.
+          </div>
+        }
+      </div>
+    </div>
+
+
+
+  </form>
+</div>
 
         <div class="modal-footer border-0 pb-4 bg-white d-flex justify-content-center gap-3">
 

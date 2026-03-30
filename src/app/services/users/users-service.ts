@@ -15,6 +15,7 @@ export class UsersService {
       .pipe(map((response) => response as UsersApiResponse));
   }
 
+
   normalize(str: string) {
     return str
       .replace(/^"+|"+$/g, '') // supprimer guillemets au début et à la fin
@@ -24,6 +25,7 @@ export class UsersService {
       .trim() // enlever espaces
       .toLowerCase(); // insensible à la casse
   }
+
 }
 
 
