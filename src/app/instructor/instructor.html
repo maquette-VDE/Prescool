@@ -24,7 +24,7 @@
               [class.text-success]="evenement?.attendance_status === 'present'"
               [class.text-danger]="evenement?.attendance_status === 'absent'"
               [class.text-warning]="evenement?.attendance_status === 'late'"
-              [class.text-info]="evenement?.attendance_status === 'mission'"
+              [class.text-info]="evenement?.attendance_status === 'en_mission'"
               [class.text-secondary]="evenement?.attendance_status === 'excused'"
             >
               <i class="bi bi-phone-vibrate"
@@ -43,25 +43,21 @@
 
   <nav aria-label="Page navigation" class="d-flex justify-content-center align-items-center gap-2 mt-3">
 
-    <!-- Bouton Précédent -->
     <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
       [disabled]="currentPage() === 0"
       (click)="prevPage()">
       &lsaquo; Précédent
     </button>
 
-    <!-- Page 1 -->
     <button class="btn btn-sm rounded"
       [class.btn-outline-primary]="currentPage() === 0"
       [class.btn-link]="currentPage() !== 0"
       (click)="goToPage(0)">1</button>
 
-    <!-- Ellipse gauche -->
     @if (currentPage() > 2) {
       <span class="text-secondary">...</span>
     }
 
-    <!-- Pages autour de la page courante -->
     @for (p of getVisiblePages(); track p) {
       @if (p !== 0 && p !== totalPages() - 1) {
         <button class="btn btn-sm rounded"
@@ -71,12 +67,10 @@
       }
     }
 
-    <!-- Ellipse droite -->
     @if (currentPage() < totalPages() - 3) {
       <span class="text-secondary">...</span>
     }
 
-    <!-- Dernière page -->
     @if (totalPages() > 1) {
       <button class="btn btn-sm rounded"
         [class.btn-outline-primary]="currentPage() === totalPages() - 1"
@@ -84,14 +78,12 @@
         (click)="goToPage(totalPages() - 1)">{{ totalPages() }}</button>
     }
 
-    <!-- Bouton Suivant -->
     <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
       [disabled]="currentPage() === totalPages() - 1"
       (click)="nextPage()">
       Suivant &rsaquo;
     </button>
 
-    <!-- Sélecteur de lignes par page -->
     <select class="form-select form-select-sm w-auto rounded-pill border-primary text-primary ms-3"
       (change)="changePageSize(+$any($event.target).value)">
       <option value="10">Afficher 10 lignes</option>
