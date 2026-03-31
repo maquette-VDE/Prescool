@@ -1,7 +1,11 @@
 <div class="presences-wrapper">
 
+  <!-- =======================================================
+       TOOLBAR
+       ======================================================= -->
   <div class="d-flex flex-wrap align-items-center gap-3 px-3 py-2">
 
+    <!-- 1. Pilule date (NOV / 21 + texte) -->
     <div class="d-flex align-items-center gap-2">
       <div class="bg-light border rounded-3 text-center px-2 py-1" style="min-width: 42px; line-height: 1.1">
         <div class="text-uppercase text-muted fw-semibold" style="font-size: 0.6rem">
@@ -21,8 +25,10 @@
       </div>
     </div>
 
+    <!-- Séparateur -->
     <div class="vr d-none d-md-block mx-1" style="height: 32px"></div>
 
+    <!-- 2. Navigation période (< Novembre 2025 >) -->
     <div class="d-flex align-items-center border rounded-pill px-2 py-1 gap-1 bg-white shadow-sm">
       <button class="btn btn-link btn-sm p-0 px-1 text-dark shadow-none" type="button" (click)="navigate(-1)">
         <i class="bi bi-chevron-left" style="font-size: 0.8rem"></i>
@@ -35,6 +41,7 @@
       </button>
     </div>
 
+    <!-- 3. Filtre Présent(e) / Absent(e) -->
     <button class="btn btn-light border rounded-pill px-3 py-1 shadow-sm d-flex align-items-center gap-2"
             type="button"
             (click)="openStatusModal(null)"
@@ -43,6 +50,7 @@
       <i class="bi bi-chevron-down" style="font-size: 0.75rem"></i>
     </button>
 
+    <!-- 4. Navigation Aujourd'hui (< Aujourd'hui >) -->
     <div class="d-flex align-items-center border rounded-pill px-2 py-1 gap-1 bg-white shadow-sm">
       <button class="btn btn-link btn-sm p-0 px-1 text-dark shadow-none" type="button" (click)="navigate(-1)">
         <i class="bi bi-chevron-left" style="font-size: 0.8rem"></i>
@@ -58,6 +66,7 @@
       </button>
     </div>
 
+    <!-- Switch vue (optionnel, discret) -->
     <div class="d-flex align-items-center border rounded-pill overflow-hidden shadow-sm" style="font-size: 0.82rem">
       <button class="btn btn-sm px-3 py-1 rounded-0 border-0"
               [class.btn-dark]="currentView === 'month'"
@@ -73,8 +82,10 @@
       </button>
     </div>
 
+    <!-- Spacer -->
     <div class="flex-grow-1 d-none d-lg-block"></div>
 
+    <!-- 5. Bouton Ajouter -->
     <button class="btn btn-dark rounded-pill px-4 py-2 fw-semibold shadow-sm text-nowrap"
             type="button"
             (click)="openCreateDialog()"
@@ -85,20 +96,45 @@
   </div>
 
 
+  <!-- =======================================================
+       CALENDRIER
+       ======================================================= -->
   <div class="px-3 pb-3">
-    <div class="border rounded-3 overflow-hidden shadow-sm">
 
+    <!-- Message d'erreur -->
+    @if (errorMsg) {
+      <div class="alert alert-danger alert-dismissible d-flex align-items-center gap-2 mb-2 py-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ errorMsg }}</span>
+        <button type="button" class="btn-close btn-sm ms-auto" (click)="errorMsg = null"></button>
+      </div>
+    }
+
+    <!-- Spinner de chargement -->
+    @if (isLoading) {
+      <div class="d-flex justify-content-center align-items-center py-4">
+        <div class="spinner-border text-secondary" role="status" style="width: 1.5rem; height: 1.5rem">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <span class="ms-2 text-muted small">Chargement des présences…</span>
+      </div>
+    }
+
+    <div class="border rounded-3 overflow-hidden shadow-sm" [class.opacity-50]="isLoading">
       @if (currentView === 'month') {
         <daypilot-month [config]="monthConfig()" #month></daypilot-month>
       }
       @if (currentView === 'week') {
         <daypilot-calendar [config]="weekConfig()" #week></daypilot-calendar>
       }
-
     </div>
+
   </div>
 
 
+  <!-- =======================================================
+       MODAL STATUT
+       ======================================================= -->
   <div class="status-modal-overlay" *ngIf="statusModal.isOpen" (click)="closeStatusModal()">
     <div class="status-modal-content" (click)="$event.stopPropagation()">
 
@@ -171,6 +207,10 @@
     </div>
   </div>
 
+
+  <!-- =======================================================
+       MODAL SUPPRESSION
+       ======================================================= -->
   <div class="delete-modal-overlay" *ngIf="deleteModal.isOpen" (click)="closeDeleteModal()">
     <div class="delete-modal-content" (click)="$event.stopPropagation()">
       <div class="delete-modal-header">
