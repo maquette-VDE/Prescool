@@ -36,10 +36,10 @@ export const routes: Routes = [
       {
         path: 'presences',
         component: Presences,
+        canActivate: [roleGuard],
         data: {
           title: 'La liste de présence',
           subtitle: 'Consultez la présence des consultants',
-          canActivate: [roleGuard],
         },
       },
       {
@@ -47,6 +47,7 @@ export const routes: Routes = [
         component: Dashboard,
         resolve: {
           consultants: consultantResolver,
+          evenements: evenementsResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
         data: {
