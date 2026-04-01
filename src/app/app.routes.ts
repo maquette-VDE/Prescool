@@ -47,7 +47,6 @@ export const routes: Routes = [
         component: Dashboard,
         resolve: {
           consultants: consultantResolver,
-          evenements: evenementsResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
         data: {
