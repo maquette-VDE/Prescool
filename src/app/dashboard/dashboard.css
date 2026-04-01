@@ -75,6 +75,10 @@
   background: linear-gradient(180deg, #ffffff 0%, #fffaf0 100%);
 }
 
+.stat-rate {
+  background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+}
+
 .stat-annonces {
   background: linear-gradient(180deg, #ffffff 0%, #f7f7ff 100%);
 }

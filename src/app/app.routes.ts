@@ -15,12 +15,13 @@ import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
 import { consultantResolver } from './resolvers/consultant/consultant-resolver';
-import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { Erreur } from './erreur/erreur';
 import { Equipes } from './equipes/equipes';
 import { Instructor } from './instructor/instructor';
 import { instructorGuard } from './guards/instructor-guard';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
+import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
+import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -46,9 +47,10 @@ export const routes: Routes = [
         path: 'dashboard',
         component: Dashboard,
         resolve: {
-          consultants: consultantResolver,
+          dashboardStats: dashboardResolver,
+          evenements: dashboardEvenementsResolver
         },
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+        runGuardsAndResolvers: 'always',
         data: {
           title: 'Tableau de bord',
           subtitle: 'Aperçu global de votre activité',
@@ -77,7 +79,7 @@ export const routes: Routes = [
         canActivate: [instructorGuard],
         resolve: {
           consultants: consultantResolver,
-          evenements: evenementsResolver,
+          evenements: dashboardEvenementsResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
@@ -92,7 +94,7 @@ export const routes: Routes = [
         component: Instructor,
         resolve: {
           instructors: instructorsResolver,
-          evenements: evenementsResolver,
+          evenements: dashboardEvenementsResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
