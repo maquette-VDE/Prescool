@@ -28,7 +28,7 @@ import { AuthService } from '../services/auth/auth.service';
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
 
-  // N'oublie pas d'ajouter les styles ici ou dans un fichier .css
+
 })
 export class HeaderComponent implements OnInit {
   private userService = inject(UserService);
@@ -57,18 +57,17 @@ export class HeaderComponent implements OnInit {
   };
 
   currentTitle: string = 'Chargement...';
-  currentSubtitle: string = ''; // Nouvelle variable pour le sous-titre
+  currentSubtitle: string = '';
 
-  public oldPassword: string = ''; // Pour vérifier l'ancien
-  public newPassword: string = ''; // Pour stocker le nouveau
+  public oldPassword: string = '';
+  public newPassword: string = '';
   public confirmPassword: string = '';
   private fb = inject(FormBuilder);
   public userForm!: FormGroup;
   public errorMessage: string = '';
 
   ngOnInit() {
-    // 1. Charger l'utilisateur
-
+    //  Charger l'utilisateur
     this.userService.getUserMe().subscribe({
       next: (data) => {
         this.currentUser = data;
@@ -76,15 +75,18 @@ export class HeaderComponent implements OnInit {
       },
       error: (err) => console.error('Erreur header:', err),
     });
+    setTimeout(() => {
+  this.userForm.get('oldPassword')?.setValue('');
+}, 100);
 
-    // 1. Initialiser la structure vide
+    //  Initialiser la structure vide
     this.userForm = this.fb.group(
       {
         first_name: ['', Validators.required],
         last_name: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         phone_number: [''],
-        //oldPassword: ['', Validators.required],
+        oldPassword: ['', Validators.required],
         newPassword: ['', [Validators.minLength(8)]],
         confirmPassword: [''],
       },
@@ -94,7 +96,6 @@ export class HeaderComponent implements OnInit {
     this.userService.getUserMe().subscribe({
       next: (data) => {
         this.currentUser = data;
-        // On injecte les données dans le formulaire
         this.userForm.patchValue({
           first_name: data.first_name,
           last_name: data.last_name,
@@ -106,7 +107,7 @@ export class HeaderComponent implements OnInit {
       error: (err) => console.error('Erreur header:', err),
     });
 
-    // 2. Fonction de mise à jour (Titre + Route actuelle)
+    //  Fonction de mise à jour (Titre + Route actuelle)
     const updateData = (route: ActivatedRoute) => {
       let activeRoute = route;
       while (activeRoute.firstChild) {
@@ -116,15 +117,12 @@ export class HeaderComponent implements OnInit {
       const data = activeRoute.snapshot.data;
       this.currentTitle = data['title'] || 'Application';
       this.currentSubtitle = data['subtitle'] || '';
-
-      // Mise à jour de Linkroute pour ton @if du HTML
-      // On récupère le dernier segment de l'URL
       this.Linkroute = this.router.url.split('/').pop() || '';
 
       this.cdr.detectChanges();
     };
 
-    // 3. Appels initiaux et écouteur
+    //  Appels initiaux et écouteur
     updateData(this.activatedRoute);
 
     this.router.events
@@ -179,7 +177,7 @@ export class HeaderComponent implements OnInit {
 
   saveProfile() {
     if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched(); // Force l'affichage des erreurs rouges
+      this.userForm.markAllAsTouched();
       return;
     }
 
@@ -187,10 +185,9 @@ export class HeaderComponent implements OnInit {
     this.isUpdating = true;
     this.errorMessage = '';
 
-    // ÉTAPE 1 : On vérifie l'ancien mot de passe via le Login
+    // Vérification de l'ancien mot de passe via le Login
     this.authService.login(this.currentUser.email, val.oldPassword).subscribe({
       next: () => {
-        // ÉTAPE 2 : Si OK, on lance la mise à jour avec les données du formulaire
         this.procederAMiseAJour(val);
       },
       error: (err: any) => {
@@ -209,7 +206,6 @@ export class HeaderComponent implements OnInit {
       is_active: this.currentUser.is_active ?? true,
     };
 
-    // On ajoute le password seulement s'il a été saisi
     if (formData.newPassword && formData.newPassword.trim() !== '') {
       profileData.password = formData.newPassword;
     }
@@ -218,7 +214,7 @@ export class HeaderComponent implements OnInit {
       next: (res: any) => {
         this.isUpdating = false;
         this.showSuccess = true;
-        this.userForm.reset(); // On vide tout
+        this.userForm.reset();
         this.closeWithDelay();
       },
       error: (err: any) => {

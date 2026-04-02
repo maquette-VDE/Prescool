@@ -136,7 +136,7 @@
 
     <div class="col-12 mb-3">
       <label class="form-label fw-bold">Ancien mot de passe</label>
-      <input type="password" formControlName="oldPassword"
+      <input type="password" formControlName="oldPassword"  autocomplete="one-time-code"
         class="form-control border-primary" placeholder="Saisissez l'actuel">
 
       @if (errorMessage) {
@@ -146,7 +146,7 @@
       }
     </div>
 
-    <div [style.filter]="userForm.get('oldPassword')?.invalid ? 'blur(4px)' : 'none'"
+    <div [style.filter]="userForm.get('oldPassword')?.invalid ? 'blur(1px)' : 'none'"
          [style.pointer-events]="userForm.get('oldPassword')?.invalid ? 'none' : 'auto'"
          [style.transition]="'0.3s opacity, 0.3s filter'">
 
@@ -154,7 +154,7 @@
         <label class="form-label fw-bold">Nouveau mot de passe</label>
         <input type="password" formControlName="newPassword"
           (paste)="$event.preventDefault()"
-          class="form-control border-primary" placeholder="Interdiction de coller">
+          class="form-control border-primary" placeholder="Interdiction de coller"  autocomplete="one-time-code">
         @if (hasError('newPassword', 'minlength')) {
           <div class="text-danger small mt-1">Le mot de passe doit contenir au moins 8 caractères.</div>
         }
@@ -164,7 +164,7 @@
         <label class="form-label fw-bold">Confirmer le nouveau</label>
         <input type="password" formControlName="confirmPassword"
           (paste)="$event.preventDefault()"
-          class="form-control border-primary" placeholder="Saisissez à nouveau">
+          class="form-control border-primary" placeholder="Saisissez à nouveau"  autocomplete="one-time-code">
 
         @if (userForm.hasError('passwordMismatch') && userForm.get('confirmPassword')?.touched) {
           <div class="text-danger small mt-1">
