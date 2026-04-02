@@ -35,7 +35,7 @@ export class PresenceService {
     this.eventsSignal().filter((e) => e.date === today)
   );
 
-  presentCountToday = computed(() =>
+  presentCountToday = computed(() =>    
     this.todayEvents().filter((e) => e.type === 'present').length
   );
 
@@ -44,6 +44,6 @@ export class PresenceService {
   );
 
   lateCountToday = computed(() =>
-    this.todayEvents().filter((e) => e.type === 'late').length
+    this.todayEvents().filter((e) => e.type === 'late').length   
   );
 }

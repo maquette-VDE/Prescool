@@ -3,16 +3,29 @@
     class="card stat-card"
     *ngFor="let stat of stats()"
     [ngClass]="{
-      'stat-consultants': stat.title === 'Consultants',
+      'stat-consultants': stat.title === 'Consultants&Etudiants',
       'stat-present': stat.title === 'Présents aujourd’hui',
       'stat-absent': stat.title === 'Absents aujourd’hui',
       'stat-late': stat.title === 'En retard',
+      'stat-noevent': stat.title === 'Sans pointage',
       'stat-rate': stat.title === 'Taux de présence',
       'stat-annonces': stat.title === 'Annonces'
     }"
   >
     <h3>{{ stat.title }}</h3>
     <p class="value">{{ stat.value }}</p>
+  </div>
+</div>
+
+<!-- section pour le camembert -->
+<div class="bottom-grid">
+  <div class="card section-card">
+    <h2>Présence aujourd’hui</h2>
+
+    <div class="chart-wrapper">
+      <!-- AJOUT : canvas utilisé par Chart.js -->
+      <canvas #pieCanvas></canvas>
+    </div>
   </div>
 </div>
 
@@ -56,3 +69,4 @@
     <button class="btn" routerLink="/sidenav/annonces">Voir tout</button>
   </div>
 </div>
+

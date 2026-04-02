@@ -75,6 +75,10 @@
   background: linear-gradient(180deg, #ffffff 0%, #fffaf0 100%);
 }
 
+.stat-noevent {
+  background: linear-gradient(180deg, #ffffff 0%, #fef3c7 100%);
+}
+
 .stat-rate {
   background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
 }
@@ -162,6 +166,20 @@
   background: #1d4ed8;
 }
 
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* AJOUT : taille du conteneur du camembert */
+.chart-wrapper {
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
+
 @media (max-width: 1400px) {
   .stats {
     grid-template-columns: repeat(3, minmax(180px, 1fr));
@@ -191,11 +209,16 @@
     font-size: 36px;
   }
 
+
   .card {
     padding: 20px;
   }
 
   .card h2 {
     font-size: 22px;
+  }
+
+  .chart-wrapper {
+    height: 260px;
   }
 }

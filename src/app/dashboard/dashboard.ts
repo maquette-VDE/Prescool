@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, computed, effect, inject, OnDestroy  } from '@angular/core';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Chart, registerables } from 'chart.js';
 
 import { AnnonceService } from '../annonces/annonce.service';
 import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolver';
 import { UserEvent } from '../interfaces/events';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
@@ -14,9 +17,14 @@ import { UserEvent } from '../interfaces/events';
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
 })
-export class Dashboard {
+export class Dashboard implements AfterViewInit, OnDestroy {
   private annonceService = inject(AnnonceService);
   private route = inject(ActivatedRoute);
+
+  @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
+
+  chart: Chart<'pie', number[], string> | null = null; // AJOUT : instance du graphique
+  private chartReady = false;
 
   annonces = this.annonceService.getAnnonces();
 
@@ -104,9 +112,16 @@ export class Dashboard {
   absentCount = computed(() => this.statusCounts().absent);
   lateCount = computed(() => this.statusCounts().late);
 
+  // AJOUT : personnes sans événement aujourd'hui
+noEventCount = computed(() => {
+  const count = this.consultantsTotal() - this.latestEventByUser().size;
+  return count > 0 ? count : 0;
+});
+
   attendanceRate = computed(() => {
     const total = this.consultantsTotal();
-    const presents = this.presentCount();
+
+    const presents = this.presentCount() + this.lateCount();
 
     if (total === 0) {
       return 0;
@@ -116,12 +131,78 @@ export class Dashboard {
   });
 
 
+
+
   stats = computed(() => [
     { title: 'Consultants&Etudiants', value: this.consultantsTotal() },
     { title: 'Présents aujourd’hui', value: this.presentCount() },
     { title: 'Absents aujourd’hui', value: this.absentCount() },
     { title: 'En retard', value: this.lateCount() },
+    { title: 'Sans pointage', value: this.noEventCount() },
     { title: 'Taux de présence', value: this.attendanceRate() + ' %' },
     { title: 'Annonces', value: this.annonces().length }
   ]);
+
+  constructor() {
+    // dès que statusCounts change, on met à jour le camembert
+    effect(() => {
+      const counts = this.statusCounts();
+
+      if (!this.chartReady || !this.chart) {
+        return;
+      }
+
+      this.chart.data.datasets[0].data = [
+        counts.present,
+        counts.absent,
+        counts.late,
+        this.noEventCount()
+      ];
+
+      this.chart.update();
+    });
+  }
+
+  // AJOUT : Angular appelle ça après affichage du HTML
+  ngAfterViewInit(): void {
+    this.createChart();
+    this.chartReady = true;
+  }
+
+  // AJOUT : création du graphique camembert
+  createChart(): void {
+    const counts = this.statusCounts();
+    const noEvent = this.noEventCount();
+
+    this.chart = new Chart(this.pieCanvas.nativeElement, {
+      type: 'pie',
+      data: {
+        labels: ['Présent', 'Absent', 'Retard', 'Sans pointage'],
+        datasets: [
+          {
+            data: [counts.present, counts.absent, counts.late, noEvent],
+            backgroundColor: ['#22c55e', '#ef4444', '#f59e0b', '#9ca3af'], // AJOUT : couleurs du camembert
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  }
+
+  // AJOUT : destruction propre du graphique quand on quitte la page
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+    }
+  }
 }
