@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersApiResponse, UserItem } from '../interfaces/userItem';
 import { UserEvent } from '../interfaces/events';
@@ -15,6 +15,7 @@ export class Consultant extends RouterPagination<UsersApiResponse, UserItem> {
 
   // --- Données brutes ---
   private consultantRouteData = toSignal(this.route.data);
+  private consultantQueryParams = toSignal(this.route.queryParams);
 
   protected override routeDataSignal = computed(
     () => this.consultantRouteData()?.['consultants'] as UsersApiResponse
@@ -37,6 +38,24 @@ export class Consultant extends RouterPagination<UsersApiResponse, UserItem> {
     const event = eventsMap.get(item.id);
     return !!event && filters.includes(event.attendance_status);
   };
+
+
+  constructor() {
+    super();
+
+    effect(() => {
+      const status = this.consultantQueryParams()?.['status'];
+
+      if (!status || typeof status !== 'string') {
+        this.selectedFilters.set([]);
+        return;
+      }
+
+      if (!this.selectedFilters().includes(status)) {
+        this.selectedFilters.set([status]);
+      }
+    });
+  }
 
   // --- UI ---
   hoveredConsultantId = signal<number | null>(null);
