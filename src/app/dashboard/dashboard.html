@@ -2,17 +2,59 @@
   <div
     class="card stat-card"
     *ngFor="let stat of stats()"
+    (click)="openStat(stat.key)"
     [ngClass]="{
-      'stat-consultants': stat.title === 'Consultants',
-      'stat-present': stat.title === 'Présents aujourd’hui',
-      'stat-absent': stat.title === 'Absents aujourd’hui',
-      'stat-late': stat.title === 'En retard',
-      'stat-rate': stat.title === 'Taux de présence',
-      'stat-annonces': stat.title === 'Annonces'
+      'stat-consultants': stat.key === 'consultants',
+    'stat-present': stat.key === 'present',
+    'stat-absent': stat.key === 'absent',
+    'stat-late': stat.key === 'late',
+    'stat-annonces': stat.key === 'annonces'
     }"
   >
     <h3>{{ stat.title }}</h3>
     <p class="value">{{ stat.value }}</p>
+  </div>
+</div>
+
+ <!--  donut taux de présence -->
+<div class="bottom-grid">
+  <!-- Donut -->
+  <div class="card section-card">
+    <h2>Taux de présence</h2>
+
+    <div class="donut-wrapper">
+      <canvas #donutCanvas></canvas>
+      <div class="donut-center">
+        {{ attendanceRate() }}%
+      </div>
+    </div>
+
+    <div class="donut-legend">
+      <div class="legend-item">
+        <span class="legend-color present"></span>
+        <span>Présents</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color absent"></span>
+        <span>Absents</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color late"></span>
+        <span>Retards</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color no-event"></span>
+        <span>Sans pointage</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Courbe -->
+  <div class="card section-card">
+    <h2>Évolution des présences</h2>
+    <div class="line-chart-wrapper">
+      <canvas #lineCanvas></canvas>
+    </div>
   </div>
 </div>
 
@@ -56,3 +98,4 @@
     <button class="btn" routerLink="/sidenav/annonces">Voir tout</button>
   </div>
 </div>
+

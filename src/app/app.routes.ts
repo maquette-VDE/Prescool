@@ -22,6 +22,7 @@ import { instructorGuard } from './guards/instructor-guard';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
 import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
+import { dashboardWeeklyResolver } from './resolvers/dashboard/dashboard-weekly-resolver';
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -48,7 +49,8 @@ export const routes: Routes = [
         component: Dashboard,
         resolve: {
           dashboardStats: dashboardResolver,
-          evenements: dashboardEvenementsResolver
+          evenements: dashboardEvenementsResolver,
+          weeklyStats: dashboardWeeklyResolver,
         },
         runGuardsAndResolvers: 'always',
         data: {
@@ -80,6 +82,7 @@ export const routes: Routes = [
         resolve: {
           consultants: consultantResolver,
           evenements: dashboardEvenementsResolver,
+          weeklyStats: dashboardWeeklyResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
