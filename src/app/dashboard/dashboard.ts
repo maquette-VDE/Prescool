@@ -58,35 +58,17 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   activeTodayEvents = computed(() => {
     const now = new Date();
 
-    const startOfDayUtc = new Date(
-      Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate(),
-        0,
-        0,
-        0,
-        0,
-      ),
-    );
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
 
-    const endOfDayUtc = new Date(
-      Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate(),
-        23,
-        59,
-        59,
-        999,
-      ),
-    );
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
 
     return this.evenements().filter((event) => {
       const eventStart = new Date(event.start_time);
       const eventEnd = new Date(event.end_time);
 
-      return eventStart <= endOfDayUtc && eventEnd >= startOfDayUtc;
+      return eventStart <= endOfDay && eventEnd >= startOfDay;
     });
   });
 
@@ -112,35 +94,42 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     return map;
   });
 
-  statusCounts = computed(() => {
-    let present = 0;
-    let absent = 0;
-    let late = 0;
+  statusCounts = computed(() => ({
+    present: this.presentCount(),
+    absent: this.absentCount(),
+    late: this.lateCount(),
+  }));
 
-    this.latestEventByUser().forEach((event) => {
-      const status = event.attendance_status;
-
-      if (status === 'late') {
-        late++;
-      } else if (status === 'present' || status === 'en_mission') {
-        present++;
-      } else if (status === 'absent' || status === 'excused') {
-        absent++;
-      }
-    });
-
-    return { present, absent, late };
-  });
-
-  presentCount = computed(() => this.statusCounts().present);
-  absentCount = computed(() => this.statusCounts().absent);
-  lateCount = computed(() => this.statusCounts().late);
+  presentCount = computed(() => this.dashboardStats()?.presentTotal ?? 0);
+  absentCount = computed(() => this.dashboardStats()?.absentTotal ?? 0);
+  lateCount = computed(() => this.dashboardStats()?.lateTotal ?? 0);
 
   // AJOUT : personnes sans événement aujourd'hui
   noEventCount = computed(() => {
-    const count = this.consultantsTotal() - this.latestEventByUser().size;
+    const count =
+      this.consultantsTotal() -
+      this.presentCount() -
+      this.absentCount() -
+      this.lateCount();
     return count > 0 ? count : 0;
   });
+
+  weeklyStats = computed(
+    () =>
+      this.dashboardRouteData()?.['weeklyStats'] as {
+        labels: string[];
+        presentData: number[];
+        absentData: number[];
+        lateData: number[];
+      },
+  );
+
+  weeklyPresenceData = computed(() => ({
+    labels: this.weeklyStats()?.labels ?? ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'],
+    presentData: this.weeklyStats()?.presentData ?? [0, 0, 0, 0, 0],
+    absentData: this.weeklyStats()?.absentData ?? [0, 0, 0, 0, 0],
+    lateData: this.weeklyStats()?.lateData ?? [0, 0, 0, 0, 0],
+  }));
 
   attendanceRate = computed(() => {
     const total = this.consultantsTotal();
@@ -195,21 +184,30 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   ]);
 
   constructor() {
-  effect(() => {
-    const counts = this.statusCounts();
-    const noEvent = this.noEventCount();
+    effect(() => {
+      const counts = this.statusCounts();
+      const noEvent = this.noEventCount();
+      const weeklyData = this.weeklyPresenceData();
 
-    if (this.chartReady && this.donutChart) {
-      this.donutChart.data.datasets[0].data = [
-        counts.present,
-        counts.absent,
-        counts.late,
-        noEvent
-      ];
-      this.donutChart.update();
-    }
-  });
-}
+      if (this.chartReady && this.donutChart) {
+        this.donutChart.data.datasets[0].data = [
+          counts.present,
+          counts.absent,
+          counts.late,
+          noEvent,
+        ];
+        this.donutChart.update();
+      }
+
+      if (this.chartReady && this.lineChart) {
+        this.lineChart.data.labels = weeklyData.labels;
+        this.lineChart.data.datasets[0].data = weeklyData.presentData;
+        this.lineChart.data.datasets[1].data = weeklyData.absentData;
+        this.lineChart.data.datasets[2].data = weeklyData.lateData;
+        this.lineChart.update();
+      }
+    });
+  }
 
   // AJOUT : Angular appelle ça après affichage du HTML
   ngAfterViewInit(): void {
@@ -219,101 +217,98 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   }
 
   createDonutChart(): void {
-  const counts = this.statusCounts();
-  const noEvent = this.noEventCount();
+    const counts = this.statusCounts();
+    const noEvent = this.noEventCount();
 
-  this.donutChart = new Chart(this.donutCanvas.nativeElement, {
-    type: 'doughnut',
-    data: {
-      labels: ['Présents', 'Absents', 'Retards', 'Sans pointage'],
-      datasets: [
-        {
-          data: [
-            counts.present,
-            counts.absent,
-            counts.late,
-            noEvent
-          ],
-          backgroundColor: ['#22c55e', '#ef4444', '#f59e0b', '#9ca3af'],
-          borderWidth: 0
-        }
-      ]
-    },
-    options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  cutout: '70%',
-  interaction: {
-    mode: 'nearest',
-    intersect: true
-  },
-  plugins: {
-    legend: {
-      display: false
-    },
-    tooltip: {
-      enabled: true,
-      callbacks: {
-        label: (context) => {
-          const total = this.consultantsTotal();
-          const value = Number(context.raw ?? 0);
-          const percent = total === 0 ? 0 : Math.round((value / total) * 100);
-
-          return `${context.label} : ${value} (${percent}%)`;
-        }
-      }
-    }
-  }
-}
-  });
-}
-
-
-createLineChart(): void {
-  this.lineChart = new Chart(this.lineCanvas.nativeElement, {
-    type: 'line',
-    data: {
-      labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'],
-      datasets: [
-        {
-          label: 'Présents',
-          data: [120, 130, 125, 140, 135],
-          borderColor: '#22c55e',
-          backgroundColor: 'rgba(34,197,94,0.2)',
-          tension: 0.3
+    this.donutChart = new Chart(this.donutCanvas.nativeElement, {
+      type: 'doughnut',
+      data: {
+        labels: ['Présents', 'Absents', 'Retards', 'Sans pointage'],
+        datasets: [
+          {
+            data: [counts.present, counts.absent, counts.late, noEvent],
+            backgroundColor: ['#22c55e', '#ef4444', '#f59e0b', '#9ca3af'],
+            borderWidth: 0,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        interaction: {
+          mode: 'nearest',
+          intersect: true,
         },
-        {
-          label: 'Absents',
-          data: [20, 18, 22, 15, 17],
-          borderColor: '#ef4444',
-          backgroundColor: 'rgba(239,68,68,0.2)',
-          tension: 0.3
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: (context) => {
+                const total = this.consultantsTotal();
+                const value = Number(context.raw ?? 0);
+                const percent =
+                  total === 0 ? 0 : Math.round((value / total) * 100);
+
+                return `${context.label} : ${value} (${percent}%)`;
+              },
+            },
+          },
         },
-        {
-          label: 'Retards',
-          data: [5, 7, 4, 6, 3],
-          borderColor: '#f59e0b',
-          backgroundColor: 'rgba(245,158,11,0.2)',
-          tension: 0.3
-        }
-      ]
-    },
-    options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'bottom'
-    }
-  },
-  scales: {
-    y: {
-      beginAtZero: true
-    }
+      },
+    });
   }
-}
-  });
-}
+
+  createLineChart(): void {
+    const weeklyData = this.weeklyPresenceData();
+
+    this.lineChart = new Chart(this.lineCanvas.nativeElement, {
+      type: 'line',
+      data: {
+        labels: weeklyData.labels,
+        datasets: [
+          {
+            label: 'Présents',
+            data: weeklyData.presentData,
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34,197,94,0.2)',
+            tension: 0.3,
+          },
+          {
+            label: 'Absents',
+            data: weeklyData.absentData,
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239,68,68,0.2)',
+            tension: 0.3,
+          },
+          {
+            label: 'Retards',
+            data: weeklyData.lateData,
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245,158,11,0.2)',
+            tension: 0.3,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }
 
   openStat(statKey: string): void {
     if (statKey === 'consultants') {
@@ -352,6 +347,10 @@ createLineChart(): void {
     if (this.donutChart) {
       this.donutChart.destroy();
       this.donutChart = null;
+    }
+    if (this.lineChart) {
+      this.lineChart.destroy();
+      this.lineChart = null;
     }
   }
 }
