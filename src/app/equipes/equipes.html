@@ -1,1 +1,113 @@
-<p>equipes works!</p>
+<div class="container-fluid my-4 px-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h2 class="fw-bold text-dark h4">Projets</h2>
+    <button class="btn btn-dark rounded-pill px-4 shadow-sm" (click)="openCreateModal()">
+      <i class="bi bi-plus-lg me-1"></i> Créer un projet
+    </button>
+  </div>
+
+  <div class="d-flex gap-2 mb-4 align-items-center">
+    <div class="position-relative" style="width: 250px;">
+      <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+      <input type="text"
+             class="form-control ps-5 rounded-pill border"
+             placeholder="Rechercher des projets"
+             (input)="onSearch($event)"
+             style="background-color: #f8f9fa; border-color: #dee2e6; font-size: 0.9rem;">
+    </div>
+    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-medium">État <i class="bi bi-chevron-down ms-1"></i></button>
+    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-medium">Propriétaire <i class="bi bi-chevron-down ms-1"></i></button>
+  </div>
+
+  <div class="bg-white rounded-3 shadow-sm border overflow-hidden">
+    @if (isLoading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-secondary" role="status"></div>
+        <p class="mt-2 text-muted small">Chargement des projets...</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr class="text-uppercase text-muted border-bottom" style="font-size: 0.75rem; letter-spacing: 0.05em; background-color: #fdfdfd;">
+              <th class="ps-4 py-3 border-0">Nom</th>
+              <th class="py-3 border-0 text-center">État</th>
+              <th class="py-3 border-0 text-center">Actif</th>
+            <!--   <th class="py-3 border-0 text-center">Date cible</th> -->
+              <th class="pe-4 py-3 border-0 text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of filteredProjects(); track p.id) {
+              <tr class="align-middle border-bottom" style="cursor: pointer;">
+                <td class="ps-4 py-3">
+                  <div class="d-flex align-items-center">
+                    <div class="rounded-circle me-3 d-flex align-items-center justify-content-center text-muted shadow-sm"
+                         style="width: 32px; height: 32px; background-color: #e9ecef; font-size: 0.8rem; font-weight: bold;">
+                      {{ p.name.substring(0,2).toUpperCase() }}
+                    </div>
+                    <span class="fw-bold text-dark">{{ p.name }}</span>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <span class="badge rounded-pill px-3 py-1 text-uppercase"
+                        [ngClass]="p.status === 'active' || p.status === 'EN COURS' ? 'bg-success-subtle text-success' : 'bg-light text-dark border'"
+                        style="font-size: 0.65rem; font-weight: 700;">
+                    {{ p.status }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <i class="bi" [ngClass]="p.is_active ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted'"></i>
+                </td>
+             <!--   <td class="text-center text-muted small">-- -- ----</td>  -->
+                <td class="pe-4 text-end">
+                  <button class="btn btn-link text-muted p-0 hover-bg-light"><i class="bi bi-three-dots"></i></button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center py-5 text-muted">
+                  <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                  Aucun projet trouvé
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+<div class="modal fade" id="createProjectModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div class="modal-header border-0 ps-4 pt-4">
+        <h5 class="fw-bold text-dark">Nouveau projet</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form [formGroup]="projectForm" (ngSubmit)="saveProject()">
+        <div class="modal-body px-4">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">NOM DU PROJET</label>
+            <input type="text" class="form-control bg-light border-0 py-2 rounded- pill" formControlName="name" placeholder="Entrez le nom...">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">STATUT INITIAL</label>
+            <select class="form-select bg-light border-0 rounded-pill" formControlName="status">
+              <option value="EN ATTENTE">En attente</option>
+              <option value="EN COURS">En cours</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer border-0 p-4">
+          <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-dark rounded-pill px-4" [disabled]="projectForm.invalid">
+            Créer le projet
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
