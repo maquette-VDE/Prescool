@@ -1,83 +1,143 @@
 <div class="presences-wrapper">
 
-
   <!-- =======================================================
-       SECTION : Toolbar (Date + Filtre + Recherche + Actions)
+       TOOLBAR
        ======================================================= -->
-  <section class="presences-toolbar">
+  <div class="d-flex flex-wrap align-items-center gap-3 px-3 py-2">
 
-    <!-- ---------- PARTIE GAUCHE : DATE + FILTRE ---------- -->
-    <div class="presences-toolbar-left">
-
-      <!-- Pilule : Date principale (dynamique) -->
-      <button class="pill pill-date-main" type="button">
-        <div class="pill-date-box">
-          <span class="pill-date-month-abbr">{{ currentWeek.monthAbbr }}</span>
-          <span class="pill-date-day">{{ currentWeek.dayOfMonth }}</span>
+    <!-- 1. Pilule date (NOV / 21 + texte) -->
+    <div class="d-flex align-items-center gap-2">
+      <div class="bg-light border rounded-3 text-center px-2 py-1" style="min-width: 42px; line-height: 1.1">
+        <div class="text-uppercase text-muted fw-semibold" style="font-size: 0.6rem">
+          {{ monthAbbr }}
         </div>
-        <span class="pill-date-meta">
-          <span class="pill-date-month">{{ currentWeek.dayOfMonth }} {{ currentWeek.monthName }} {{ currentWeek.yearName }}</span>
-          <span class="pill-date-range">{{ currentWeek.startDate }} – {{ currentWeek.endDate }}</span>
+        <div class="fw-bold text-dark" style="font-size: 1.1rem">
+          {{ dayOfMonth }}
+        </div>
+      </div>
+      <div class="d-flex flex-column">
+        <span class="fw-bold text-dark" style="font-size: 0.9rem">
+          {{ dayOfMonth }} {{ monthName }} {{ yearName }}
         </span>
-      </button>
-
-      <!-- Pilule : Filtre (statique pour l'instant) -->
-      <button class="pill pill-filter" type="button" (click)="openStatusModal(null)">
-      <span class="pill-text">Présent(e) / Absent(e)</span>
-        <span class="pill-chevron">▾</span>
-      </button>
-
+        <span class="text-muted" style="font-size: 0.72rem">
+          {{ periodLabel }}
+        </span>
+      </div>
     </div>
 
+    <!-- Séparateur -->
+    <div class="vr d-none d-md-block mx-1" style="height: 32px"></div>
 
-    <!-- ---------- PARTIE CENTRALE : RECHERCHE ---------- -->
-     <div class="presences-view-switch">
-      <button class="btn btn-primary" [class.active]="currentView === 'dayGridMonth'" (click)="switchToMonth()">Mois</button>
-      <button class="btn btn-primary" [class.active]="currentView === 'timeGridWeek'" (click)="switchToWeek()">Semaine</button>
-    </div>
-
-
-    <!-- ---------- PARTIE DROITE : ACTIONS ---------- -->
-    <div class="presences-toolbar-right">
-      <button class="btn-secondary" type="button">
-        Aujourd’hui
+    <!-- 2. Navigation période (< Novembre 2025 >) -->
+    <div class="d-flex align-items-center border rounded-pill px-2 py-1 gap-1 bg-white shadow-sm">
+      <button class="btn btn-link btn-sm p-0 px-1 text-dark shadow-none" type="button" (click)="navigate(-1)">
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem"></i>
       </button>
-
-      <!-- 🔥 ACTION : Ajouter un événement -->
-      <button class="btn-primary" type="button" (click)="openCreateDialog()">
-        + Ajouter un événement
+      <span class="fw-medium text-dark text-nowrap" style="font-size: 0.85rem; min-width: 110px; text-align: center">
+        {{ periodNavLabel }}
+      </span>
+      <button class="btn btn-link btn-sm p-0 px-1 text-dark shadow-none" type="button" (click)="navigate(1)">
+        <i class="bi bi-chevron-right" style="font-size: 0.8rem"></i>
       </button>
     </div>
 
-  </section>
+    <!-- 3. Filtre Présent(e) / Absent(e) -->
+    <button class="btn btn-light border rounded-pill px-3 py-1 shadow-sm d-flex align-items-center gap-2"
+            type="button"
+            (click)="openStatusModal(null)"
+            style="font-size: 0.85rem; font-weight: 500">
+      Présent(e) / Absent(e)
+      <i class="bi bi-chevron-down" style="font-size: 0.75rem"></i>
+    </button>
+
+    <!-- 4. Navigation Aujourd'hui (< Aujourd'hui >) -->
+    <div class="d-flex align-items-center border rounded-pill px-2 py-1 gap-1 bg-white shadow-sm">
+      <button class="btn btn-link btn-sm p-0 px-1 text-dark shadow-none" type="button" (click)="navigate(-1)">
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem"></i>
+      </button>
+      <button class="btn btn-link btn-sm p-0 px-2 text-dark shadow-none fw-medium text-nowrap"
+              type="button"
+              (click)="goToToday()"
+              style="font-size: 0.85rem">
+        Aujourd'hui
+      </button>
+      <button class="btn btn-link btn-sm p-0 px-1 text-dark shadow-none" type="button" (click)="navigate(1)">
+        <i class="bi bi-chevron-right" style="font-size: 0.8rem"></i>
+      </button>
+    </div>
+
+    <!-- Switch vue (optionnel, discret) -->
+    <div class="d-flex align-items-center border rounded-pill overflow-hidden shadow-sm" style="font-size: 0.82rem">
+      <button class="btn btn-sm px-3 py-1 rounded-0 border-0"
+              [class.btn-dark]="currentView === 'month'"
+              [class.btn-light]="currentView !== 'month'"
+              type="button" (click)="switchView('month')">
+        Mois
+      </button>
+      <button class="btn btn-sm px-3 py-1 rounded-0 border-0"
+              [class.btn-dark]="currentView === 'week'"
+              [class.btn-light]="currentView !== 'week'"
+              type="button" (click)="switchView('week')">
+        Semaine
+      </button>
+    </div>
+
+    <!-- Spacer -->
+    <div class="flex-grow-1 d-none d-lg-block"></div>
+
+    <!-- 5. Bouton Ajouter -->
+    <button class="btn btn-dark rounded-pill px-4 py-2 fw-semibold shadow-sm text-nowrap"
+            type="button"
+            (click)="openCreateDialog()"
+            style="font-size: 0.85rem">
+      + Ajouter un événement
+    </button>
+
+  </div>
 
 
   <!-- =======================================================
-       SECTION : Calendrier (carte + FullCalendar)
+       CALENDRIER
        ======================================================= -->
-  <section class="presences-calendar-container">
-    <div class="calendar-card">
+  <div class="px-3 pb-3">
 
-      <!-- 🔥 FullCalendar Angular
-           IMPORTANT :
-           - #calendar : permet à Angular d'accéder au composant
-           - deepChangeDetection="true" : recommandé par la doc
-      -->
-      <full-calendar
-        #calendar
-        [options]="calendarOptions"
-        [deepChangeDetection]="true"
-      ></full-calendar>
+    <!-- Message d'erreur -->
+    @if (errorMsg) {
+      <div class="alert alert-danger alert-dismissible d-flex align-items-center gap-2 mb-2 py-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ errorMsg }}</span>
+        <button type="button" class="btn-close btn-sm ms-auto" (click)="errorMsg = null"></button>
+      </div>
+    }
 
+    <!-- Spinner de chargement -->
+    @if (isLoading) {
+      <div class="d-flex justify-content-center align-items-center py-4">
+        <div class="spinner-border text-secondary" role="status" style="width: 1.5rem; height: 1.5rem">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <span class="ms-2 text-muted small">Chargement des présences…</span>
+      </div>
+    }
+
+    <div class="border rounded-3 overflow-hidden shadow-sm" [class.opacity-50]="isLoading">
+      @if (currentView === 'month') {
+        <daypilot-month [config]="monthConfig()" #month></daypilot-month>
+      }
+      @if (currentView === 'week') {
+        <daypilot-calendar [config]="weekConfig()" #week></daypilot-calendar>
+      }
     </div>
-  </section>
+
+  </div>
+
+
   <!-- =======================================================
-       SECTION : Modal Statut de Présence
+       MODAL STATUT
        ======================================================= -->
   <div class="status-modal-overlay" *ngIf="statusModal.isOpen" (click)="closeStatusModal()">
     <div class="status-modal-content" (click)="$event.stopPropagation()">
 
-      <!-- En-tête du modal -->
       <div class="status-modal-header">
         <h2 class="status-modal-title">
           {{ isFilterMode ? 'Filtrer les présences' : 'Statut de présence' }}
@@ -85,105 +145,61 @@
         <button class="status-modal-close" type="button" (click)="closeStatusModal()">✕</button>
       </div>
 
-      <!-- Corps du modal -->
       <div class="status-modal-body">
-
-        <!-- Boutons de sélection du statut -->
         <div class="status-buttons-group">
-
-          <!-- Bouton Présent(e) -->
-          <button
-            class="status-button status-button-present"
+          <button class="status-button status-button-present"
             [class.active]="statusModal.selectedStatus === 'present'"
-            (click)="selectStatus('present')"
-            type="button"
-          >
+            (click)="selectStatus('present')" type="button">
             <span class="status-icon">✓</span>
             <span class="status-label">Présent(e)</span>
           </button>
-
-          <!-- Bouton En retard -->
-          <button
-            class="status-button status-button-late"
+          <button class="status-button status-button-late"
             [class.active]="statusModal.selectedStatus === 'late'"
-            (click)="selectStatus('late')"
-            type="button"
-          >
+            (click)="selectStatus('late')" type="button">
             <span class="status-icon">⏱</span>
             <span class="status-label">En retard</span>
           </button>
-
-          <!-- Bouton Absent(e) -->
-          <button
-            class="status-button status-button-absent"
+          <button class="status-button status-button-absent"
             [class.active]="statusModal.selectedStatus === 'absent'"
-            (click)="selectStatus('absent')"
-            type="button"
-          >
+            (click)="selectStatus('absent')" type="button">
             <span class="status-icon">✕</span>
             <span class="status-label">Absent(e)</span>
           </button>
-
         </div>
 
-        <!-- Champs supplémentaires selon le statut -->
         <div class="status-modal-fields" *ngIf="statusModal.selectedStatus">
-
           <div *ngIf="statusModal.selectedStatus === 'present'" class="status-field">
             <label class="status-field-label">
-              <input type="checkbox" [(ngModel)]="statusModal.depart" />Départ anticipé
+              <input type="checkbox" [(ngModel)]="statusModal.depart" /> Départ anticipé
             </label>
-
-              <label *ngIf="statusModal.depart" class="status-field-label">
-                Heure de départ :
-                <input type="time" class="status-field-input" [(ngModel)]="statusModal.heureDepart" />
-              </label>
+            <label *ngIf="statusModal.depart" class="status-field-label">
+              Heure de départ :
+              <input type="time" class="status-field-input" [(ngModel)]="statusModal.heureDepart" />
+            </label>
           </div>
-
-          <!-- Pour "En retard" : champ heure d'arrivée -->
           <div *ngIf="statusModal.selectedStatus === 'late'" class="status-field">
             <label class="status-field-label">Heure d'arrivée</label>
-            <input
-              type="time"
-              class="status-field-input"
-              [(ngModel)]="statusModal.lateTime"
-              placeholder="09:00"
-            />
+            <input type="time" class="status-field-input" [(ngModel)]="statusModal.lateTime" placeholder="09:00" />
           </div>
-
-          <!-- Pour "Absent(e)" et "En retard" : champ raison -->
           <div *ngIf="statusModal.selectedStatus === 'absent' || statusModal.selectedStatus === 'late'" class="status-field">
             <label class="status-field-label">
               {{ statusModal.selectedStatus === 'absent' ? 'Raison de mon absence' : 'Raison de mon retard' }}
             </label>
-            <input
-              type="text"
-              class="status-field-input"
+            <input type="text" class="status-field-input"
               [(ngModel)]="statusModal.reason"
-              [placeholder]="statusModal.selectedStatus === 'absent' ? 'ex: maladie' : 'ex: rendez-vous'"
-            />
+              [placeholder]="statusModal.selectedStatus === 'absent' ? 'ex: maladie' : 'ex: rendez-vous'" />
           </div>
-
         </div>
-
       </div>
 
-      <!-- Pied de page du modal -->
       <div class="status-modal-footer">
-        <button
-          class="status-modal-btn status-modal-btn-cancel"
-          type="button"
-          (click)="closeStatusModal()"
-        >
+        <button class="status-modal-btn status-modal-btn-cancel" type="button" (click)="closeStatusModal()">
           Annuler
         </button>
-        <button
-          class="status-modal-btn status-modal-btn-confirm"
-          [class.disabled]="!statusModal.selectedStatus"
-          type="button"
-          (click)="confirmStatus()"
+        <button class="status-modal-btn status-modal-btn-confirm"
           [disabled]="!statusModal.selectedStatus"
-        >
+          [class.disabled]="!statusModal.selectedStatus"
+          type="button" (click)="confirmStatus()">
           Terminer
         </button>
       </div>
@@ -191,47 +207,27 @@
     </div>
   </div>
 
+
   <!-- =======================================================
-       SECTION : Modal Suppression d'Événement
+       MODAL SUPPRESSION
        ======================================================= -->
   <div class="delete-modal-overlay" *ngIf="deleteModal.isOpen" (click)="closeDeleteModal()">
     <div class="delete-modal-content" (click)="$event.stopPropagation()">
-
-      <!-- En-tête du modal -->
       <div class="delete-modal-header">
         <h2 class="delete-modal-title">Supprimer l'événement</h2>
         <button class="delete-modal-close" type="button" (click)="closeDeleteModal()">✕</button>
       </div>
-
-      <!-- Corps du modal -->
       <div class="delete-modal-body">
-        <p class="delete-modal-message">
-          Êtes-vous sûr(e) de vouloir supprimer cet événement ?
-        </p>
+        <p class="delete-modal-message">Êtes-vous sûr(e) de vouloir supprimer cet événement ?</p>
         <div class="delete-modal-event-info">
           <span class="delete-modal-event-label">Événement :</span>
           <span class="delete-modal-event-title">{{ deleteModal.eventTitle }}</span>
         </div>
       </div>
-
-      <!-- Pied de page du modal -->
       <div class="delete-modal-footer">
-        <button
-          class="delete-modal-btn delete-modal-btn-cancel"
-          type="button"
-          (click)="closeDeleteModal()"
-        >
-          Annuler
-        </button>
-        <button
-          class="delete-modal-btn delete-modal-btn-confirm"
-          type="button"
-          (click)="confirmDelete()"
-        >
-          Supprimer
-        </button>
+        <button class="delete-modal-btn delete-modal-btn-cancel" type="button" (click)="closeDeleteModal()">Annuler</button>
+        <button class="delete-modal-btn delete-modal-btn-confirm" type="button" (click)="confirmDelete()">Supprimer</button>
       </div>
-
     </div>
   </div>
 
