@@ -91,8 +91,7 @@
     <h2>Dernières annonces</h2>
 
     <div *ngFor="let a of annonces().slice(0, 3)" class="item item-column">
-      <div class="annonce-title">{{ a.titre }}</div>
-      <small class="annonce-category">{{ a.categorie }}</small>
+      <div class="annonce-title">{{ a.Titre }}</div>
     </div>
 
     <button class="btn" routerLink="/sidenav/annonces">Voir tout</button>

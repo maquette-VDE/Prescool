@@ -1,8 +1,13 @@
 export interface Annonce {
   id: number;
-  titre: string;
-  description: string;
-  imageUrl: string;
-  date: Date;
-  categorie: string;
+  Titre: string;
+  slug: string;
+  Contenu: ContentBlock[];
+}
+
+export interface ContentBlock {
+  __component: string;
+  texte?: any; 
+  Photo?: any[];
+  url?: string;
 }

@@ -1,36 +1,24 @@
 <div class="d-flex min-vh-100 bg-white">
-    
+
   <!-- SIDEBAR DESKTOP -->
-  <aside
-    class="d-none d-lg-flex flex-column border-end bg-white"
-    style="width: 300px; position: sticky; top: 0; height: 100vh;"
-  >
+  <aside class="d-none d-lg-flex flex-column border-end bg-white"
+    style="width: 300px; position: sticky; top: 0; height: 100vh;">
     <ng-container *ngTemplateOutlet="navContent"></ng-container>
   </aside>
 
   <!-- CONTENU -->
   <div class="flex-grow-1 d-flex flex-column">
     <main class="content-area">
-    <div class="header-outer-wrapper p-0"> 
+      <div class="header-outer-wrapper p-0">
         <app-header></app-header>
-    </div>
+      </div>
     </main>
     <!-- NAVBAR MOBILE -->
     <nav class="navbar navbar-light bg-white d-lg-none px-3 border-bottom">
-      <button
-        class="btn p-0"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#mobileMenu"
-      >
+      <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
         <i class="bi bi-list fs-3"></i>
       </button>
-      <img
-        src="prescool.jpeg"
-        alt="logo"
-        style="height: 30px;"
-        class="ms-2"
-      />
+      <img src="prescool.jpeg" alt="logo" style="height: 30px;" class="ms-2" />
     </nav>
 
     <main class="p-4 flex-grow-1">
@@ -40,18 +28,9 @@
 </div>
 
 <!-- OFFCANVAS MOBILE -->
-<div
-  class="offcanvas offcanvas-start d-lg-none"
-  tabindex="-1"
-  id="mobileMenu"
-  style="width: 260px"
->
+<div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileMenu" style="width: 260px">
   <div class="offcanvas-header justify-content-end p-2">
-    <button
-      type="button"
-      class="btn-close shadow-none"
-      data-bs-dismiss="offcanvas"
-    ></button>
+    <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body p-0">
     <ng-container *ngTemplateOutlet="navContent"></ng-container>
@@ -75,49 +54,44 @@
     <ul class="nav flex-column gap-2">
       <!-- Dashboard -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-ui-radios-grid', label: 'Tableau de bord' }"
-      ></ng-container>
+        *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-ui-radios-grid', label: 'Tableau de bord' }"></ng-container>
 
       <!-- Consultant -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'consultant', icon: 'bi-person', label: 'Consultant' }"
-      ></ng-container>
+        *ngTemplateOutlet="navItem; context: { route: 'consultant', icon: 'bi-person', label: 'Consultant' }"></ng-container>
 
       <!-- Planning (admin/instructor) -->
       @if (hasRole('admin') || hasRole('instructor')) {
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'planning', icon: 'bi-check2-square', label: 'Planning' }"
-      ></ng-container>
+        *ngTemplateOutlet="navItem; context: { route: 'planning', icon: 'bi-check2-square', label: 'Planning' }"></ng-container>
       }
 
       <!-- Présences (student/consultant) -->
       @if (hasRole('student') || hasRole('consultant')) {
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"
-      ></ng-container>
+        *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"></ng-container>
       }
 
       <!-- Annonces -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'annonces', icon: 'bi-chat-right-dots', label: 'Annonces' }"
-      ></ng-container>
+  *ngTemplateOutlet="navItem; context: { 
+    route: '/sidenav/annonces', 
+    icon: 'bi-chat-right-dots', 
+    label: 'Annonces' 
+  }"
+></ng-container>
 
       <!-- Aide -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"
-      ></ng-container>
+        *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"></ng-container>
 
       <!-- Equipes -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'equipes', icon: 'bi-people-fill', label: 'Equipes' }"
-      ></ng-container>
+        *ngTemplateOutlet="navItem; context: { route: 'equipes', icon: 'bi-people-fill', label: 'Equipes' }"></ng-container>
 
       <!-- Logout -->
       <li class="nav-item mt-4">
-        <a
-          class="nav-link d-flex align-items-center gap-3 text-muted"
-          (click)="onLogout()"
-        >
+        <a class="nav-link d-flex align-items-center gap-3 text-muted" (click)="onLogout()">
           <i class="bi bi-box-arrow-left"></i>
           <span>Se déconnecter</span>
         </a>
@@ -129,13 +103,8 @@
 <!-- NAV ITEM TEMPLATE -->
 <ng-template #navItem let-route="route" let-icon="icon" let-label="label">
   <li class="nav-item">
-    <a
-      class="nav-link d-flex align-items-center gap-3 text-muted"
-      [routerLink]="route"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: false }"
-      data-bs-dismiss="offcanvas"
-    >
+    <a class="nav-link d-flex align-items-center gap-3 text-muted" [routerLink]="route" routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: false }" data-bs-dismiss="offcanvas">
       <i class="bi {{ icon }}"></i>
       <span>{{ label }}</span>
     </a>

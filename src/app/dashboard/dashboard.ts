@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+<<<<<<< Updated upstream
 import {
   AfterViewInit,
   Component,
@@ -18,6 +19,15 @@ import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolve
 import { UserEvent } from '../interfaces/events';
 
 Chart.register(...registerables);
+=======
+import { Component, computed, inject } from '@angular/core';
+import { RouterModule, ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop'; // Bien importé !
+
+import { AnnouncementService } from '../services/announcement/announcement.service';
+import { PresenceService } from '../services/presence.service';
+import { UsersApiResponse } from '../interfaces/userItem';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-dashboard',
@@ -26,8 +36,14 @@ Chart.register(...registerables);
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
 })
+<<<<<<< Updated upstream
 export class Dashboard implements AfterViewInit, OnDestroy {
   private annonceService = inject(AnnonceService);
+=======
+export class Dashboard {
+  private annonceService = inject(AnnouncementService);
+  private presenceService = inject(PresenceService);
+>>>>>>> Stashed changes
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -38,7 +54,9 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   donutChart: Chart<'doughnut', number[], string> | null = null;
   private chartReady = false;
 
-  annonces = this.annonceService.getAnnonces();
+  // --- CORRECTION ICI ---
+  // On transforme l'Observable en Signal avec une valeur vide [] par défaut
+  annonces = toSignal(this.annonceService.getAnnonces(), { initialValue: [] });
 
   private dashboardRouteData = toSignal(this.route.data);
 
@@ -168,6 +186,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   });
 
   stats = computed(() => [
+<<<<<<< Updated upstream
     {
       key: 'consultants',
       title: 'Consultants&Etudiants',
@@ -181,6 +200,13 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     { key: 'absent', title: 'Absents aujourd’hui', value: this.absentCount() },
     { key: 'late', title: 'En retard', value: this.lateCount() },
     { key: 'annonces', title: 'Annonces', value: this.annonces().length },
+=======
+    { title: 'Consultants', value: this.consultantsTotal() },
+    { title: 'Présents aujourd’hui', value: this.presenceService.presentCountToday() },
+    { title: 'Absents aujourd’hui', value: this.presenceService.absentCountToday() },
+    { title: 'En retard', value: this.presenceService.lateCountToday() },
+    { title: 'Annonces', value: this.annonces()?.length ?? 0 }
+>>>>>>> Stashed changes
   ]);
 
   constructor() {
