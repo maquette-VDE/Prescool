@@ -8,14 +8,15 @@ import {
   effect,
   inject,
   OnDestroy,
+  OnInit,
+  signal,
 } from '@angular/core';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterModule, Router } from '@angular/router';
 import { Chart, registerables } from 'chart.js';
-
+import { forkJoin } from 'rxjs';
 import { AnnonceService } from '../annonces/annonce.service';
 import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolver';
-import { UserEvent } from '../interfaces/events';
+import { UsersService } from '../services/users/users-service';
 
 Chart.register(...registerables);
 
@@ -26,10 +27,10 @@ Chart.register(...registerables);
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
 })
-export class Dashboard implements AfterViewInit, OnDestroy {
+export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   private annonceService = inject(AnnonceService);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private usersService = inject(UsersService);
 
   @ViewChild('donutCanvas') donutCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('lineCanvas') lineCanvas!: ElementRef<HTMLCanvasElement>;
@@ -40,59 +41,29 @@ export class Dashboard implements AfterViewInit, OnDestroy {
 
   annonces = this.annonceService.getAnnonces();
 
-  private dashboardRouteData = toSignal(this.route.data);
+  loading = signal(true);
 
-  dashboardStats = computed(
-    () =>
-      this.dashboardRouteData()?.['dashboardStats'] as DashboardStatsResponse,
-  );
-
-  evenements = computed(
-    () => (this.dashboardRouteData()?.['evenements'] as UserEvent[]) ?? [],
-  );
-
-  consultantsTotal = computed(
-    () => this.dashboardStats()?.consultantsTotal ?? 0,
-  );
-
-  activeTodayEvents = computed(() => {
-    const now = new Date();
-
-    const startOfDay = new Date(now);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    return this.evenements().filter((event) => {
-      const eventStart = new Date(event.start_time);
-      const eventEnd = new Date(event.end_time);
-
-      return eventStart <= endOfDay && eventEnd >= startOfDay;
-    });
+  dashboardStats = signal<DashboardStatsResponse>({
+    consultantsTotal: 0,
+    presentTotal: 0,
+    absentTotal: 0,
+    lateTotal: 0,
   });
 
-  latestEventByUser = computed(() => {
-    const map = new Map<number, UserEvent>();
 
-    this.activeTodayEvents().forEach((event) => {
-      const existing = map.get(event.user_id);
-
-      if (!existing) {
-        map.set(event.user_id, event);
-        return;
-      }
-
-      const existingDate = new Date(existing.start_time).getTime();
-      const currentDate = new Date(event.start_time).getTime();
-
-      if (currentDate > existingDate) {
-        map.set(event.user_id, event);
-      }
-    });
-
-    return map;
+  weeklyStats = signal<{
+    labels: string[];
+    presentData: number[];
+    absentData: number[];
+    lateData: number[];
+  }>({
+    labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'],
+    presentData: [0, 0, 0, 0, 0],
+    absentData: [0, 0, 0, 0, 0],
+    lateData: [0, 0, 0, 0, 0],
   });
+
+  consultantsTotal = computed(() => this.dashboardStats().consultantsTotal);
 
   statusCounts = computed(() => ({
     present: this.presentCount(),
@@ -100,9 +71,9 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     late: this.lateCount(),
   }));
 
-  presentCount = computed(() => this.dashboardStats()?.presentTotal ?? 0);
-  absentCount = computed(() => this.dashboardStats()?.absentTotal ?? 0);
-  lateCount = computed(() => this.dashboardStats()?.lateTotal ?? 0);
+  presentCount = computed(() => this.dashboardStats().presentTotal);
+  absentCount = computed(() => this.dashboardStats().absentTotal);
+  lateCount = computed(() => this.dashboardStats().lateTotal);
 
   // AJOUT : personnes sans événement aujourd'hui
   noEventCount = computed(() => {
@@ -114,21 +85,11 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     return count > 0 ? count : 0;
   });
 
-  weeklyStats = computed(
-    () =>
-      this.dashboardRouteData()?.['weeklyStats'] as {
-        labels: string[];
-        presentData: number[];
-        absentData: number[];
-        lateData: number[];
-      },
-  );
-
   weeklyPresenceData = computed(() => ({
-    labels: this.weeklyStats()?.labels ?? ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'],
-    presentData: this.weeklyStats()?.presentData ?? [0, 0, 0, 0, 0],
-    absentData: this.weeklyStats()?.absentData ?? [0, 0, 0, 0, 0],
-    lateData: this.weeklyStats()?.lateData ?? [0, 0, 0, 0, 0],
+    labels: this.weeklyStats().labels,
+    presentData: this.weeklyStats().presentData,
+    absentData: this.weeklyStats().absentData,
+    lateData: this.weeklyStats().lateData,
   }));
 
   attendanceRate = computed(() => {
@@ -183,6 +144,43 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     { key: 'annonces', title: 'Annonces', value: this.annonces().length },
   ]);
 
+  ngOnInit(): void {
+    forkJoin({
+      consultants: this.usersService.getConsultantsAndStudents(),
+      present: this.usersService.getUsersByAttendanceStatus('present'),
+      absent: this.usersService.getUsersByAttendanceStatus('absent'),
+      late: this.usersService.getUsersByAttendanceStatus('late'),
+      
+    }).subscribe({
+      next: (response) => {
+        this.dashboardStats.set({
+          consultantsTotal: response.consultants.total ?? 0,
+          presentTotal: response.present.total ?? 0,
+          absentTotal: response.absent.total ?? 0,
+          lateTotal: response.late.total ?? 0,
+        });
+
+        this.loading.set(false);
+
+        setTimeout(() => {
+          if (this.donutCanvas && !this.donutChart) {
+            this.createDonutChart();
+          }
+
+          if (this.lineCanvas && !this.lineChart) {
+            this.createLineChart();
+          }
+
+          this.chartReady = !!this.donutChart && !!this.lineChart;
+        }, 50);
+      },
+      error: (error) => {
+        console.error('Erreur chargement dashboard :', error);
+        this.loading.set(false);
+      },
+    });
+  }
+
   constructor() {
     effect(() => {
       const counts = this.statusCounts();
@@ -210,11 +208,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   }
 
   // AJOUT : Angular appelle ça après affichage du HTML
-  ngAfterViewInit(): void {
-    this.createDonutChart();
-    this.createLineChart();
-    this.chartReady = true;
-  }
+  ngAfterViewInit(): void {}
 
   createDonutChart(): void {
     const counts = this.statusCounts();
