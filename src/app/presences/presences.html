@@ -122,7 +122,7 @@
 
     <div class="border rounded-3 overflow-hidden shadow-sm" [class.opacity-50]="isLoading">
       @if (currentView === 'month') {
-        <daypilot-month [config]="monthConfig()" #month></daypilot-month>
+        <daypilot-month [config]="monthConfig()" showWeekend="false" #month></daypilot-month>
       }
       @if (currentView === 'week') {
         <daypilot-calendar [config]="weekConfig()" #week></daypilot-calendar>

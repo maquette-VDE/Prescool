@@ -11,6 +11,11 @@
   background: #fff;
 }
 
+/* Masquer les cellules week-end (sans la classe _business) */
+.month_default_cell:not(.month_default_cell_business) {
+  display: none !important;
+}
+
 .presences-view-switch {
   display: flex;
   justify-content: center;

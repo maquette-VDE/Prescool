@@ -197,6 +197,7 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
     locale:      'fr-fr',
     startDate:   DayPilot.Date.today(),
     eventHeight: 30,
+ 
     onTimeRangeSelected: (args) => this.openStatusModal(args.start.toString('yyyy-MM-dd')),
     onEventClick: (args) => {
       const ev = this.events.find(e => e.id === String(args.e.id()));
@@ -214,7 +215,7 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
       const day = args.cell.start.getDayOfWeek();
       if (day === 0 || day === 6) {
         args.cell.properties.business  = false;
-        args.cell.properties.backColor = '#f5f5f5';
+        args.cell.properties.backColor = '#bd0f0f';
       }
     },
   });
