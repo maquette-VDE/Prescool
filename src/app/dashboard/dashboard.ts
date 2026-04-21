@@ -17,6 +17,7 @@ import { forkJoin } from 'rxjs';
 import { AnnonceService } from '../annonces/annonce.service';
 import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolver';
 import { UsersService } from '../services/users/users-service';
+import { EvenementsService } from '../services/evenements/evenements-service';
 
 Chart.register(...registerables);
 
@@ -31,6 +32,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   private annonceService = inject(AnnonceService);
   private router = inject(Router);
   private usersService = inject(UsersService);
+  private evenementsService = inject(EvenementsService);
 
   @ViewChild('donutCanvas') donutCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('lineCanvas') lineCanvas!: ElementRef<HTMLCanvasElement>;
@@ -42,7 +44,6 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   annonces = this.annonceService.getAnnonces();
 
   loading = signal(true);
-
   dashboardStats = signal<DashboardStatsResponse>({
     consultantsTotal: 0,
     presentTotal: 0,
@@ -50,7 +51,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     lateTotal: 0,
   });
 
-
+  weeklyLoading = signal(true);
   weeklyStats = signal<{
     labels: string[];
     presentData: number[];
@@ -150,7 +151,6 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
       present: this.usersService.getUsersByAttendanceStatus('present'),
       absent: this.usersService.getUsersByAttendanceStatus('absent'),
       late: this.usersService.getUsersByAttendanceStatus('late'),
-      
     }).subscribe({
       next: (response) => {
         this.dashboardStats.set({
@@ -159,7 +159,6 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
           absentTotal: response.absent.total ?? 0,
           lateTotal: response.late.total ?? 0,
         });
-
         this.loading.set(false);
 
         setTimeout(() => {
@@ -167,16 +166,37 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
             this.createDonutChart();
           }
 
-          if (this.lineCanvas && !this.lineChart) {
-            this.createLineChart();
-          }
-
-          this.chartReady = !!this.donutChart && !!this.lineChart;
+          this.chartReady = !!this.donutChart || !!this.lineChart;
         }, 50);
       },
       error: (error) => {
         console.error('Erreur chargement dashboard :', error);
         this.loading.set(false);
+      },
+    });
+
+    this.evenementsService.getWeeklyStats().subscribe({
+      next: (weeklyStats) => {
+        this.weeklyStats.set({
+          labels: weeklyStats.labels ?? ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'],
+          presentData: weeklyStats.presentData ?? [0, 0, 0, 0, 0],
+          absentData: weeklyStats.absentData ?? [0, 0, 0, 0, 0],
+          lateData: weeklyStats.lateData ?? [0, 0, 0, 0, 0],
+        });
+
+        this.weeklyLoading.set(false);
+
+        setTimeout(() => {
+          if (this.lineCanvas && !this.lineChart) {
+            this.createLineChart();
+          }
+
+          this.chartReady = !!this.donutChart || !!this.lineChart;
+        }, 50);
+      },
+      error: (error) => {
+        console.error('Erreur chargement weekly stats :', error);
+        this.weeklyLoading.set(false);
       },
     });
   }

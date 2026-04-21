@@ -22,7 +22,6 @@ import { instructorGuard } from './guards/instructor-guard';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
 import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
-import { dashboardWeeklyResolver } from './resolvers/dashboard/dashboard-weekly-resolver';
 
 export const routes: Routes = [
   { path: '', component: Login },

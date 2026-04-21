@@ -12,13 +12,14 @@ import { UserEvent } from '../interfaces/events';
 import { RouterPagination } from '../shared/base/router-pagination.abstract';
 import { UserRole } from '../models/userRole';
 import { UsersService } from '../services/users/users-service';
+import { EvenementsService } from '../services/evenements/evenements-service';
 
 @Component({
   selector: 'app-consultant',
   standalone: true,
   imports: [],
   templateUrl: './consultant.html',
-  styleUrl: './consultant.css',
+  styleUrls: ['./consultant.css'],
 })
 export class Consultant
   extends RouterPagination<UsersApiResponse, UserItem>
@@ -28,18 +29,22 @@ export class Consultant
 
   private consultantQueryParams = toSignal(this.route.queryParams);
 
+  private evenementsService = inject(EvenementsService);
+
+  eventsMap = signal<Map<number, UserEvent>>(new Map());
+
   loading = signal(true);
 
   consultantsResponse = signal<UsersApiResponse>({
-  items: [],
-  total: 0,
-  page: 0,
-  limit: 10,
-  pages: 0,
-  links: {
-    first: '',
-  },
-});
+    items: [],
+    total: 0,
+    page: 0,
+    limit: 10,
+    pages: 0,
+    links: {
+      first: '',
+    },
+  });
 
   serverStatusFilter = computed(() => {
     const status = this.consultantQueryParams()?.['status'];
@@ -90,26 +95,28 @@ export class Consultant
         this.selectedFilters.set([status]);
       }
     });
-  }
 
-  ngOnInit(): void {
-    const status = this.route.snapshot.queryParamMap.get('status') as
-      | 'present'
-      | 'absent'
-      | 'late'
-      | null;
+    effect(() => {
+    const params = this.consultantQueryParams();
 
-    const page = Number(this.route.snapshot.queryParamMap.get('page')) || 0;
-    const limit = Number(this.route.snapshot.queryParamMap.get('limit')) || 10;
+    const status =
+      typeof params?.['status'] === 'string' ? params['status'] : null;
+
+    const page = Number(params?.['page']) || 0;
+    const limit = Number(params?.['limit']) || 10;
+
+    this.loading.set(true);
 
     if (status) {
-      this.usersService.getUsersByAttendanceStatus(status).subscribe({
-        next: (response) => {
-          this.consultantsResponse.set(response);
-          this.loading.set(false);
-        },
-        error: () => this.loading.set(false),
-      });
+      this.usersService
+        .getUsersByAttendanceStatus(status as 'present' | 'absent' | 'late')
+        .subscribe({
+          next: (response) => {
+            this.consultantsResponse.set(response);
+            this.loading.set(false);
+          },
+          error: () => this.loading.set(false),
+        });
       return;
     }
 
@@ -127,7 +134,53 @@ export class Consultant
       },
       error: () => this.loading.set(false),
     });
+  });
   }
+
+  ngOnInit(): void {
+  this.evenementsService.getEvenementsActifsToday().subscribe({
+    next: (events) => {
+  const now = new Date();
+
+  const startOfDay = new Date(now);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(now);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const todayEvents = events.filter((event) => {
+    const eventStart = new Date(event.start_time);
+    const eventEnd = new Date(event.end_time);
+
+    return eventStart <= endOfDay && eventEnd >= startOfDay;
+  });
+
+  const map = new Map<number, UserEvent>();
+
+  todayEvents.forEach((event) => {
+    const existing = map.get(event.user_id);
+
+    if (!existing) {
+      map.set(event.user_id, event);
+      return;
+    }
+
+    const existingDate = new Date(existing.start_time).getTime();
+    const currentDate = new Date(event.start_time).getTime();
+
+    if (currentDate > existingDate) {
+      map.set(event.user_id, event);
+    }
+  });
+
+  this.eventsMap.set(map);
+},
+    error: () => {
+      this.eventsMap.set(new Map());
+    },
+  });
+
+}
 
   // --- UI ---
   hoveredConsultantId = signal<number | null>(null);
@@ -138,6 +191,7 @@ export class Consultant
     en_mission: 'En mission',
     late: 'En retard',
     excused: 'Excusé(e)',
+    no_event: 'Sans pointage',
   };
 
   getFilterLabel(value: string): string {
@@ -145,15 +199,20 @@ export class Consultant
   }
 
   getDisplayStatus(userId: number, eventsMap: Map<number, UserEvent>): string {
-    const serverStatus = this.serverStatusFilter();
+  const serverStatus = this.serverStatusFilter();
 
-    if (serverStatus) {
-      return serverStatus;
-    }
-
-    const event = eventsMap.get(userId);
-    return event?.attendance_status ?? '';
+  if (serverStatus) {
+    return serverStatus;
   }
+
+  const event = eventsMap.get(userId);
+
+  if (!event) {
+    return 'no_event';
+  }
+
+  return event.attendance_status;
+}
 
   getDisplayStatusLabel(
     userId: number,
