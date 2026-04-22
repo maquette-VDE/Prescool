@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersApiResponse, UserItem } from '../interfaces/userItem';
 import { UserEvent } from '../interfaces/events';
@@ -12,16 +12,20 @@ import { RouterPagination } from '../shared/base/router-pagination.abstract';
   styleUrl: './consultant.css',
 })
 export class Consultant extends RouterPagination<UsersApiResponse, UserItem> {
-
   // --- Données brutes ---
   private consultantRouteData = toSignal(this.route.data);
+  private consultantQueryParams = toSignal(this.route.queryParams);
+  serverStatusFilter = computed(() => {
+    const status = this.consultantQueryParams()?.['status'];
+    return typeof status === 'string' ? status : '';
+  });
 
   protected override routeDataSignal = computed(
-    () => this.consultantRouteData()?.['consultants'] as UsersApiResponse
+    () => this.consultantRouteData()?.['consultants'] as UsersApiResponse,
   );
 
   protected override allItems = computed(
-    () => this.routeDataSignal()?.items ?? []
+    () => this.routeDataSignal()?.items ?? [],
   );
 
   // --- Filtres ---
@@ -32,26 +36,67 @@ export class Consultant extends RouterPagination<UsersApiResponse, UserItem> {
   protected override filterFn = (
     item: UserItem,
     filters: string[],
-    eventsMap: Map<number, UserEvent>
+    eventsMap: Map<number, UserEvent>,
   ): boolean => {
+    if (this.serverStatusFilter()) {
+      return true;
+    }
+
     const event = eventsMap.get(item.id);
     return !!event && filters.includes(event.attendance_status);
   };
+
+  constructor() {
+    super();
+
+    effect(() => {
+      const status = this.consultantQueryParams()?.['status'];
+
+      if (!status || typeof status !== 'string') {
+        this.selectedFilters.set([]);
+        return;
+      }
+
+      if (
+        this.selectedFilters().length !== 1 ||
+        this.selectedFilters()[0] !== status
+      ) {
+        this.selectedFilters.set([status]);
+      }
+    });
+  }
 
   // --- UI ---
   hoveredConsultantId = signal<number | null>(null);
 
   private readonly filterLabels: Record<string, string> = {
-    present:    'Présent(e)',
-    absent:     'Absent(e)',
+    present: 'Présent(e)',
+    absent: 'Absent(e)',
     en_mission: 'En mission',
-    late:       'En retard',
-    excused:    'Excusé(e)',
+    late: 'En retard',
+    excused: 'Excusé(e)',
   };
 
   getFilterLabel(value: string): string {
     return this.filterLabels[value] ?? value;
   }
+
+  getDisplayStatus(userId: number, eventsMap: Map<number, UserEvent>): string {
+  const serverStatus = this.serverStatusFilter();
+
+  // Si on vient du dashboard, la liste est déjà filtrée côté backend
+  if (serverStatus) {
+    return serverStatus;
+  }
+
+  const event = eventsMap.get(userId);
+  return event?.attendance_status ?? '';
+}
+
+getDisplayStatusLabel(userId: number, eventsMap: Map<number, UserEvent>): string {
+  const status = this.getDisplayStatus(userId, eventsMap);
+  return this.getFilterLabel(status);
+}
 
   toggleFilter(value: string) {
     if (value && !this.selectedFilters().includes(value)) {

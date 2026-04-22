@@ -26,6 +26,7 @@ export class ConfirmeConsultant {
               private formBuilder: FormBuilder,
               private store: Store,
               private subscriptionService: RegisterService,
+              
   ){}
 
   role: UserRole[] | null = null; 

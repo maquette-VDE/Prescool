@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { ResolveFn } from '@angular/router';
 
-import { evenementsResolver } from './evenements-resolver';
+import { dashboardEvenementsResolver } from './evenements-resolver';
 import { UserEvent } from '../../interfaces/events';
 
-describe('evenementsResolver', () => {
+describe('dashboardEvenementsResolver', () => {
   const executeResolver: ResolveFn<UserEvent[]> = (...resolverParameters) =>
-      TestBed.runInInjectionContext(() => evenementsResolver(...resolverParameters));
+      TestBed.runInInjectionContext(() => dashboardEvenementsResolver(...resolverParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

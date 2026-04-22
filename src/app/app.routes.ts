@@ -15,12 +15,14 @@ import { planningResolver } from './resolvers/planning/planning-resolver';
 import { roleGuard } from './guards/role-guard';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
 import { consultantResolver } from './resolvers/consultant/consultant-resolver';
-import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { Erreur } from './erreur/erreur';
 import { Equipes } from './equipes/equipes';
 import { Instructor } from './instructor/instructor';
 import { instructorGuard } from './guards/instructor-guard';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
+import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
+import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
+import { dashboardWeeklyResolver } from './resolvers/dashboard/dashboard-weekly-resolver';
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -36,29 +38,41 @@ export const routes: Routes = [
       {
         path: 'presences',
         component: Presences,
+        canActivate: [roleGuard],
         data: {
           title: 'La liste de présence',
           subtitle: 'Consultez la présence des consultants',
-          canActivate: [roleGuard]
-        }
+        },
       },
       {
         path: 'dashboard',
         component: Dashboard,
-        data: { title: 'Tableau de bord', subtitle: 'Aperçu global de votre activité' }
+        resolve: {
+          dashboardStats: dashboardResolver,
+          evenements: dashboardEvenementsResolver,
+          weeklyStats: dashboardWeeklyResolver,
+        },
+        runGuardsAndResolvers: 'always',
+        data: {
+          title: 'Tableau de bord',
+          subtitle: 'Aperçu global de votre activité',
+        },
       },
       {
         path: 'annonces',
         component: Annonces,
-        data: { title: 'Tableau d\'annonces', subtitle: 'Gérez les dernières actualités' }
+        data: {
+          title: "Tableau d'annonces",
+          subtitle: 'Gérez les dernières actualités',
+        },
       },
       { path: 'annonces/:id', component: AnnonceDetail },
-      { 
-        path: 'planning', 
-        component: Planning, 
+      {
+        path: 'planning',
+        component: Planning,
         resolve: { planningData: planningResolver },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-        data: { title: 'Planning', subtitle: 'Gestion de l\'emploi du temps' }
+        data: { title: 'Planning', subtitle: "Gestion de l'emploi du temps" },
       },
       {
         path: 'consultant',
@@ -67,14 +81,15 @@ export const routes: Routes = [
         canActivate: [instructorGuard],
         resolve: {
           consultants: consultantResolver,
-          evenements: evenementsResolver,
+          evenements: dashboardEvenementsResolver,
+          weeklyStats: dashboardWeeklyResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
       {
         path: 'aide',
         component: Aide,
-        data: { title: 'Aide', subtitle: 'Centre d\'assistance' }
+        data: { title: 'Aide', subtitle: "Centre d'assistance" },
       },
       { path: 'confirm-consultant', component: ConfirmeConsultant },
       {
@@ -82,13 +97,16 @@ export const routes: Routes = [
         component: Instructor,
         resolve: {
           instructors: instructorsResolver,
-          evenements: evenementsResolver,
+          evenements: dashboardEvenementsResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
-      {path : 'equipes', component : Equipes, data: { title: 'Équipes', subtitle: '' } },
-      
+      {
+        path: 'equipes',
+        component: Equipes,
+        data: { title: 'Équipes', subtitle: '' },
+      },
     ],
   },
-  { path: '**', redirectTo: 'error' }
+  { path: '**', redirectTo: 'error' },
 ];

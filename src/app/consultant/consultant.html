@@ -1,24 +1,41 @@
 <div class="mt-5 d-flex flex-wrap align-items-center gap-2">
-  <select id="categorySelecte"
+  <select
+    id="categorySelecte"
     class="w-auto form-select select-light-arrow bg-dark text-light rounded-pill border-secondary"
-    (change)="toggleFilter(($any($event.target)).value); ($any($event.target)).value = ''">
-
+    (change)="
+      toggleFilter($any($event.target).value); $any($event.target).value = ''
+    "
+  >
     <option value="" selected disabled>Filtrer par...</option>
 
-    @if (!selectedFilters().includes('present'))   { <option value="present">Présent(e)</option> }
-    @if (!selectedFilters().includes('absent'))    { <option value="absent">Absent(e)</option> }
-    @if (!selectedFilters().includes('en_mission')){ <option value="en_mission">En mission</option> }
-    @if (!selectedFilters().includes('late'))      { <option value="late">En retard</option> }
-    @if (!selectedFilters().includes('excused'))   { <option value="excused">Excusé(e)</option> }
+    @if (!selectedFilters().includes("present")) {
+      <option value="present">Présent(e)</option>
+    }
+    @if (!selectedFilters().includes("absent")) {
+      <option value="absent">Absent(e)</option>
+    }
+    @if (!selectedFilters().includes("en_mission")) {
+      <option value="en_mission">En mission</option>
+    }
+    @if (!selectedFilters().includes("late")) {
+      <option value="late">En retard</option>
+    }
+    @if (!selectedFilters().includes("excused")) {
+      <option value="excused">Excusé(e)</option>
+    }
   </select>
 
   @for (filter of selectedFilters(); track filter) {
-    <button type="button"
-      class="btn bg-dark text-light rounded-pill border-secondary px-3 d-inline-flex align-items-center text-nowrap">
+    <button
+      type="button"
+      class="btn bg-dark text-light rounded-pill border-secondary px-3 d-inline-flex align-items-center text-nowrap"
+    >
       {{ getFilterLabel(filter) }}
-      <span class="ms-2 fw-bold text-danger-hover"
-            (click)="removeFilter(filter)"
-            style="cursor:pointer; font-size: 1.2rem; line-height: 1;">
+      <span
+        class="ms-2 fw-bold text-danger-hover"
+        (click)="removeFilter(filter)"
+        style="cursor: pointer; font-size: 1.2rem; line-height: 1"
+      >
         ×
       </span>
     </button>
@@ -29,12 +46,14 @@
   <table class="table table-hover table-sm mt-5 border-top border-bottom">
     <tbody>
       @for (consultant of filteredItems(); track consultant.id) {
-        @let evenement = eventsByConsultant().get(consultant.id);
         <tr>
           <td class="pt-3 pb-3">
             <div class="d-flex align-items-center gap-2">
-              <div style="height: 20px;">
-                <span class="rounded-circle bg-secondary opacity-50 d-inline-block" style="width:20px; height:20px;"></span>
+              <div style="height: 20px">
+                <span
+                  class="rounded-circle bg-secondary opacity-50 d-inline-block"
+                  style="width: 20px; height: 20px"
+                ></span>
               </div>
               <div class="d-flex flex-column lh-1">
                 <span class="fw-semibold">{{ consultant.last_name }}</span>
@@ -44,31 +63,47 @@
           </td>
           <td class="pt-3 pb-3">
             <div
-              [class.text-success]="evenement?.attendance_status === 'present'"
-              [class.text-danger]="evenement?.attendance_status === 'absent'"
-              [class.text-warning]="evenement?.attendance_status === 'late'"
-              [class.text-info]="evenement?.attendance_status === 'en_mission'"
-              [class.text-secondary]="evenement?.attendance_status === 'excused'"
+              [class.text-success]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) ===
+                'present'
+              "
+              [class.text-danger]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) ===
+                'absent'
+              "
+              [class.text-warning]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) === 'late'
+              "
+              [class.text-info]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) ===
+                'en_mission'
+              "
+              [class.text-secondary]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) ===
+                'excused'
+              "
             >
               <span>
-                @switch (evenement?.attendance_status) {
-                  @case ('present') {
+                @switch (
+                  getDisplayStatus(consultant.id, eventsByConsultant())
+                ) {
+                  @case ("present") {
                     <i class="bi bi-check-circle-fill me-2"></i>
                     <span class="text-success">Présent(e)</span>
                   }
-                  @case ('absent') {
+                  @case ("absent") {
                     <i class="bi bi-x-circle-fill me-2"></i>
                     <span class="text-danger">Absent(e)</span>
                   }
-                  @case ('en_mission') {
+                  @case ("en_mission") {
                     <i class="bi bi-briefcase-fill me-2"></i>
                     <span class="text-info">En mission</span>
                   }
-                  @case ('excused') {
+                  @case ("excused") {
                     <i class="bi bi-clock-fill me-2"></i>
                     <span class="text-secondary">Excusé(e)</span>
                   }
-                  @case ('late') {
+                  @case ("late") {
                     <i class="bi bi-hourglass-split me-2"></i>
                     <span class="text-warning">En retard</span>
                   }
@@ -80,16 +115,33 @@
             </div>
           </td>
           <td class="pt-3 pb-3">
-            <div class="d-flex gap-3 align-items-center"
-              [class.text-success]="evenement?.attendance_status === 'present'"
-              [class.text-danger]="evenement?.attendance_status === 'absent'"
-              [class.text-warning]="evenement?.attendance_status === 'late'"
-              [class.text-info]="evenement?.attendance_status === 'en_mission'"
-              [class.text-secondary]="evenement?.attendance_status === 'excused'"
+            <div
+              class="d-flex gap-3 align-items-center"
+              [class.text-success]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) ===
+                'present'
+              "
+              [class.text-danger]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) ===
+                'absent'
+              "
+              [class.text-warning]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) === 'late'
+              "
+              [class.text-info]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) ===
+                'en_mission'
+              "
+              [class.text-secondary]="
+                getDisplayStatus(consultant.id, eventsByConsultant()) ===
+                'excused'
+              "
             >
-              <i class="bi bi-phone-vibrate"
+              <i
+                class="bi bi-phone-vibrate"
                 (mouseenter)="hoveredConsultantId.set(consultant.id)"
-                (mouseleave)="hoveredConsultantId.set(null)"></i>
+                (mouseleave)="hoveredConsultantId.set(null)"
+              ></i>
               <i class="bi bi-chat-dots"></i>
               <span [class.opacity-0]="hoveredConsultantId() !== consultant.id">
                 {{ consultant.phone_number }}
@@ -101,18 +153,26 @@
     </tbody>
   </table>
 
-  <nav aria-label="Page navigation" class="d-flex justify-content-center align-items-center gap-2 mt-3">
-
-    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+  <nav
+    aria-label="Page navigation"
+    class="d-flex justify-content-center align-items-center gap-2 mt-3"
+  >
+    <button
+      class="btn btn-outline-secondary btn-sm rounded-pill px-3"
       [disabled]="currentPage() === 0"
-      (click)="prevPage()">
+      (click)="prevPage()"
+    >
       &lsaquo; Précédent
     </button>
 
-    <button class="btn btn-sm rounded"
+    <button
+      class="btn btn-sm rounded"
       [class.btn-outline-primary]="currentPage() === 0"
       [class.btn-link]="currentPage() !== 0"
-      (click)="goToPage(0)">1</button>
+      (click)="goToPage(0)"
+    >
+      1
+    </button>
 
     @if (currentPage() > 2) {
       <span class="text-secondary">...</span>
@@ -120,10 +180,14 @@
 
     @for (p of getVisiblePages(); track p) {
       @if (p !== 0 && p !== totalPages() - 1) {
-        <button class="btn btn-sm rounded"
+        <button
+          class="btn btn-sm rounded"
           [class.btn-outline-primary]="currentPage() === p"
           [class.btn-link]="currentPage() !== p"
-          (click)="goToPage(p)">{{ p + 1 }}</button>
+          (click)="goToPage(p)"
+        >
+          {{ p + 1 }}
+        </button>
       }
     }
 
@@ -132,28 +196,34 @@
     }
 
     @if (totalPages() > 1) {
-      <button class="btn btn-sm rounded"
+      <button
+        class="btn btn-sm rounded"
         [class.btn-outline-primary]="currentPage() === totalPages() - 1"
         [class.btn-link]="currentPage() !== totalPages() - 1"
-        (click)="goToPage(totalPages() - 1)">{{ totalPages() }}</button>
+        (click)="goToPage(totalPages() - 1)"
+      >
+        {{ totalPages() }}
+      </button>
     }
 
-    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+    <button
+      class="btn btn-outline-secondary btn-sm rounded-pill px-3"
       [disabled]="currentPage() === totalPages() - 1"
-      (click)="nextPage()">
+      (click)="nextPage()"
+    >
       Suivant &rsaquo;
     </button>
 
-    <select class="form-select form-select-sm w-auto rounded-pill border-primary text-primary ms-3"
-      (change)="changePageSize(+$any($event.target).value)">
+    <select
+      class="form-select form-select-sm w-auto rounded-pill border-primary text-primary ms-3"
+      (change)="changePageSize(+$any($event.target).value)"
+    >
       <option value="10">Afficher 10 lignes</option>
       <option value="25">Afficher 25 lignes</option>
       <option value="50">Afficher 50 lignes</option>
     </select>
-
   </nav>
-}
-@else {
+} @else {
   <div class="fs-5 d-flex justify-content-center mt-5 text-secondary">
     <p>Aucun consultant trouvé !</p>
   </div>
