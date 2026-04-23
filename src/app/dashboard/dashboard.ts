@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-<<<<<<< Updated upstream
 import {
   AfterViewInit,
   Component,
@@ -13,21 +12,11 @@ import {
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Chart, registerables } from 'chart.js';
+import { AnnouncementService } from '../services/announcement/announcement.service';
+Chart.register(...registerables);
 
-import { AnnonceService } from '../annonces/annonce.service';
 import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolver';
 import { UserEvent } from '../interfaces/events';
-
-Chart.register(...registerables);
-=======
-import { Component, computed, inject } from '@angular/core';
-import { RouterModule, ActivatedRoute } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop'; // Bien importé !
-
-import { AnnouncementService } from '../services/announcement/announcement.service';
-import { PresenceService } from '../services/presence.service';
-import { UsersApiResponse } from '../interfaces/userItem';
->>>>>>> Stashed changes
 
 @Component({
   selector: 'app-dashboard',
@@ -36,14 +25,8 @@ import { UsersApiResponse } from '../interfaces/userItem';
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
 })
-<<<<<<< Updated upstream
 export class Dashboard implements AfterViewInit, OnDestroy {
-  private annonceService = inject(AnnonceService);
-=======
-export class Dashboard {
   private annonceService = inject(AnnouncementService);
-  private presenceService = inject(PresenceService);
->>>>>>> Stashed changes
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -186,7 +169,6 @@ export class Dashboard {
   });
 
   stats = computed(() => [
-<<<<<<< Updated upstream
     {
       key: 'consultants',
       title: 'Consultants&Etudiants',
@@ -200,13 +182,6 @@ export class Dashboard {
     { key: 'absent', title: 'Absents aujourd’hui', value: this.absentCount() },
     { key: 'late', title: 'En retard', value: this.lateCount() },
     { key: 'annonces', title: 'Annonces', value: this.annonces().length },
-=======
-    { title: 'Consultants', value: this.consultantsTotal() },
-    { title: 'Présents aujourd’hui', value: this.presenceService.presentCountToday() },
-    { title: 'Absents aujourd’hui', value: this.presenceService.absentCountToday() },
-    { title: 'En retard', value: this.presenceService.lateCountToday() },
-    { title: 'Annonces', value: this.annonces()?.length ?? 0 }
->>>>>>> Stashed changes
   ]);
 
   constructor() {

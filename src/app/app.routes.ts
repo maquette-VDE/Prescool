@@ -11,10 +11,7 @@ import { Dashboard } from './dashboard/dashboard';
 import { Aide } from './aide/aide';
 import { AnnonceComponent } from './annonces/annonces';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
-<<<<<<< Updated upstream
 import { consultantResolver } from './resolvers/consultant/consultant-resolver';
-=======
->>>>>>> Stashed changes
 import { Erreur } from './erreur/erreur';
 import { Equipes } from './equipes/equipes';
 import { Instructor } from './instructor/instructor';
@@ -22,8 +19,6 @@ import { AnnoncesPanelComponent } from './annonces-panel/annonces-panel';
 
 // Resolvers
 import { planningResolver } from './resolvers/planning/planning-resolver';
-import { consultantResolver } from './resolvers/consultant/consultant-resolver';
-import { evenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
 import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
@@ -48,7 +43,6 @@ export const routes: Routes = [
     component: SideNav,
     children: [
       {
-<<<<<<< Updated upstream
         path: 'presences',
         component: Presences,
         canActivate: [roleGuard],
@@ -66,12 +60,6 @@ export const routes: Routes = [
           weeklyStats: dashboardWeeklyResolver,
         },
         runGuardsAndResolvers: 'always',
-=======
-        path: 'dashboard',
-        component: Dashboard,
-        resolve: { consultants: consultantResolver },
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
->>>>>>> Stashed changes
         data: {
           title: 'Tableau de bord',
           subtitle: 'Aperçu global de votre activité',
@@ -110,23 +98,53 @@ export const routes: Routes = [
         data: { 
           title: 'Planning', 
           subtitle: "Gestion de l'emploi du temps" 
-        },
+        }
       },
       {
-        path: 'consultant',
+        path: 'presences',
+        component: Presences,
+        data: {
+          title: 'La liste de présence',
+          subtitle: 'Consultez la présence des consultants',canActivate: [roleGuard]
+        }
+
+      },
+      { 
+        path: 'dashboard', 
+        component: Dashboard,
+        data: { title: 'Tableau de bord', subtitle: 'Aperçu global de votre activité' } 
+      },
+      { 
+        path: 'planning', 
+        component: Planning, 
+        resolve: { planningData: planningResolver },
+        data: { title: 'Planning', subtitle: 'Gestion de l’emploi du temps' }
+      },
+      { 
+        path: 'consultant', 
         component: Consultant,
-        canActivate: [instructorGuard],
+        data: { title: 'Consultants', subtitle: 'Liste des membres' ,},canActivate: [instructorGuard],
         resolve: {
           consultants: consultantResolver,
           evenements: dashboardEvenementsResolver,
           weeklyStats: dashboardWeeklyResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-        data: { 
+      },
+        {
+          path: 'consultant',
+          component: Consultant,
+        data: {
           title: 'Consultants', 
           subtitle: 'Liste des membres' 
-        },
+        }
       },
+      { 
+        path: 'aide', 
+        component: Aide,
+        data: { title: 'Aide', subtitle: 'Centre d’assistance' } 
+      },
+      { path: 'confirm-consultant', component: ConfirmeConsultant },
       {
         path: 'instructor',
         component: Instructor,
