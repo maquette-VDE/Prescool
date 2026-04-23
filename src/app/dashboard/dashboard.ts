@@ -12,12 +12,11 @@ import {
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Chart, registerables } from 'chart.js';
+import { AnnouncementService } from '../services/announcement/announcement.service';
+Chart.register(...registerables);
 
-import { AnnonceService } from '../annonces/annonce.service';
 import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolver';
 import { UserEvent } from '../interfaces/events';
-
-Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
@@ -27,7 +26,7 @@ Chart.register(...registerables);
   styleUrls: ['./dashboard.css'],
 })
 export class Dashboard implements AfterViewInit, OnDestroy {
-  private annonceService = inject(AnnonceService);
+  private annonceService = inject(AnnouncementService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -38,7 +37,9 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   donutChart: Chart<'doughnut', number[], string> | null = null;
   private chartReady = false;
 
-  annonces = this.annonceService.getAnnonces();
+  // --- CORRECTION ICI ---
+  // On transforme l'Observable en Signal avec une valeur vide [] par défaut
+  annonces = toSignal(this.annonceService.getAnnonces(), { initialValue: [] });
 
   private dashboardRouteData = toSignal(this.route.data);
 

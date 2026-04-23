@@ -1,30 +1,65 @@
-<div class="container mt-4">
-  <h2 class="mb-4">Dernières Annonces</h2>
+<div class="bg-screen" *ngIf="annonce">
+  <div class="annonce-card">
 
-  <div class="row">
-    @for (item of annonces(); track item.id) {
-    <div class="col-md-4 mb-4">
-      <div class="card h-100 shadow-sm">
-        <img [src]="item.imageUrl" class="card-img-top" alt="Image annonce">
+    <header class="annonce-header">
+      <h1 class="gradient-text">{{ annonce.title }}</h1>
+      <p class="subtitle" *ngIf="annonce.subtitle">{{ annonce.subtitle }}</p>
+      <div class="gradient-bar"></div>
+    </header>
 
-        <div class="card-body">
-          <h5 class="card-title">{{ item.titre }}</h5>
-          <p class="text-muted small">{{ item.categorie }}</p>
-          <p class="card-text text-truncate">{{ item.description }}</p>
-          <div class="d-grid mt-3">
-            <button [routerLink]="['/sidenav/annonces', item.id]" class="btn btn-primary btn-sm">
-              Voir ce projet
-            </button>
+    <div class="main-image-section" *ngIf="annonce.image_url" style="margin-bottom: 20px;">
+      <img [src]="annonce.image_url" alt="Couverture"
+        style="width: 100%; border-radius: 12px; object-fit: cover; max-height: 400px;">
+    </div>
+
+    <div class="annonce-body">
+      <div *ngFor="let bloc of annonce.content" class="content-block">
+
+        <div class="rich-text" *ngIf="bloc.contenue || bloc.Paragraphe || bloc.subtitre">
+          <div *ngFor="let block of (bloc.contenue || bloc.Paragraphe || bloc.subtitre)">
+
+            <h2 *ngIf="block.type === 'heading'" class="content-h2">
+              <span *ngFor="let child of block.children">{{ child.text }}</span>
+            </h2>
+
+            <ng-container *ngIf="block.type === 'paragraph'">
+              <p class="content-p">
+                <span *ngFor="let child of block.children" [style.font-weight]="child.bold ? '600' : 'normal'"
+                  [style.text-decoration]="child.underline ? 'underline' : 'none'"
+                  [style.font-style]="child.italic ? 'italic' : 'normal'">
+                  {{ child.text }}
+                </span>
+              </p>
+            </ng-container>
+
+            <ul *ngIf="block.type === 'list' && block.format === 'unordered'">
+              <li *ngFor="let item of block.children">
+                <span *ngFor="let child of item.children">{{ child.text }}</span>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div class="card-footer text-muted small">
-          Publié le {{ item.date | date:'dd/MM/yyyy' }}
+        <div *ngIf="bloc.Video" class="video-section">
+          <div class="video-container">
+            <iframe [src]="bloc.Video | safeUrl" frameborder="0" allowfullscreen></iframe>
+          </div>
         </div>
+
+        <div *ngIf="bloc.Media && bloc.Media.length > 0" class="gallery-section">
+          <div class="gallery-grid">
+            <div class="gallery-item" *ngFor="let img of bloc.Media">
+              <img [src]="img.url.startsWith('http') ? img.url : 'http://localhost:1337' + img.url" alt="Image galerie"
+                (error)="$any($event.target).src = 'assets/images/placeholder.jpg'">
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-    } @empty {
-    <p class="text-center">Aucune annonce disponible pour le moment.</p>
-    }
+
+    <button class="btn-retour btn-sm" routerLink="/sidenav/annonces">
+      <i class="bi bi-arrow-left"></i> Retour
+    </button>
   </div>
 </div>

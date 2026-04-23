@@ -1,0 +1,51 @@
+<div class="bg-screen">
+  <div class="panel-container">
+    <h1 class="panel-title gradient-text">Toutes les Annonces</h1>
+
+    <div *ngIf="!annonces || annonces.length === 0" class="no-data">
+      <div class="empty-icon-fallback">📢</div> 
+      <p>Aucune annonce disponible pour le moment.</p>
+    </div>
+
+    <div class="annonces-grid" *ngIf="annonces && annonces.length > 0">
+      <div class="annonce-card" *ngFor="let a of annonces">
+        
+        <div class="card-image">
+          <ng-container *ngIf="a.image_url; else dynamicImage">
+            <img [src]="a.image_url" alt="Image de couverture">
+          </ng-container>
+          
+          <ng-template #dynamicImage>
+            <img [src]="(a.content && a.content.length > 0 && a.content[0].MediaPrincipale && a.content[0].MediaPrincipale.length > 0) 
+                        ? a.content[0].MediaPrincipale[0].url 
+                        : 'https://via.placeholder.com/400x200?text=Pas+d+image'" 
+                 alt="Image dynamique">
+          </ng-template>
+        </div>
+
+        <div class="card-content">
+          <div class="card-header">
+            <span class="date">{{ a.publishedAt | date:'dd/MM/yyyy' }}</span>
+            <span class="badge-urgent" *ngIf="a.is_urgent">Urgent</span>
+          </div>
+
+          <h3 class="title">{{ a.title || 'Sans titre' }}</h3>
+
+          <p class="subtitle" *ngIf="a.subtitle; else dynamicSubtitle">
+            {{ a.subtitle | slice:0:80 }}{{ a.subtitle.length > 80 ? '...' : '' }}
+          </p>
+          
+          <ng-template #dynamicSubtitle>
+            <p class="subtitle" *ngIf="a.content && a.content.length > 0">
+               {{ a.content[0].subtitre }}
+            </p>
+          </ng-template>
+
+          <a [routerLink]="['/sidenav/annonces', a.id]" class="btn-read-more">
+            Détails <span class="arrow-icon">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
