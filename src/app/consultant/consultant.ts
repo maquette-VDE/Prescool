@@ -97,90 +97,89 @@ export class Consultant
     });
 
     effect(() => {
-    const params = this.consultantQueryParams();
+      const params = this.consultantQueryParams();
 
-    const status =
-      typeof params?.['status'] === 'string' ? params['status'] : null;
+      const status =
+        typeof params?.['status'] === 'string' ? params['status'] : null;
 
-    const page = Number(params?.['page']) || 0;
-    const limit = Number(params?.['limit']) || 10;
+      const page = Number(params?.['page']) || 0;
+      const limit = Number(params?.['limit']) || 10;
 
-    this.loading.set(true);
+      this.loading.set(true);
 
-    if (status) {
-      this.usersService
-        .getUsersByAttendanceStatus(status as 'present' | 'absent' | 'late')
-        .subscribe({
-          next: (response) => {
-            this.consultantsResponse.set(response);
-            this.loading.set(false);
-          },
-          error: () => this.loading.set(false),
-        });
-      return;
-    }
+      if (status) {
+        this.usersService
+          .getUsersByAttendanceStatus(status as 'present' | 'absent' | 'late')
+          .subscribe({
+            next: (response) => {
+              this.consultantsResponse.set(response);
+              this.loading.set(false);
+            },
+            error: () => this.loading.set(false),
+          });
+        return;
+      }
 
-    const urlApi =
-      `https://prez-cool-staging.appsolutions224.com/api/v1/users` +
-      `?role_names=${UserRole.CONSULTANT}` +
-      `&role_names=${UserRole.ETUDIANT}` +
-      `&limit=${limit}` +
-      `&page=${page}`;
+      const urlApi =
+        `https://prez-cool-staging.appsolutions224.com/api/v1/users` +
+        `?role_names=${UserRole.CONSULTANT}` +
+        `&role_names=${UserRole.ETUDIANT}` +
+        `&limit=${limit}` +
+        `&page=${page}`;
 
-    this.usersService.getUsers(urlApi).subscribe({
-      next: (response) => {
-        this.consultantsResponse.set(response);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
+      this.usersService.getUsers(urlApi).subscribe({
+        next: (response) => {
+          this.consultantsResponse.set(response);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
     });
-  });
   }
 
   ngOnInit(): void {
-  this.evenementsService.getEvenementsActifsToday().subscribe({
-    next: (events) => {
-  const now = new Date();
+    this.evenementsService.getEvenementsActifsToday().subscribe({
+      next: (events) => {
+        const now = new Date();
 
-  const startOfDay = new Date(now);
-  startOfDay.setHours(0, 0, 0, 0);
+        const startOfDay = new Date(now);
+        startOfDay.setHours(0, 0, 0, 0);
 
-  const endOfDay = new Date(now);
-  endOfDay.setHours(23, 59, 59, 999);
+        const endOfDay = new Date(now);
+        endOfDay.setHours(23, 59, 59, 999);
 
-  const todayEvents = events.filter((event) => {
-    const eventStart = new Date(event.start_time);
-    const eventEnd = new Date(event.end_time);
+        const todayEvents = events.filter((event) => {
+          const eventStart = new Date(event.start_time);
+          const eventEnd = new Date(event.end_time);
 
-    return eventStart <= endOfDay && eventEnd >= startOfDay;
-  });
+          return eventStart <= endOfDay && eventEnd >= startOfDay;
+        });
 
-  const map = new Map<number, UserEvent>();
+        const map = new Map<number, UserEvent>();
 
-  todayEvents.forEach((event) => {
-    const existing = map.get(event.user_id);
+        todayEvents.forEach((event) => {
+          const existing = map.get(event.user_id);
 
-    if (!existing) {
-      map.set(event.user_id, event);
-      return;
-    }
+          if (!existing) {
+            map.set(event.user_id, event);
+            return;
+          }
 
-    const existingDate = new Date(existing.start_time).getTime();
-    const currentDate = new Date(event.start_time).getTime();
+          const existingDate = new Date(existing.start_time).getTime();
+          const currentDate = new Date(event.start_time).getTime();
 
-    if (currentDate > existingDate) {
-      map.set(event.user_id, event);
-    }
-  });
+          if (currentDate > existingDate) {
+            map.set(event.user_id, event);
+          }
+        });
 
-  this.eventsMap.set(map);
-},
-    error: () => {
-      this.eventsMap.set(new Map());
-    },
-  });
-
-}
+        this.eventsMap.set(map);
+      },
+      error: () => {
+        this.eventsMap.set(new Map());
+      },
+    });
+  }
 
   // --- UI ---
   hoveredConsultantId = signal<number | null>(null);
@@ -199,20 +198,20 @@ export class Consultant
   }
 
   getDisplayStatus(userId: number, eventsMap: Map<number, UserEvent>): string {
-  const serverStatus = this.serverStatusFilter();
+    const serverStatus = this.serverStatusFilter();
 
-  if (serverStatus) {
-    return serverStatus;
+    if (serverStatus) {
+      return serverStatus;
+    }
+
+    const event = eventsMap.get(userId);
+
+    if (!event) {
+      return 'no_event';
+    }
+
+    return event.attendance_status;
   }
-
-  const event = eventsMap.get(userId);
-
-  if (!event) {
-    return 'no_event';
-  }
-
-  return event.attendance_status;
-}
 
   getDisplayStatusLabel(
     userId: number,
@@ -223,16 +222,33 @@ export class Consultant
   }
 
   toggleFilter(value: string) {
-    if (value && !this.selectedFilters().includes(value)) {
-      this.selectedFilters.update((prev) => [...prev, value]);
+    if (!value) {
+      return;
     }
+
+    this.selectedFilters.set([value]);
+
+    this.router.navigate([], {
+      queryParams: { status: value, page: null },
+      queryParamsHandling: 'merge',
+    });
   }
 
   removeFilter(filter: string) {
     this.selectedFilters.update((prev) => prev.filter((f) => f !== filter));
+
+    this.router.navigate([], {
+      queryParams: { status: null },
+      queryParamsHandling: 'merge',
+    });
   }
 
   resetAllFilters() {
     this.selectedFilters.set([]);
+
+    this.router.navigate([], {
+      queryParams: { status: null, page: null },
+      queryParamsHandling: 'merge',
+    });
   }
 }
