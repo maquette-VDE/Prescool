@@ -22,7 +22,6 @@ import { instructorGuard } from './guards/instructor-guard';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
 import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
-import { dashboardWeeklyResolver } from './resolvers/dashboard/dashboard-weekly-resolver';
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -47,12 +46,6 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: Dashboard,
-        resolve: {
-          dashboardStats: dashboardResolver,
-          evenements: dashboardEvenementsResolver,
-          weeklyStats: dashboardWeeklyResolver,
-        },
-        runGuardsAndResolvers: 'always',
         data: {
           title: 'Tableau de bord',
           subtitle: 'Aperçu global de votre activité',
@@ -79,12 +72,6 @@ export const routes: Routes = [
         component: Consultant,
         data: { title: 'Consultants', subtitle: 'Liste des membres' },
         canActivate: [instructorGuard],
-        resolve: {
-          consultants: consultantResolver,
-          evenements: dashboardEvenementsResolver,
-          weeklyStats: dashboardWeeklyResolver,
-        },
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
       {
         path: 'aide',
