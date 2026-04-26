@@ -42,6 +42,18 @@ export class AnnonceComponent implements OnInit {
       });
     }
   }
+  getMarkdownImageUrl(text: string): string | null {
+    if (!text || typeof text !== 'string') return null;
+    // Regex pour extraire l'URL entre les parenthèses de ![alt](url)
+    const match = text.match(/\((https?:\/\/[^)]+)\)/);
+    return match ? match[1] : null;
+  }
+
+  isOnlyImageMarkdown(text: string): boolean {
+    if (!text || typeof text !== 'string') return false;
+    // Vérifie si le texte commence par ![ et finit par )
+    return text.trim().startsWith('![') && text.trim().endsWith(')');
+  }
   // Dans ton fichier .ts
 getKeys(obj: any): string {
   return obj ? Object.keys(obj).join(', ') : 'vide';

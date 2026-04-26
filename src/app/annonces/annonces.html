@@ -1,12 +1,6 @@
 <div class="bg-screen" *ngIf="annonce">
   <div class="annonce-card">
 
-    <header class="annonce-header">
-      <h1 class="gradient-text">{{ annonce.title }}</h1>
-      <p class="subtitle" *ngIf="annonce.subtitle">{{ annonce.subtitle }}</p>
-      <div class="gradient-bar"></div>
-    </header>
-
     <div class="main-image-section" *ngIf="annonce.image_url" style="margin-bottom: 20px;">
       <img [src]="annonce.image_url" alt="Couverture"
         style="width: 100%; border-radius: 12px; object-fit: cover; max-height: 400px;">
@@ -15,42 +9,73 @@
     <div class="annonce-body">
       <div *ngFor="let bloc of annonce.content" class="content-block">
 
-        <div class="rich-text" *ngIf="bloc.contenue || bloc.Paragraphe || bloc.subtitre">
-          <div *ngFor="let block of (bloc.contenue || bloc.Paragraphe || bloc.subtitre)">
+        <ng-container *ngIf="bloc.type === 'selecte.text'">
+          <div class="rich-text-card">
+            <h3 *ngIf="bloc.titre" class="bloc-titre">{{ bloc.titre }}</h3>
+            <h4 *ngIf="bloc.subtitre" class="bloc-sub">{{ bloc.subtitre }}</h4>
 
-            <h2 *ngIf="block.type === 'heading'" class="content-h2">
-              <span *ngFor="let child of block.children">{{ child.text }}</span>
-            </h2>
+            <div *ngIf="bloc.contenue">
+              <div *ngFor="let block of bloc.contenue">
+                <h2 *ngIf="block.type === 'heading'" class="content-h2">
+                  <span *ngFor="let child of block.children">{{ child.text }}</span>
+                </h2>
+                <p class="content-p" *ngIf="block.type === 'paragraph'">
+                  <span *ngFor="let child of block.children" 
+                    [style.font-weight]="child.bold ? '600' : 'normal'"
+                    [style.font-style]="child.italic ? 'italic' : 'normal'">
+                    {{ child.text }}
+                  </span>
+                </p>
+              </div>
+            </div>
 
-            <ng-container *ngIf="block.type === 'paragraph'">
-              <p class="content-p">
-                <span *ngFor="let child of block.children" [style.font-weight]="child.bold ? '600' : 'normal'"
-                  [style.text-decoration]="child.underline ? 'underline' : 'none'"
-                  [style.font-style]="child.italic ? 'italic' : 'normal'">
-                  {{ child.text }}
-                </span>
+            <div *ngIf="bloc.riche_marck" class="markdown-section mt-3">
+              <div *ngIf="getMarkdownImageUrl(bloc.riche_marck); let imgUrl">
+                <img [src]="imgUrl" class="img-fluid rounded shadow-sm" alt="Image Markdown">
+              </div>
+              <p *ngIf="!isOnlyImageMarkdown(bloc.riche_marck)" class="mt-2 text-muted">
+                {{ bloc.riche_marck }}
               </p>
-            </ng-container>
+            </div>
 
-            <ul *ngIf="block.type === 'list' && block.format === 'unordered'">
-              <li *ngFor="let item of block.children">
-                <span *ngFor="let child of item.children">{{ child.text }}</span>
-              </li>
-            </ul>
+            <div class="metadata-section mt-3 p-3 bg-light rounded">
+              <p *ngIf="bloc.email" class="mb-1">
+                <i class="bi bi-envelope-fill me-2 text-primary"></i> 
+                <strong>Contact :</strong> {{ bloc.email }}
+              </p>
+              <p *ngIf="bloc.date" class="mb-1">
+                <i class="bi bi-calendar-event-fill me-2 text-primary"></i> 
+                <strong>Date :</strong> {{ bloc.date | date:'dd/MM/yyyy' }}
+              </p>
+              <div *ngIf="bloc.valeur_bool !== undefined" class="mt-2">
+                <span [class]="bloc.valeur_bool ? 'badge bg-success' : 'badge bg-secondary'">
+                  {{ bloc.valeur_bool ? 'Annonce Active' : 'Annonce Terminée' }}
+                </span>
+              </div>
+            </div>
+
+            <div *ngIf="bloc.media_principale?.length > 0" class="mini-gallery mt-3">
+                <img *ngFor="let img of bloc.media_principale" [src]="img.url" 
+                     class="img-fluid rounded mb-2 shadow-sm" style="width: 100%;">
+            </div>
+          </div>
+        </ng-container>
+
+        <div *ngIf="bloc.type === 'selecte.video'" class="video-section">
+          <div class="video-container" *ngIf="bloc.video">
+            <iframe [src]="bloc.video | safeUrl" frameborder="0" allowfullscreen></iframe>
+          </div>
+          <div *ngIf="bloc.photo?.length > 0" class="gallery-grid mt-2">
+              <img *ngFor="let img of bloc.photo" [src]="img.url" class="img-fluid rounded shadow-sm">
           </div>
         </div>
 
-        <div *ngIf="bloc.Video" class="video-section">
-          <div class="video-container">
-            <iframe [src]="bloc.Video | safeUrl" frameborder="0" allowfullscreen></iframe>
-          </div>
-        </div>
-
-        <div *ngIf="bloc.Media && bloc.Media.length > 0" class="gallery-section">
-          <div class="gallery-grid">
-            <div class="gallery-item" *ngFor="let img of bloc.Media">
-              <img [src]="img.url.startsWith('http') ? img.url : 'http://localhost:1337' + img.url" alt="Image galerie"
-                (error)="$any($event.target).src = 'assets/images/placeholder.jpg'">
+        <div *ngIf="bloc.type === 'selecte.photo'" class="gallery-section">
+          <div class="gallery-grid" *ngIf="bloc.photo && bloc.photo.length > 0">
+            <div class="gallery-item" *ngFor="let img of bloc.photo">
+              <img [src]="img.url" alt="Image galerie"
+                (error)="$any($event.target).src = 'assets/images/placeholder.jpg'"
+                class="img-fluid rounded shadow-sm">
             </div>
           </div>
         </div>
@@ -58,8 +83,8 @@
       </div>
     </div>
 
-    <button class="btn-retour btn-sm" routerLink="/sidenav/annonces">
-      <i class="bi bi-arrow-left"></i> Retour
+    <button class="btn-retour btn-sm mt-4" routerLink="/sidenav/annonces">
+      <i class="bi bi-arrow-left"></i> Retour aux annonces
     </button>
   </div>
 </div>

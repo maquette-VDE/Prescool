@@ -16,8 +16,8 @@
           </ng-container>
           
           <ng-template #dynamicImage>
-            <img [src]="(a.content && a.content.length > 0 && a.content[0].MediaPrincipale && a.content[0].MediaPrincipale.length > 0) 
-                        ? a.content[0].MediaPrincipale[0].url 
+            <img [src]="(a.content && a.content.length > 0 && a.content[0].media_principale && a.content[0].media_principale.length > 0) 
+                        ? a.content[0].media_principale[0].url 
                         : 'https://via.placeholder.com/400x200?text=Pas+d+image'" 
                  alt="Image dynamique">
           </ng-template>
