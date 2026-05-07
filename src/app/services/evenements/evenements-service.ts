@@ -12,6 +12,15 @@ export interface DashboardWeeklyResponse {
   lateData: number[];
 }
 
+export interface UserWeeklyStats {
+  present: number;
+  absent: number;
+  late: number;
+  excused: number;
+  remote: number;
+  enMission: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -86,4 +95,84 @@ export class EvenementsService {
       }))
     );
   }
+
+
+
+  getEventsForRange(start: Date, end: Date): Observable<UserEvent[]> {
+  const url =
+    `https://prez-cool-staging.appsolutions224.com/api/v1/events` +
+    `?event_start_from=${encodeURIComponent(start.toISOString())}` +
+    `&event_end_to=${encodeURIComponent(end.toISOString())}` +
+    `&limit=${this.limit}`;
+
+  return this.http
+    .get<any>(url)
+    .pipe(map((response) => response.items as UserEvent[]));
+}
+
+getMyTodayStatus(userId: number): Observable<string> {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+
+  return this.getEventsForRange(start, end).pipe(
+    map((events) => {
+      const myEvents = events.filter((event) => event.user_id === userId);
+
+      if (myEvents.length === 0) {
+        return 'Aucun pointage';
+      }
+
+      const latestEvent = myEvents[myEvents.length - 1];
+
+      switch (latestEvent.attendance_status) {
+        case 'present':
+          return 'Présent';
+        case 'absent':
+          return 'Absent';
+        case 'late':
+          return 'En retard';
+        case 'excused':
+          return 'Excusé';
+        case 'remote':
+          return 'Télétravail';
+        case 'en_mission':
+          return 'En mission';
+        default:
+          return 'Aucun pointage';
+      }
+    })
+  );
+}
+
+getMyWeeklyStats(userId: number): Observable<UserWeeklyStats> {
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diffToMonday);
+  monday.setHours(0, 0, 0, 0);
+
+  const friday = new Date(monday);
+  friday.setDate(monday.getDate() + 4);
+  friday.setHours(23, 59, 59, 999);
+
+  return this.getEventsForRange(monday, friday).pipe(
+    map((events) => {
+      const myEvents = events.filter((event) => event.user_id === userId);
+
+      return {
+        present: myEvents.filter((event) => event.attendance_status === 'present').length,
+        absent: myEvents.filter((event) => event.attendance_status === 'absent').length,
+        late: myEvents.filter((event) => event.attendance_status === 'late').length,
+        excused: myEvents.filter((event) => event.attendance_status === 'excused').length,
+        remote: myEvents.filter((event) => event.attendance_status === 'remote').length,
+        enMission: myEvents.filter((event) => event.attendance_status === 'en_mission').length,
+      };
+    })
+  );
+}
 }
