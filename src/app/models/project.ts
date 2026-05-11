@@ -1,8 +1,12 @@
 export interface Project {
   id: number;
   name: string;
+  description?: string;
   status: string;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  created_by: number;
 }
 
 
@@ -13,6 +17,7 @@ export interface ProjectResponse {
   limit: number;
   pages: number;
   links: {
-    [key: string]: any; // Pour gérer le "additionalProp1" du Swagger
+    [key: string]: any;
   };
+  ownerFullname?: string;
 }

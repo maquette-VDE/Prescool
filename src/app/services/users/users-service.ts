@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   getUsersByAttendanceStatus(
-    status: 'present' | 'absent' | 'late', 
+    status: 'present' | 'absent' | 'late',
   ): Observable<UsersApiResponse> {
     const now = new Date();
 
@@ -100,4 +100,15 @@ export class UsersService {
       .trim() // enlever espaces
       .toLowerCase(); // insensible à la casse
   }
+
+
+
+
+
+// Récupérer tous les utilisateurs (avec une limite haute pour être sûr d'avoir tout)
+getAllUsers(): Observable<UsersApiResponse> {
+  const url = `https://prez-cool-staging.appsolutions224.com/api/v1/users?limit=100&page=0`;
+  return this.getUsers(url);
+}
+
 }

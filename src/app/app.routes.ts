@@ -22,6 +22,7 @@ import { instructorGuard } from './guards/instructor-guard';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
 import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
+import { ProjetDetail } from './projet-detail/projet-detail';
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -93,6 +94,14 @@ export const routes: Routes = [
         component: Equipes,
         data: { title: 'Équipes', subtitle: '' },
       },
+
+      {
+        path: 'equipes/:id',
+        component: ProjetDetail,
+        data: { title: 'Détails du projet', subtitle: '' }
+},
+
+
     ],
   },
   { path: '**', redirectTo: 'error' },
