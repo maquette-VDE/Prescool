@@ -18,13 +18,15 @@ import { AnnonceService } from '../annonces/annonce.service';
 import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolver';
 import { UsersService } from '../services/users/users-service';
 import { EvenementsService } from '../services/evenements/evenements-service';
+import { UserDashboard } from './user-dashboard/user-dashboard';
+
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, UserDashboard],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
 })
@@ -33,6 +35,34 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   private router = inject(Router);
   private usersService = inject(UsersService);
   private evenementsService = inject(EvenementsService);
+
+  currentUser = signal<any>(
+  JSON.parse(localStorage.getItem('user') || 'null')
+);
+
+currentRole = computed(() => {
+  const user = this.currentUser();
+
+  return (
+    user?.role?.name ||
+    user?.role_name ||
+    user?.role ||
+    user?.roles?.[0]?.name ||
+    user?.roles?.[0] ||
+    ''
+  ).toString().toUpperCase();
+});
+
+isAdminOrExpert = computed(() => {
+  const role = this.currentRole();
+
+  return (
+    role === 'ADMIN' ||
+    role === 'EXPERT' ||  
+    role.includes('ADMIN') ||
+    role.includes('EXPERT')
+  );
+});
 
   @ViewChild('donutCanvas') donutCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('lineCanvas') lineCanvas!: ElementRef<HTMLCanvasElement>;

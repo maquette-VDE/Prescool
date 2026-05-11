@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   getUsersByAttendanceStatus(
-    status: 'present' | 'absent' | 'late',
+    status: 'present' | 'absent' | 'late', 
   ): Observable<UsersApiResponse> {
     const now = new Date();
 
