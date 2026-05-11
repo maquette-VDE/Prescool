@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AnnouncementService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8055/api/v1/announcements';
+  private apiUrl = 'http://localhost:8055/api/v1/announcements/';
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('access_token'); 
@@ -19,6 +19,6 @@ export class AnnouncementService {
   }
 
   getAnnonceById(id: string | number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.get<any>(`${this.apiUrl}${id}`, { headers: this.getHeaders() });
   }
 }
