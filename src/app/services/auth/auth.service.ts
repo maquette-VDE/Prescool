@@ -18,7 +18,7 @@ export class AuthService {
   private router = inject(Router);
   private userSubject = new BehaviorSubject<any>(null);
   user$ = this.userSubject.asObservable();
-  
+
 
   // auth.service.ts
 
@@ -32,7 +32,7 @@ login(username: string, password: string) {
     'Content-Type': 'application/x-www-form-urlencoded',
     'Accept': 'application/json'
   });
- 
+
   return this.http.post<any>(this.apiConfig.buildUrl('auth/token'), body.toString(), { headers })
     .pipe(
       tap(response => {
@@ -91,5 +91,10 @@ login(username: string, password: string) {
     if (savedUser) {
       this.userSubject.next(JSON.parse(savedUser));
     }
+  }
+
+  getUserRole(): string {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user.role_name || ''; 
   }
 }
