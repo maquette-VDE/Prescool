@@ -1,322 +1,351 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import frLocale from '@fullcalendar/core/locales/fr';
+import {
+  Component,
+  ViewChild,
+  AfterViewInit,
+  signal,
+  OnInit,
+  OnDestroy,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
+import {
+  DayPilot,
+  DayPilotModule,
+  DayPilotMonthComponent,
+  DayPilotCalendarComponent,
+} from '@daypilot/daypilot-lite-angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ViewChild } from '@angular/core';
-import { FullCalendarComponent } from '@fullcalendar/angular';
+import { Subject, takeUntil } from 'rxjs';
 
-interface CalendarEvent {
+import {
+  PresencesService,
+  ApiEvent,
+  CreateEventPayload,
+  UpdateEventPayload,
+} from '../services/presences/presences-service';
+import { UserService } from '../services/planning/user.service';
+
+
+type PresenceStatus = 'present' | 'absent' | 'late';
+type CalendarView   = 'month' | 'week';
+
+interface PresenceEvent {
   id: string;
-  title: string;
+  apiId?: number;
   date: string;
-  type: 'present' | 'absent' | 'late' | 'generic';
-  lateTime?: string; // Heure d'arrivée si en retard
-  reason?: string;   // Raison (maladie, etc.)
-  startTime?: string; // Heure de début (ex: 09:00)
-  endTime?: string;   // Heure de fin (ex: 17:00)
-  depart?: boolean; //depart anticpe
-  heureDepart?: string; // heure de depart
+  status: PresenceStatus;
+  reason?: string;
+  lateTime?: string;
+  depart?: boolean;
+  heureDepart?: string;
 }
 
 interface StatusModalState {
   isOpen: boolean;
   selectedDate: string | null;
-  selectedStatus: 'present' | 'absent' | 'late' | null;
+  selectedStatus: PresenceStatus | null;
   reason: string;
   lateTime: string;
-  depart : boolean;
-  heureDepart : string
+  depart: boolean;
+  heureDepart: string;
+}
+
+const STATUS_COLORS: Record<PresenceStatus, { bg: string; border: string; text: string }> = {
+  present: { bg: '#d1fae5', border: '#059669', text: '#065f46' },
+  absent:  { bg: '#fee2e2', border: '#dc2626', text: '#7f1d1d' },
+  late:    { bg: '#fef9c3', border: '#ca8a04', text: '#713f12' },
+};
+
+const STATUS_ICON:  Record<PresenceStatus, string> = { present: '✓', absent: '✕', late: '⏱' };
+const STATUS_LABEL: Record<PresenceStatus, string> = {
+  present: 'Présent(e)',
+  absent:  'Absent(e)',
+  late:    'En retard',
+};
+
+function buildLabel(e: PresenceEvent): string {
+  let label = `${STATUS_ICON[e.status]} ${STATUS_LABEL[e.status]}`;
+  if (e.status === 'late'    && e.lateTime)                label += ` — ${e.lateTime}`;
+  if (e.status === 'present' && e.depart && e.heureDepart) label += ` — départ ${e.heureDepart}`;
+  if (e.reason)                                            label += ` : ${e.reason}`;
+  return label;
+}
+
+function toDayPilotEvent(e: PresenceEvent): DayPilot.EventData {
+  const c = STATUS_COLORS[e.status];
+  return {
+    id:          e.id,
+    text:        buildLabel(e),
+    start:       e.date,
+    end:         new DayPilot.Date(e.date).addDays(1).toString(),
+    backColor:   c.bg,
+    borderColor: c.border,
+    fontColor:   c.text,
+    barColor:    c.border,
+    toolTip:     buildLabel(e),
+  };
+}
+
+function fromApiEvent(api: ApiEvent): PresenceEvent {
+  const notes   = api.notes ?? '';
+  const parsed  = parseNotes(notes);
+
+  return {
+    id:          String(api.id),
+    apiId:       api.id,
+    date:        PresencesService.toDateStr(api.start_time),
+    status:      api.attendance_status,
+    reason:      parsed['reason'],
+    lateTime:    parsed['lateTime'],
+    depart:      parsed['depart'] === 'true',
+    heureDepart: parsed['heureDepart'],
+  };
+}
+
+function buildNotes(
+  reason?: string,
+  lateTime?: string,
+  depart?: boolean,
+  heureDepart?: string,
+): string {
+  const parts: string[] = [];
+  if (reason)      parts.push(`reason=${reason}`);
+  if (lateTime)    parts.push(`lateTime=${lateTime}`);
+  if (depart)      parts.push(`depart=true`);
+  if (heureDepart) parts.push(`heureDepart=${heureDepart}`);
+  return parts.join('|');
+}
+
+function parseNotes(notes: string): Record<string, string> {
+  const result: Record<string, string> = {};
+  notes.split('|').forEach(part => {
+    const [k, v] = part.split('=');
+    if (k && v) result[k.trim()] = v.trim();
+  });
+  return result;
 }
 
 @Component({
   selector: 'app-presences',
   standalone: true,
-  imports: [FullCalendarModule, CommonModule, FormsModule],
+  imports: [CommonModule, DayPilotModule, FormsModule],
   templateUrl: './presences.html',
   styleUrl: './presences.css',
   encapsulation: ViewEncapsulation.None,
 })
-export class Presences {
+export class Presences implements OnInit, AfterViewInit, OnDestroy {
 
-  /* ============================================================
-     🎯 DONNÉES (non connectées au backend pour l’instant)
-     ============================================================ */
-  events: CalendarEvent[] = [
-    { id: crypto.randomUUID(), title: 'Absent(e) - "maladie"', date: '2025-11-17', type: 'absent', reason: 'maladie' },
-    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-18', type: 'present', startTime: '09:00', endTime: '18:00' },
-    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-19', type: 'present', startTime: '09:30', endTime: '17:00' },
-    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-20', type: 'present', startTime: '09:00', endTime: '18:00' },
-    { id: crypto.randomUUID(), title: 'Présent(e)', date: '2025-11-21', type: 'present', startTime: '09:30' },
-    { id: crypto.randomUUID(), title: 'En retard - "on doit aller chercher mes enfants"', date: '2025-11-26', type: 'late', reason: 'on doit aller chercher mes enfants', lateTime: '17:30' }
-  ];
+  private readonly presencesService = inject(PresencesService);
+  private readonly userService      = inject(UserService);
+  private readonly destroy$         = new Subject<void>();
 
-  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+  @ViewChild('month') monthComponent!: DayPilotMonthComponent;
+  @ViewChild('week')  weekComponent!:  DayPilotCalendarComponent;
 
-  currentView: 'dayGridMonth' | 'timeGridWeek' = 'dayGridMonth';
+  currentView: CalendarView = 'month';
+  isLoading = false;
+  errorMsg: string | null = null;
 
-  searchQuery = '';
+  private currentUserId = 0;
+  private navDate       = signal<DayPilot.Date>(DayPilot.Date.today());
+  private events: PresenceEvent[] = [];
+
+  readonly today = new Date();
+  get dayOfMonth() { return this.today.getDate(); }
+  get monthName()  { return this.today.toLocaleDateString('fr-FR', { month: 'long' }); }
+  get monthAbbr()  { return this.today.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase(); }
+  get yearName()   { return this.today.getFullYear(); }
+
+  get periodLabel(): string {
+    const d = this.navDate();
+    if (this.currentView === 'month') {
+      const first = d.firstDayOfMonth();
+      const last  = d.lastDayOfMonth();
+      return `${first.toString('d MMM yyyy', 'fr-fr')} – ${last.toString('d MMM yyyy', 'fr-fr')}`;
+    }
+    const monday = d.firstDayOfWeek(1);
+    return `${monday.toString('d MMM yyyy', 'fr-fr')} – ${monday.addDays(4).toString('d MMM yyyy', 'fr-fr')}`;
+  }
+
+  get periodNavLabel(): string {
+    const d = this.navDate();
+    if (this.currentView === 'month') {
+      const label = d.toString('MMMM yyyy', 'fr-fr');
+      return label.charAt(0).toUpperCase() + label.slice(1);
+    }
+    const monday = d.firstDayOfWeek(1);
+    return `${monday.toString('d', 'fr-fr')} – ${monday.addDays(4).toString('d MMM', 'fr-fr')}`;
+  }
+
+  private get dateRange(): { from: string; to: string } {
+    const d = this.navDate();
+    if (this.currentView === 'month') {
+      return {
+        from: d.firstDayOfMonth().toString('yyyy-MM-dd'),
+        to:   d.lastDayOfMonth().toString('yyyy-MM-dd'),
+      };
+    }
+    const monday = d.firstDayOfWeek(1);
+    return {
+      from: monday.toString('yyyy-MM-dd'),
+      to:   monday.addDays(4).toString('yyyy-MM-dd'),
+    };
+  }
+
+  monthConfig = signal<DayPilot.MonthConfig>({
+    locale:      'fr-fr',
+    startDate:   DayPilot.Date.today(),
+    eventHeight: 30,
+ 
+    onTimeRangeSelected: (args) => this.openStatusModal(args.start.toString('yyyy-MM-dd')),
+    onEventClick: (args) => {
+      const ev = this.events.find(e => e.id === String(args.e.id()));
+      if (ev) this.openDeleteModal(ev.id, buildLabel(ev));
+    },
+    onBeforeEventRender: (args) => {
+      const ev = this.events.find(e => e.id === String(args.data.id));
+      if (!ev) return;
+      const c = STATUS_COLORS[ev.status];
+      args.data.backColor   = c.bg;
+      args.data.borderColor = c.border;
+      args.data.fontColor   = c.text;
+    },
+    onBeforeCellRender: (args) => {
+      const day = args.cell.start.getDayOfWeek();
+      if (day === 0 || day === 6) {
+        args.cell.properties.business  = false;
+        args.cell.properties.backColor = '#bd0f0f';
+      }
+    },
+  });
+
+  weekConfig = signal<DayPilot.CalendarConfig>({
+    locale:             'fr-fr',
+    viewType:           'Week',
+    startDate:          DayPilot.Date.today().firstDayOfWeek(1),
+    heightSpec:         'BusinessHoursNoScroll',
+    businessBeginsHour: 8,
+    businessEndsHour:   19,
+    onTimeRangeSelected: (args) => this.openStatusModal(args.start.toString('yyyy-MM-dd')),
+    onEventClick: (args) => {
+      const ev = this.events.find(e => e.id === String(args.e.id()));
+      if (ev) this.openDeleteModal(ev.id, buildLabel(ev));
+    },
+    onBeforeEventRender: (args) => {
+      const ev = this.events.find(e => e.id === String(args.data.id));
+      if (!ev) return;
+      const c = STATUS_COLORS[ev.status];
+      args.data.backColor   = c.bg;
+      args.data.borderColor = c.border;
+      args.data.fontColor   = c.text;
+    },
+  });
+
+  isFilterMode  = false;
+  filterStatus: string = '';
+
   statusModal: StatusModalState = {
     isOpen: false,
     selectedDate: null,
     selectedStatus: null,
     reason: '',
     lateTime: '09:00',
-    depart : false,
-    heureDepart : '15:00'
-  };
-  isFilterMode = false;
-
-  // Modal de suppression
-  deleteModal = {
-    isOpen: false,
-    eventId: '' as string,
-    eventTitle: '' as string,
+    depart: false,
+    heureDepart: '15:00',
   };
 
-  // Propriété pour la semaine actuelle
-  currentWeek = {
-    dayOfMonth: 0,
-    monthName: '',
-    monthAbbr: '',
-    yearName: 0,
-    startDate: '',
-    endDate: '',
-  };
+  deleteModal = { isOpen: false, eventId: '', eventTitle: '' };
 
-
-
-  /* ============================================================
-     🎯 OPTIONS DU CALENDRIER
-     ============================================================ */
-  calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    initialView: 'dayGridMonth',
-    locale: 'fr',
-    locales: [frLocale],
-    firstDay: 1,
-
-    businessHours: {
-      daysOfWeek: [1, 2, 3, 4, 5], // lundi → vendredi
-      startTime: '08:00',
-      endTime: '19:00',
-    },
-    slotMinTime: '08:00:00',
-    slotMaxTime: '19:00:00',
-    scrollTime: '08:00:00',
-
-    nowIndicator: true,
-    selectable: true,
-    editable: false,
-    events: [],
-
-    // IMPORTANT 🔥 création événement
-    dateClick: this.onDateClick.bind(this),
-
-    // clic simple → supprimer
-    eventClick: this.onEventClick.bind(this),
-
-    // double clic → modifier événement
-    eventDidMount: (info) => {
-      info.el.addEventListener('dblclick', () => {
-        this.onEventDoubleClick(info.event);
+  ngOnInit(): void {
+    this.userService.getUserMe()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user) => {
+          this.currentUserId = user.id;
+          this.loadEvents();
+        },
+        error: () => this.errorMsg = 'Impossible de charger le profil utilisateur.',
       });
-     
-      const reason = info.event.extendedProps['reason'];
-      const lateTime = info.event.extendedProps['lateTime'];
-      const pou = info.event.start;
-      if (lateTime || reason) {
-        let tooltipText = ''
-
-        if (lateTime) {
-          tooltipText += ` ${lateTime}`; 
-        }
-        if (reason) {
-          tooltipText += ` : ${reason}`; 
-        }
-        if (pou) {
-          tooltipText += '\n'; 
-          tooltipText += pou.toLocaleDateString('fr-FR', {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-          });
-      }
-
-        if (tooltipText) {
-          info.el.setAttribute('title', tooltipText);
-        }
-      }
-    },
-
-    // Événement quand les dates affichées changent
-    datesSet: (info) => {
-      this.currentView = info.view.type as 'dayGridMonth' | 'timeGridWeek';
-      this.onDatesChanged(info.start);
-    },
-
-    displayEventTime: false,
-    eventDisplay: 'block',
-    height: 'auto',
-
-    // Masquer le samedi (6) et le dimanche (0)
-    hiddenDays: [0, 6],
-
-    // Noms complets des jours
-    dayHeaderContent: (args) => {
-      const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-      return jours[args.date.getDay()];
-    },
-  };
-
-
-  constructor() {
-    this.updateCurrentWeek();
-    this.refreshCalendar();
   }
 
-  /* ============================================================
-     🎯 CALCUL DE LA SEMAINE ACTUELLE
-     ============================================================ */
-  updateCurrentWeek(date?: Date) {
-    const targetDate = date || new Date();
-    const dayOfWeek = targetDate.getDay(); // 0 = dimanche, 1 = lundi, etc.
-    
-    // Calculer le lundi de la semaine en cours
-    const mondayDate = new Date(targetDate);
-    const diff = targetDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Ajuster si dimanche
-    mondayDate.setDate(diff);
-    
-    // Calculer le vendredi de la semaine en cours
-    const fridayDate = new Date(mondayDate);
-    fridayDate.setDate(mondayDate.getDate() + 4);
-
-    // Options pour le formatage de la date
-    const monthNames = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-                        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-    const monthAbbrv = ['JAN', 'FÉV', 'MAR', 'AVR', 'MAI', 'JUI',
-                        'JUI', 'AOU', 'SEP', 'OCT', 'NOV', 'DÉC'];
-    
-    const dayOfMonth = targetDate.getDate();
-    const monthName = monthNames[targetDate.getMonth()];
-    const monthAbbr = monthAbbrv[targetDate.getMonth()];
-    const yearName = targetDate.getFullYear();
-    
-    // Format des dates: "17 nov 2025 – 19 déc 2025"
-    const startDateStr = `${mondayDate.getDate()} ${monthNames[mondayDate.getMonth()].substring(0, 3)} ${mondayDate.getFullYear()}`;
-    const endDateStr = `${fridayDate.getDate()} ${monthNames[fridayDate.getMonth()].substring(0, 3)} ${fridayDate.getFullYear()}`;
-    
-    this.currentWeek = {
-      dayOfMonth,
-      monthName,
-      monthAbbr,
-      yearName,
-      startDate: startDateStr,
-      endDate: endDateStr,
-    };
+  ngAfterViewInit(): void {
   }
 
-  onDatesChanged(date: Date) {
-    // Met à jour la semaine quand les dates du calendrier changent
-    this.updateCurrentWeek(date);
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
+  private loadEvents(): void {
+    if (!this.currentUserId) return;
 
+    this.isLoading = true;
+    this.errorMsg  = null;
 
-  /* ============================================================
-     🎯 MAPPING FULLCALENDAR
-     ============================================================ */
-  private toFCEvent(e: CalendarEvent) {
-    const css = {
-      present: 'event-present',
-      absent: 'event-absent',
-      late: 'event-late',
-      generic: 'event-generic',
-    }[e.type];
+    const { from, to } = this.dateRange;
 
-    // Afficher différent selon le type
-    let displayTitle = '';
-    
-    if (e.type === 'present') {
-      displayTitle = 'Présent(e)';
-      if (e.startTime && e.endTime) {
-        displayTitle += ` ${e.startTime} - ${e.endTime}`;
-      } else if (e.startTime) {
-        displayTitle += ` ${e.startTime}`;
-      }
-      if (e.depart && e.heureDepart) {
-        displayTitle += ` : Départ anticipé ${e.heureDepart}`;
-      } else if (e.depart) {
-        displayTitle += ` : Départ anticipé`;
-        }
-    } else if (e.type === 'absent') {
-      displayTitle = 'Absent(e)';
-      if (e.startTime) {
-          displayTitle += ` ${e.startTime}`;
-        }
-        if (e.reason) {
-          displayTitle += ` : ${e.reason}`;
-        }
-    } else if (e.type === 'late') {
-      displayTitle = 'Retard';
-       if (e.lateTime) {
-          displayTitle += ` ${e.lateTime}`;
-        }
-        if (e.reason) {
-          displayTitle += ` : ${e.reason}`;
-        }
-      }
-
-    return {
-      id: e.id,
-      title: displayTitle,
-      start: e.date,
-      className: css,
-      extendedProps: {
-        reason : e.reason,
-        lateTime : e.lateTime,
-        depart: e.depart,
-        heureDepart: e.heureDepart
-
-      }
-    };
+    this.presencesService
+      .getMyEvents(this.currentUserId, from, to, this.filterStatus || undefined)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (apiEvents) => {
+          console.log('API Events:', apiEvents);
+          this.events    = apiEvents.map(fromApiEvent);
+          this.isLoading = false;
+          setTimeout(() => this.refreshCalendar(), 0);
+        },
+        error: () => {
+          this.errorMsg  = 'Erreur lors du chargement des présences.';
+          this.isLoading = false;
+        },
+      });
   }
 
-  refreshCalendar() {
-    //lors des refresh du calendar apres ajout evenements l'evenement doit prendre tout la case avec les donne visible (ex : present et heure)
-    this.calendarOptions = {
-      ...this.calendarOptions,
-      events: this.events
-        .filter(e =>
-          e.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-        )
-        .map(e => this.toFCEvent(e)),
-    };
+  private refreshCalendar(): void {
+    const dpEvents = this.events.map(toDayPilotEvent);
+    if (this.currentView === 'month' && this.monthComponent?.control) {
+      this.monthComponent.control.update({ events: dpEvents });
+    }
+    if (this.currentView === 'week' && this.weekComponent?.control) {
+      this.weekComponent.control.update({ events: dpEvents });
+    }
   }
 
-
-
-  /* ============================================================
-     🎯 CRÉATION
-     ============================================================ */
-  openCreateDialog() {
-    // Ouvre le modal avec la date d'aujourd'hui
-    const today = new Date().toISOString().split('T')[0];
-    this.openStatusModal(today);
+  switchView(view: CalendarView): void {
+    this.currentView = view;
+    setTimeout(() => {
+      this.loadEvents();
+    }, 0);
   }
 
-  /* ============================================================
-     🎯 GESTION DU MODAL DE STATUT
-     ============================================================ */
-  onDateClick(info: any) {
-    this.openStatusModal(info.dateStr);
+  navigate(step: number): void {
+    const current = this.navDate();
+    if (this.currentView === 'month') {
+      const newDate = current.addMonths(step);
+      this.navDate.set(newDate);
+      this.monthConfig.update(c => ({ ...c, startDate: newDate }));
+    } else {
+      const newDate = current.addDays(step * 7);
+      this.navDate.set(newDate);
+      this.weekConfig.update(c => ({ ...c, startDate: newDate.firstDayOfWeek(1) }));
+    }
+    this.loadEvents();
   }
 
-  openStatusModal(dateStr: string | null) {
+  goToToday(): void {
+    const today = DayPilot.Date.today();
+    this.navDate.set(today);
+    this.monthConfig.update(c => ({ ...c, startDate: today }));
+    this.weekConfig.update(c  => ({ ...c, startDate: today.firstDayOfWeek(1) }));
+    this.loadEvents();
+  }
+
+  openCreateDialog(): void {
+    this.openStatusModal(new DayPilot.Date().toString('yyyy-MM-dd'));
+  }
+
+  openStatusModal(dateStr: string | null): void {
     this.isFilterMode = dateStr === null;
     this.statusModal = {
       isOpen: true,
@@ -324,145 +353,106 @@ export class Presences {
       selectedStatus: null,
       reason: '',
       lateTime: '09:00',
-      depart : false,
-      heureDepart : '15:00',
+      depart: false,
+      heureDepart: '15:00',
     };
   }
 
-  closeStatusModal() {
-    this.statusModal.isOpen = false;
-  }
+  closeStatusModal(): void { this.statusModal.isOpen = false; }
 
-  selectStatus(status: 'present' | 'absent' | 'late') {
+  selectStatus(status: PresenceStatus): void {
     this.statusModal.selectedStatus = status;
   }
 
-  confirmStatus() {
-    if (!this.statusModal.selectedStatus) {
-      return;
-    }
+  applyFilter(status: string): void {
+    this.filterStatus = status;
+    this.closeStatusModal();
+    this.loadEvents();
+  }
 
-    // Mode filtre: on ne crée pas d'événement, on ferme juste le modal
+  confirmStatus(): void {
+    if (!this.statusModal.selectedStatus) return;
+
     if (this.isFilterMode) {
-      this.closeStatusModal();
+      this.applyFilter(this.statusModal.selectedStatus);
       return;
     }
 
-    // Mode création d'événement
-    if (!this.statusModal.selectedDate) {
-      return;
-    }
+    if (!this.statusModal.selectedDate) return;
 
-    const status = this.statusModal.selectedStatus;
-    let title = '';
-
-    switch (status) {
-      case 'present':
-        title = 'Présent(e)';
-        break;
-      case 'absent':
-        title = this.statusModal.reason
-          ? `Absent(e) - "${this.statusModal.reason}"`
-          : 'Absent(e)';
-        break;
-      case 'late':
-        title = this.statusModal.reason
-          ? `En retard - "${this.statusModal.reason}"`
-          : 'En retard';
-        break;
-    }
-
-    // Vérifier si un événement existe déjà pour cette date
-    const existingEventIndex = this.events.findIndex(
-      e => e.date === this.statusModal.selectedDate
+    const status      = this.statusModal.selectedStatus;
+    const date        = this.statusModal.selectedDate;
+    const notes       = buildNotes(
+      this.statusModal.reason || undefined,
+      status === 'late'    ? this.statusModal.lateTime    : undefined,
+      status === 'present' ? this.statusModal.depart      : undefined,
+      status === 'present' ? this.statusModal.heureDepart : undefined,
     );
 
-    const newEvent: CalendarEvent = {
-      id: existingEventIndex >= 0
-        ? this.events[existingEventIndex].id
-        : crypto.randomUUID(),
-      title,
-      date: this.statusModal.selectedDate!,
-      type: status,
-      reason: this.statusModal.reason || undefined,
-      lateTime: status === 'late' ? this.statusModal.lateTime : undefined,
-      depart: this.statusModal.depart,
-      heureDepart: this.statusModal.heureDepart,
-    };
+    const existing = this.events.find(e => e.date === date);
 
-    if (existingEventIndex >= 0) {
-      this.events[existingEventIndex] = newEvent;
+    if (existing?.apiId) {
+      const payload: UpdateEventPayload = {
+        attendance_status: status,
+        start_time:        PresencesService.toStartISO(date),
+        end_time:          PresencesService.toEndISO(date),
+        all_day:           true,
+        event_type:        'presence',
+        notes,
+      };
+
+      this.isLoading = true;
+      this.presencesService.updateEvent(existing.apiId, payload)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next:  () => { this.isLoading = false; this.loadEvents(); },
+          error: () => { this.isLoading = false; this.errorMsg = 'Erreur lors de la mise à jour.'; },
+        });
+
     } else {
-      this.events.push(newEvent);
+      const payload: CreateEventPayload = {
+        user_id:           this.currentUserId,
+        title:             STATUS_LABEL[status],
+        start_time:        PresencesService.toStartISO(date),
+        end_time:          PresencesService.toEndISO(date),
+        event_type:        'presence',
+        all_day:           true,
+        status:            'scheduled',
+        attendance_status: status,
+        notes,
+        source:            'manual',
+      };
+
+      this.isLoading = true;
+      this.presencesService.createEvent(payload)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next:  () => { this.isLoading = false; this.loadEvents(); },
+          error: () => { this.isLoading = false; this.errorMsg = 'Erreur lors de la création.'; },
+        });
     }
 
-    this.refreshCalendar();
     this.closeStatusModal();
   }
 
-
-
-  /* ============================================================
-     🎯 SUPPRESSION
-     ============================================================ */
-  onEventClick(info: any) {
-    // Ouvrir la modal de suppression au lieu d'utiliser confirm()
-    const event = this.events.find(e => e.id === info.event.id);
-    if (event) {
-      this.openDeleteModal(info.event.id, event.title);
-    }
+  openDeleteModal(id: string, title: string): void {
+    this.deleteModal = { isOpen: true, eventId: id, eventTitle: title };
   }
 
-  openDeleteModal(eventId: string, eventTitle: string) {
-    this.deleteModal = {
-      isOpen: true,
-      eventId,
-      eventTitle,
-    };
-  }
+  closeDeleteModal(): void { this.deleteModal.isOpen = false; }
 
-  closeDeleteModal() {
-    this.deleteModal.isOpen = false;
-  }
+  confirmDelete(): void {
+    const ev = this.events.find(e => e.id === this.deleteModal.eventId);
+    if (!ev?.apiId) { this.closeDeleteModal(); return; }
 
-  confirmDelete() {
-    this.events = this.events.filter(e => e.id !== this.deleteModal.eventId);
-    this.refreshCalendar();
+    this.isLoading = true;
+    this.presencesService.deleteEvent(ev.apiId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next:  () => { this.isLoading = false; this.loadEvents(); },
+        error: () => { this.isLoading = false; this.errorMsg = 'Erreur lors de la suppression.'; },
+      });
+
     this.closeDeleteModal();
-  }
-
-
-
-  /* ============================================================
-     🎯 MODIFICATION (double clic)
-     ============================================================ */
-  onEventDoubleClick(event: any) {
-    const newTitle = prompt('Modifier le titre :', event.title);
-    if (!newTitle) return;
-
-    const e = this.events.find(ev => ev.id === event.id);
-    if (e) {
-      e.title = newTitle;
-      this.refreshCalendar();
-    }
-  }
-
-
-
-  /* ============================================================
-     🎯 RECHERCHE
-     ============================================================ */
-  onSearchChanged(query: string) {
-    this.searchQuery = query;
-    this.refreshCalendar();
-  }
-  /*============================================================
-    🎯 Switch de vue 
-    ============================================================ */
-  switchToMonth() {
-    this.calendarComponent.getApi().changeView('dayGridMonth');
-  }
-  switchToWeek() {
-    this.calendarComponent.getApi().changeView('timeGridWeek'); 
   }
 }

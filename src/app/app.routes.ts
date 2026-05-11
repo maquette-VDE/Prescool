@@ -47,11 +47,6 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: Dashboard,
-        resolve: {
-          dashboardStats: dashboardResolver,
-          evenements: dashboardEvenementsResolver
-        },
-        runGuardsAndResolvers: 'always',
         data: {
           title: 'Tableau de bord',
           subtitle: 'Aperçu global de votre activité',
@@ -78,11 +73,6 @@ export const routes: Routes = [
         component: Consultant,
         data: { title: 'Consultants', subtitle: 'Liste des membres' },
         canActivate: [instructorGuard],
-        resolve: {
-          consultants: consultantResolver,
-          evenements: dashboardEvenementsResolver,
-        },
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
       },
       {
         path: 'aide',

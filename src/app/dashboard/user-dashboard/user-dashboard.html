@@ -1,0 +1,81 @@
+<div class="stats">
+  <div class="card stat-card stat-present">
+    <h3>Mon statut aujourd’hui</h3>
+    <p class="value status">{{ todayStatus() }}</p>
+  </div>
+
+  <div class="card stat-card">
+    <h3>Présences cette semaine</h3>
+    <p class="value">{{ presentThisWeek() }}</p>
+  </div>
+
+  <div class="card stat-card stat-late">
+    <h3>Retards cette semaine</h3>
+    <p class="value">{{ lateThisWeek() }}</p>
+  </div>
+
+  <div class="card stat-card stat-absent">
+    <h3>Absences cette semaine</h3>
+    <p class="value">{{ absentThisWeek() }}</p>
+  </div>
+
+  <div class="card stat-card stat-annonces">
+    <h3>Mon taux de présence</h3>
+    <p class="value">{{ attendanceRate() }}%</p>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card section-card">
+    <h2>Mon résumé</h2>
+
+    <div class="summary-list">
+      <div class="summary-item">
+        <span>Télétravail</span>
+        <strong>{{ remoteThisWeek() }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>En mission</span>
+        <strong>{{ enMissionThisWeek() }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Excusé</span>
+        <strong>{{ excusedThisWeek() }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card section-card">
+    <h2>Accès rapides</h2>
+
+    <div class="quick-links">
+      <a class="quick-link" routerLink="/sidenav/presences">
+        <span class="quick-title">Mes présences</span>
+        <span class="quick-subtitle">Consulter mon historique</span>
+      </a>
+
+      <a class="quick-link" routerLink="/sidenav/planning">
+        <span class="quick-title">Mon planning</span>
+        <span class="quick-subtitle">Voir mon emploi du temps</span>
+      </a>
+
+      <a class="quick-link" routerLink="/sidenav/annonces">
+        <span class="quick-title">Annonces</span>
+        <span class="quick-subtitle">Voir les actualités</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="card section-card annonces-card">
+  <h2>Dernières annonces</h2>
+
+  <div *ngFor="let a of annonces().slice(0, 3)" class="item item-column">
+    <div class="annonce-title">{{ a.titre }}</div>
+    <small class="annonce-category">{{ a.categorie }}</small>
+  </div>
+
+  <button class="btn" routerLink="/sidenav/annonces">Voir tout</button>
+</div>
