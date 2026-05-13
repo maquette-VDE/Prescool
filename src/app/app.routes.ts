@@ -92,7 +92,7 @@ export const routes: Routes = [
       {
         path: 'equipes',
         component: Equipes,
-        data: { title: 'Équipes', subtitle: '' },
+        data: { title: 'Projets', subtitle: '' },
       },
 
       {
