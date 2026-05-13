@@ -122,7 +122,7 @@ export class ProjetDetail implements OnInit {
 // Methode pour charger les membres du projet et les enrichir avec les infos utilisateurs
 
   loadProjectMembers(projectId: number) {
-    this.projectService.getProjectMembers().subscribe({
+    this.projectService.getProjectMembers(projectId).subscribe({
       next: (resMembers) => {
         const allAssignments = resMembers.items ?? [];
         const validMembers = allAssignments.filter((m: any) => Number(m.project_id) === projectId);
@@ -196,9 +196,9 @@ confirmAddMember() {
 
 get filteredUsers() {
 
-  const term = this.searchTerm(); 
+  const term = this.searchTerm();
 
- 
+
   if (!term || term.trim() === '') {
     return this.allUsers;
   }

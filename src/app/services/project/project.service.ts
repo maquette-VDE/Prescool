@@ -56,8 +56,9 @@ getTeams(): Observable<any> {
   }
 
  // Récupérer les membres d'un projet
-  getProjectMembers(projectId?: number): Observable<any> {
- return this.http.get<any>(this.ASSIGNMENTS_URL);
+
+getProjectMembers(projectId: number): Observable<any> {
+  return this.http.get<any>(`${this.ASSIGNMENTS_URL}?project_id=${projectId}&limit=100`);
 }
 
 addMemberToProject(projectId: number, email: string): Observable<any> {
