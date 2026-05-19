@@ -175,4 +175,50 @@ getMyWeeklyStats(userId: number): Observable<UserWeeklyStats> {
     })
   );
 }
+
+getMonthlyStats(): Observable<DashboardWeeklyResponse> {
+  const now = new Date();
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  startOfMonth.setHours(0, 0, 0, 0);
+
+  const labels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+
+  const requests = labels.map((_, index) => {
+    const start = new Date(startOfMonth);
+    start.setDate(startOfMonth.getDate() + index * 7);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+
+    return forkJoin({
+      present: this.usersService.getUsersByAttendanceStatusForRange(
+        'present',
+        start,
+        end
+      ),
+      absent: this.usersService.getUsersByAttendanceStatusForRange(
+        'absent',
+        start,
+        end
+      ),
+      late: this.usersService.getUsersByAttendanceStatusForRange(
+        'late',
+        start,
+        end
+      ),
+    });
+  });
+
+  return forkJoin(requests).pipe(
+    map((weeks) => ({
+      labels,
+      presentData: weeks.map((w) => w.present.total ?? 0),
+      absentData: weeks.map((w) => w.absent.total ?? 0),
+      lateData: weeks.map((w) => w.late.total ?? 0),
+    }))
+  );
+}
 }
