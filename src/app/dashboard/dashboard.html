@@ -50,7 +50,33 @@
 
     <!-- Courbe -->
     <div class="card section-card">
-      <h2>Évolution des présences</h2>
+      <div class="chart-header">
+        <h2>
+          Évolution des présences
+          <span class="chart-subtitle">
+            {{ presencePeriod() === "week" ? "cette semaine" : "ce mois" }}
+          </span>
+        </h2>
+
+        <div class="period-switch">
+          <button
+            type="button"
+            [class.active]="presencePeriod() === 'week'"
+            (click)="changePresencePeriod('week')"
+          >
+            Semaine
+          </button>
+
+          <button
+            type="button"
+            [class.active]="presencePeriod() === 'month'"
+            (click)="changePresencePeriod('month')"
+          >
+            Mois
+          </button>
+        </div>
+      </div>
+
       <div class="line-chart-wrapper">
         <canvas #lineCanvas></canvas>
       </div>
