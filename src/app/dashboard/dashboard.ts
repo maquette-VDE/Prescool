@@ -78,6 +78,25 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   weeklyLoading = signal(true);
   presencePeriod = signal<'week' | 'month'>('week');
 
+  currentPeriodLabel = computed(() => {
+  const now = new Date();
+
+  const formattedDate = now.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  if (this.presencePeriod() === 'week') {
+    return formattedDate;
+  }
+
+  return now.toLocaleDateString('fr-FR', {
+    month: 'long',
+    year: 'numeric',
+  });
+});
+
   weeklyStats = signal<{
     labels: string[];
     presentData: number[];
