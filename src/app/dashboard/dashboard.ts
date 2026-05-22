@@ -19,13 +19,14 @@ import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolve
 import { UsersService } from '../services/users/users-service';
 import { EvenementsService } from '../services/evenements/evenements-service';
 import { UserDashboard } from './user-dashboard/user-dashboard';
+import { MatIconModule } from '@angular/material/icon';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, UserDashboard],
+  imports: [CommonModule, RouterModule, UserDashboard, MatIconModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
 })
@@ -68,6 +69,14 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   annonces = this.annonceService.getAnnonces();
 
   loading = signal(true);
+
+  currentDate = new Date().toLocaleDateString('fr-FR', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
   dashboardStats = signal<DashboardStatsResponse>({
     consultantsTotal: 0,
     presentTotal: 0,
@@ -79,23 +88,23 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   presencePeriod = signal<'week' | 'month'>('week');
 
   currentPeriodLabel = computed(() => {
-  const now = new Date();
+    const now = new Date();
 
-  const formattedDate = now.toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    const formattedDate = now.toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+
+    if (this.presencePeriod() === 'week') {
+      return formattedDate;
+    }
+
+    return now.toLocaleDateString('fr-FR', {
+      month: 'long',
+      year: 'numeric',
+    });
   });
-
-  if (this.presencePeriod() === 'week') {
-    return formattedDate;
-  }
-
-  return now.toLocaleDateString('fr-FR', {
-    month: 'long',
-    year: 'numeric',
-  });
-});
 
   weeklyStats = signal<{
     labels: string[];
@@ -179,15 +188,32 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
       key: 'consultants',
       title: 'Consultants&Etudiants',
       value: this.consultantsTotal(),
+      icon: 'group',
     },
     {
       key: 'present',
       title: 'Présents aujourd’hui',
       value: this.presentCount(),
+      icon: 'check_circle',
     },
-    { key: 'absent', title: 'Absents aujourd’hui', value: this.absentCount() },
-    { key: 'late', title: 'En retard', value: this.lateCount() },
-    { key: 'annonces', title: 'Annonces', value: this.annonces().length },
+    {
+      key: 'absent',
+      title: 'Absents aujourd’hui',
+      value: this.absentCount(),
+      icon: 'cancel',
+    },
+    {
+      key: 'late',
+      title: 'En retard',
+      value: this.lateCount(),
+      icon: 'schedule',
+    },
+    {
+      key: 'annonces',
+      title: 'Annonces',
+      value: this.annonces().length,
+      icon: 'campaign',
+    },
   ]);
 
   ngOnInit(): void {
@@ -278,6 +304,10 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
         responsive: true,
         maintainAspectRatio: false,
         cutout: '70%',
+        animation: {
+          animateRotate: true,
+          duration: 1000,
+        },
         interaction: {
           mode: 'nearest',
           intersect: true,
@@ -392,7 +422,8 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-          duration: 800,
+          duration: 1000,
+          easing: 'easeOutQuart',
         },
         plugins: {
           legend: {

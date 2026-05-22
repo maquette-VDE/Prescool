@@ -3,7 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-
 export interface ApiEvent {
   id?: number;
   user_id: number;
@@ -49,13 +48,11 @@ export interface PaginatedResponse<T> {
   page: number;
 }
 
-
 @Injectable({ providedIn: 'root' })
 export class PresencesService {
-
-  private readonly http     = inject(HttpClient);
-  private readonly API_BASE = 'https://prez-cool-staging.appsolutions224.com/api/v1';
-
+  private readonly http = inject(HttpClient);
+  private readonly API_BASE =
+    'https://prez-cool-staging.appsolutions224.com/api/v1';
 
   getMyEvents(
     userId: number,
@@ -63,10 +60,11 @@ export class PresencesService {
     startTo: string,
     attendanceStatus?: string,
   ): Observable<ApiEvent[]> {
-
     let params = new HttpParams()
-      .set('user_id',    userId.toString())
-      .set('limit',      '100');
+      .set('user_id', userId.toString())
+      .set('event_start_from', `${startFrom}T00:00:00.000Z`)
+      .set('event_end_to', `${startTo}T23:59:59.999Z`)
+      .set('limit', '100');
 
     if (attendanceStatus) {
       params = params.set('attendance_status', attendanceStatus);
@@ -74,14 +72,12 @@ export class PresencesService {
 
     return this.http
       .get<PaginatedResponse<ApiEvent>>(`${this.API_BASE}/events`, { params })
-      .pipe(map(res => res.items));
+      .pipe(map((res) => res.items));
   }
-
 
   createEvent(payload: CreateEventPayload): Observable<ApiEvent> {
     return this.http.post<ApiEvent>(`${this.API_BASE}/events`, payload);
   }
-
 
   updateEvent(id: number, payload: UpdateEventPayload): Observable<ApiEvent> {
     return this.http.put<ApiEvent>(`${this.API_BASE}/events/${id}`, payload);
@@ -98,7 +94,6 @@ export class PresencesService {
   static toEndISO(date: string): string {
     return `${date}T23:59:59.999Z`;
   }
-
 
   static toDateStr(iso: string): string {
     return iso.split('T')[0];
