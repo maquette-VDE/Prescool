@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { forkJoin, map, Observable } from 'rxjs';
 import { UserEvent } from '../../interfaces/events';
 import { UsersService } from '../users/users-service';
+import { environment } from '../../../environments/environment';
 
 export interface DashboardWeeklyResponse {
   labels: string[];
@@ -31,7 +32,7 @@ export class EvenementsService {
 
   createEvent(data: any): Observable<UserEvent> {
     return this.http.post<UserEvent>(
-      'https://prez-cool-staging.appsolutions224.com/api/v1/events',
+      `${environment.apiBaseUrl}/events`,
       data,
     );
   }
@@ -64,7 +65,7 @@ export class EvenementsService {
     );
 
     const url =
-      `https://prez-cool-staging.appsolutions224.com/api/v1/events` +
+      `${environment.apiBaseUrl}/events` +
       `?event_start_from=${encodeURIComponent(startOfDayUtc.toISOString())}` +
       `&event_end_to=${encodeURIComponent(endOfDayUtc.toISOString())}` +
       `&limit=${this.limit}`;
@@ -76,7 +77,7 @@ export class EvenementsService {
 
   getEventsForRange(start: Date, end: Date): Observable<UserEvent[]> {
     const url =
-      `https://prez-cool-staging.appsolutions224.com/api/v1/events` +
+      `${environment.apiBaseUrl}/events` +
       `?event_start_from=${encodeURIComponent(start.toISOString())}` +
       `&event_end_to=${encodeURIComponent(end.toISOString())}` +
       `&limit=${this.limit}`;
@@ -98,7 +99,7 @@ export class EvenementsService {
       .set('limit', this.limit.toString());
 
     return this.http
-      .get<any>('https://prez-cool-staging.appsolutions224.com/api/v1/events', {
+      .get<any>(`${environment.apiBaseUrl}/events`, {
         params,
       })
       .pipe(map((response) => response.items as UserEvent[]));
