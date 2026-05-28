@@ -7,5 +7,5 @@ export const getApiBaseUrl = (fallback: string): string => {
       ? runtimeBase.trim()
       : fallback;
 
-  return `${base.replace(/\/+$/, '')}/api/v1/`;
+  return `${base.replace(/\/+$/, '')}/api/v1`;
 };

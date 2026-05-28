@@ -52,7 +52,8 @@ login(username: string, password: string) {
   refreshToken(): Observable<{ accessToken: string }> {
     const refreshToken = localStorage.getItem('refresh_token');
 
-    return this.http.post<{ accessToken: string }>('auth/refresh',
+    return this.http.post<{ accessToken: string }>(
+  this.apiConfig.buildUrl('auth/refresh'),
       { refreshToken },
       { observe: 'response' }
     ).pipe(
@@ -73,7 +74,7 @@ login(username: string, password: string) {
   }
 
   logout(): void {
-    this.http.post(`${this.apiConfig.getBaseUrl}/users/me/logout`, {})
+    this.http.post(this.apiConfig.buildUrl('users/me/logout'), {})
       .subscribe({
         next: () => this.clearStorageAndRedirect(),
         error: () => this.clearStorageAndRedirect()

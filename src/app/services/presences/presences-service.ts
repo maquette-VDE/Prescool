@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface ApiEvent {
   id?: number;
@@ -51,8 +52,7 @@ export interface PaginatedResponse<T> {
 @Injectable({ providedIn: 'root' })
 export class PresencesService {
   private readonly http = inject(HttpClient);
-  private readonly API_BASE =
-    'https://prez-cool-staging.appsolutions224.com/api/v1';
+  private readonly API_BASE = environment.apiBaseUrl;
 
   getMyEvents(
     userId: number,
