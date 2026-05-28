@@ -1,13 +1,13 @@
 .fs-12 {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 .fs-14 {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 .active-link {
-    color: #000000 !important;
+  color: #000000 !important;
 }
 
 .nav-link {
@@ -59,7 +59,8 @@
 }
 
 /* Lors de l'élément ayant le focus ou étant actif (sans contour) */
-.nav-link:focus, .nav-link:active {
+.nav-link:focus,
+.nav-link:active {
   background: transparent;
   outline: none;
   color: white;

@@ -1,9 +1,8 @@
 <div class="d-flex min-vh-100 bg-white">
-    
   <!-- SIDEBAR DESKTOP -->
   <aside
     class="d-none d-lg-flex flex-column border-end bg-white"
-    style="width: 300px; position: sticky; top: 0; height: 100vh;"
+    style="width: 300px; position: sticky; top: 0; height: 100vh"
   >
     <ng-container *ngTemplateOutlet="navContent"></ng-container>
   </aside>
@@ -11,9 +10,9 @@
   <!-- CONTENU -->
   <div class="flex-grow-1 d-flex flex-column">
     <main class="content-area">
-    <div class="header-outer-wrapper p-0"> 
+      <div class="header-outer-wrapper p-0">
         <app-header></app-header>
-    </div>
+      </div>
     </main>
     <!-- NAVBAR MOBILE -->
     <nav class="navbar navbar-light bg-white d-lg-none px-3 border-bottom">
@@ -30,11 +29,7 @@
         [routerLink]="['/sidenav/dashboard']"
         aria-label="Retour à l'accueil"
       >
-        <img
-          src="prescool.jpeg"
-          alt="logo"
-          style="height: 30px;"
-        />
+        <img src="prescool.jpeg" alt="logo" style="height: 30px" />
         <span class="brand-text">Prescool</span>
       </a>
     </nav>
@@ -80,48 +75,93 @@
       </a>
     </div>
 
-    <p class="fw-bold text-dark mb-4" style="font-size: 0.9rem;">
+    <p class="fw-bold text-dark mb-4" style="font-size: 0.9rem">
       Menu Principal
     </p>
 
     <ul class="nav flex-column gap-2">
       <!-- Dashboard -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-ui-radios-grid', label: 'Tableau de bord' }"
+        *ngTemplateOutlet="
+          navItem;
+          context: {
+            route: 'dashboard',
+            icon: 'bi-ui-radios-grid',
+            label: 'Tableau de bord',
+          }
+        "
       ></ng-container>
 
       <!-- Consultant -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'consultant', icon: 'bi-person', label: 'Consultant' }"
+        *ngTemplateOutlet="
+          navItem;
+          context: {
+            route: 'consultant',
+            icon: 'bi-person',
+            label: 'Consultant',
+          }
+        "
       ></ng-container>
 
       <!-- Planning (admin/instructor) -->
-      @if (hasRole('admin') || hasRole('instructor')) {
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'planning', icon: 'bi-check2-square', label: 'Planning' }"
-      ></ng-container>
+      @if (hasRole("admin") || hasRole("instructor")) {
+        <ng-container
+          *ngTemplateOutlet="
+            navItem;
+            context: {
+              route: 'planning',
+              icon: 'bi-check2-square',
+              label: 'Planning',
+            }
+          "
+        ></ng-container>
       }
 
       <!-- Présences (student/consultant) -->
-      @if (hasRole('student') || hasRole('consultant')) {
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"
-      ></ng-container>
+      @if (hasRole("student") || hasRole("consultant")) {
+        <ng-container
+          *ngTemplateOutlet="
+            navItem;
+            context: {
+              route: 'presences',
+              icon: 'bi-calendar2-week',
+              label: 'Présences',
+            }
+          "
+        ></ng-container>
       }
 
       <!-- Annonces -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'annonces', icon: 'bi-chat-right-dots', label: 'Annonces' }"
+        *ngTemplateOutlet="
+          navItem;
+          context: {
+            route: 'annonces',
+            icon: 'bi-chat-right-dots',
+            label: 'Annonces',
+          }
+        "
       ></ng-container>
 
       <!-- Aide -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"
+        *ngTemplateOutlet="
+          navItem;
+          context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }
+        "
       ></ng-container>
 
       <!-- Equipes -->
       <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'equipes', icon: 'bi-people-fill', label: 'Projets' }"
+        *ngTemplateOutlet="
+          navItem;
+          context: {
+            route: 'equipes',
+            icon: 'bi-people-fill',
+            label: 'Projets',
+          }
+        "
       ></ng-container>
 
       <!-- Logout -->
