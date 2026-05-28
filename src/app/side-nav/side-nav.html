@@ -25,12 +25,18 @@
       >
         <i class="bi bi-list fs-3"></i>
       </button>
-      <img
-        src="prescool.jpeg"
-        alt="logo"
-        style="height: 30px;"
-        class="ms-2"
-      />
+      <a
+        class="brand-link ms-2"
+        [routerLink]="['/sidenav/dashboard']"
+        aria-label="Retour à l'accueil"
+      >
+        <img
+          src="prescool.jpeg"
+          alt="logo"
+          style="height: 30px;"
+        />
+        <span class="brand-text">Prescool</span>
+      </a>
     </nav>
 
     <main class="p-4 flex-grow-1">
@@ -63,9 +69,15 @@
   <div class="p-4">
     <!-- LOGO -->
     <div class="mb-5">
-      <div class="">
+      <a
+        class="brand-link"
+        [routerLink]="['/sidenav/dashboard']"
+        data-bs-dismiss="offcanvas"
+        aria-label="Retour à l'accueil"
+      >
         <img src="prescool.jpeg" alt="logo" style="width: 200px" />
-      </div>
+        <span class="brand-text brand-text-lg">Prescool</span>
+      </a>
     </div>
 
     <p class="fw-bold text-dark mb-4" style="font-size: 0.9rem;">
