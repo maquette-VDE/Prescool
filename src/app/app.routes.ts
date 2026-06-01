@@ -9,28 +9,35 @@ import { Planning } from './planning/planning';
 import { Consultant } from './consultant/consultant';
 import { Dashboard } from './dashboard/dashboard';
 import { Aide } from './aide/aide';
-import { Annonces } from './annonces/annonces';
-import { AnnonceDetail } from './annonce-detail/annonce-detail';
-import { planningResolver } from './resolvers/planning/planning-resolver';
-import { roleGuard } from './guards/role-guard';
+import { AnnonceComponent } from './annonces/annonces';
 import { WaitConfirmation } from './wait-confirmation/wait-confirmation';
 import { consultantResolver } from './resolvers/consultant/consultant-resolver';
 import { Erreur } from './erreur/erreur';
 import { Equipes } from './equipes/equipes';
 import { Instructor } from './instructor/instructor';
-import { instructorGuard } from './guards/instructor-guard';
+import { AnnoncesPanelComponent } from './annonces-panel/annonces-panel';
+
+// Resolvers
+import { planningResolver } from './resolvers/planning/planning-resolver';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
 import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
 import { ProjetDetail } from './projet-detail/projet-detail';
 
+// Guards
+import { roleGuard } from './guards/role-guard';
+import { instructorGuard } from './guards/instructor-guard';
+
 export const routes: Routes = [
+  // --- ROUTES PUBLIQUES / AUTH ---
   { path: '', component: Login },
   { path: 'create-user', component: CreateUser },
   { path: 'confirm-expert', component: ConfirmeExpert },
   { path: 'confirm-consultant', component: ConfirmeConsultant },
   { path: 'wait-confirmation', component: WaitConfirmation },
   { path: 'error', component: Erreur },
+
+  // --- INTERFACE PRINCIPALE (SIDENAV) ---
   {
     path: 'sidenav',
     component: SideNav,
@@ -48,36 +55,82 @@ export const routes: Routes = [
         path: 'dashboard',
         component: Dashboard,
         data: {
-          title: 'Tableau de bord',
-          subtitle: 'Aperçu global de votre activité',
+          title: 'Tableau de bord administrateur 👋',
+          subtitle: 'Vue globale des présences, utilisateurs et annonces.',
         },
       },
+      { 
+        path: 'annonces', 
+        component: AnnoncesPanelComponent, 
+        data: { 
+          title: "Tableau d\'annonces",
+        } 
+      },
+     {
+      path: 'annonces/:id',
+      component: AnnonceComponent,
+      data: { 
+      title: 'Détail de l\'annonce',
+      subtitle: 'Consultez les dernières actualités' 
+      }
+    },
       {
-        path: 'annonces',
-        component: Annonces,
+        path: 'presences',
+        component: Presences,
+        canActivate: [roleGuard],
         data: {
-          title: "Tableau d'annonces",
-          subtitle: 'Gérez les dernières actualités',
+          title: 'La liste de présence',
+          subtitle: 'Consultez la présence des consultants',
         },
       },
-      { path: 'annonces/:id', component: AnnonceDetail },
       {
         path: 'planning',
         component: Planning,
         resolve: { planningData: planningResolver },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-        data: { title: 'Planning', subtitle: "Gestion de l'emploi du temps" },
+        data: { 
+          title: 'Planning', 
+          subtitle: "Gestion de l'emploi du temps" 
+        }
       },
       {
-        path: 'consultant',
+        path: 'presences',
+        component: Presences,
+        data: {
+          title: 'La liste de présence',
+          subtitle: 'Consultez la présence des consultants',canActivate: [roleGuard]
+        }
+
+      },
+      { 
+        path: 'dashboard', 
+        component: Dashboard,
+        data: { title: 'Tableau de bord', subtitle: 'Aperçu global de votre activité' } 
+      },
+      { 
+        path: 'planning', 
+        component: Planning, 
+        resolve: { planningData: planningResolver },
+        data: { title: 'Planning', subtitle: 'Gestion de l’emploi du temps' }
+      },
+      { 
+        path: 'consultant', 
         component: Consultant,
         data: { title: 'Consultants', subtitle: 'Liste des membres' },
         canActivate: [instructorGuard],
       },
-      {
-        path: 'aide',
+        {
+          path: 'consultant',
+          component: Consultant,
+        data: {
+          title: 'Consultants', 
+          subtitle: 'Liste des membres' 
+        }
+      },
+      { 
+        path: 'aide', 
         component: Aide,
-        data: { title: 'Aide', subtitle: "Centre d'assistance" },
+        data: { title: 'Aide', subtitle: 'Centre d’assistance' } 
       },
       { path: 'confirm-consultant', component: ConfirmeConsultant },
       {
@@ -88,6 +141,10 @@ export const routes: Routes = [
           evenements: dashboardEvenementsResolver,
         },
         runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+        data: { 
+          title: 'Instructeurs', 
+          subtitle: 'Gestion des instructeurs' 
+        },
       },
       {
         path: 'equipes',
@@ -104,5 +161,7 @@ export const routes: Routes = [
 
     ],
   },
+
+  // --- REDIRECTION PAR DÉFAUT ---
   { path: '**', redirectTo: 'error' },
 ];
