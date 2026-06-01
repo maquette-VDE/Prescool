@@ -1,9 +1,5 @@
 @if (isAdminOrExpert()) {
   <div class="welcome">
-    <div>
-      <h1>Tableau de bord administrateur 👋</h1>
-      <p>Vue globale des présences, utilisateurs et annonces.</p>
-    </div>
     <span class="welcome-date">
       {{ currentDate }} 
     </span>
@@ -160,9 +156,9 @@
     <div class="card section-card">
       <h2>Dernières annonces</h2>
 
-      <div *ngFor="let a of annonces().slice(0, 3)" class="item item-column">
-        <div class="annonce-title">{{ a.titre }}</div>
-        <small class="annonce-category">{{ a.categorie }}</small>
+      <div *ngFor="let annonce of annonces().slice(0, 3)" class="item item-column">
+        <div class="annonce-title">{{ annonce.title }}</div>
+        <small class="annonce-category">{{ annonce.content?.[0]?.subtitre }}</small>
       </div>
 
       <div class="annonces-footer">

@@ -14,12 +14,14 @@ import {
 import { RouterModule, Router } from '@angular/router';
 import { Chart, registerables } from 'chart.js';
 import { forkJoin } from 'rxjs';
-import { AnnonceService } from '../annonces/annonce.service';
+import { AnnouncementService } from '../services/announcement/announcement.service';
 import { DashboardStatsResponse } from '../resolvers/dashboard/dashboard-resolver';
 import { UsersService } from '../services/users/users-service';
 import { EvenementsService } from '../services/evenements/evenements-service';
 import { UserDashboard } from './user-dashboard/user-dashboard';
 import { MatIconModule } from '@angular/material/icon';
+import { toSignal } from '@angular/core/rxjs-interop';
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
@@ -29,7 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./dashboard.css'],
 })
 export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
-  private annonceService = inject(AnnonceService);
+  private annonceService = inject(AnnouncementService);
   private router = inject(Router);
   private usersService = inject(UsersService);
   private evenementsService = inject(EvenementsService);

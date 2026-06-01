@@ -55,16 +55,15 @@ export const routes: Routes = [
         path: 'dashboard',
         component: Dashboard,
         data: {
-          title: 'Tableau de bord',
-          subtitle: 'Aperçu global de votre activité',
+          title: 'Tableau de bord administrateur 👋',
+          subtitle: 'Vue globale des présences, utilisateurs et annonces.',
         },
       },
       { 
         path: 'annonces', 
         component: AnnoncesPanelComponent, 
         data: { 
-          title: "Annonces", 
-          subtitle: 'Consultez les dernières actualités' 
+          title: "Tableau d\'annonces",
         } 
       },
      {

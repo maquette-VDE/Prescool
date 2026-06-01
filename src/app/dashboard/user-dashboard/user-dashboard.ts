@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AnnonceService } from '../../annonces/annonce.service';
+import { AnnouncementService } from '../../services/announcement/announcement.service';
 import {
   EvenementsService,
   UserWeeklyStats,
 } from '../../services/evenements/evenements-service';
 import { UserService } from '../../services/planning/user.service';
 import { MatIconModule } from '@angular/material/icon';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -17,12 +18,14 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./user-dashboard.scss'],
 })
 export class UserDashboard implements OnInit {
-  private annonceService = inject(AnnonceService);
+  private annonceService = inject(AnnouncementService);
   private evenementsService = inject(EvenementsService);
   private userService = inject(UserService);
   currentUser = signal<any>(JSON.parse(localStorage.getItem('user') || 'null'));
 
-  annonces = this.annonceService.getAnnonces();
+  // REMPLACE : annonces = this.annonceService.getAnnonces();
+// PAR :
+  annonces = toSignal(this.annonceService.getAnnonces(), { initialValue: [] });
 
   loading = signal(true);
 
