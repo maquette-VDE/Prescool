@@ -12,9 +12,9 @@ export class ProjectService {
   private http = inject(HttpClient);
 
   // URLS
-  private readonly API_URL = 'https://prez-cool-staging.appsolutions224.com/api/v1/projects';
-  private readonly TEAMS_URL = 'https://prez-cool-staging.appsolutions224.com/api/v1/teams';
-  private readonly ASSIGNMENTS_URL = 'https://prez-cool-staging.appsolutions224.com/api/v1/project-role-assignments';
+  private readonly API_URL = `${environment.apiBaseUrl}/projects`;
+  private readonly TEAMS_URL = `${environment.apiBaseUrl}/teams`;
+  private readonly ASSIGNMENTS_URL = `${environment.apiBaseUrl}/project-role-assignments`;
  // private readonly TEAM_ASSIGNMENTS_URL = 'https://prez-cool-staging.appsolutions224.com/api/v1/team-role-assignments';
 
   /**

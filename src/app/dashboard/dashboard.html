@@ -1,4 +1,9 @@
 @if (isAdminOrExpert()) {
+  <div class="welcome">
+    <span class="welcome-date">
+      {{ currentDate }} 
+    </span>
+  </div>
   <div class="stats">
     <div
       class="card stat-card"
@@ -12,7 +17,11 @@
         'stat-annonces': stat.key === 'annonces',
       }"
     >
-      <h3>{{ stat.title }}</h3>
+      <div class="stat-header">
+        <h3>{{ stat.title }}</h3>
+        <mat-icon [fontIcon]="stat.icon"></mat-icon>
+      </div>
+
       <p class="value">{{ stat.value }}</p>
     </div>
   </div>
@@ -50,7 +59,33 @@
 
     <!-- Courbe -->
     <div class="card section-card">
-      <h2>Évolution des présences</h2>
+      <div class="chart-header">
+        <h2>
+          Évolution des présences
+          <span class="chart-subtitle">
+            {{ currentPeriodLabel() }}
+          </span>
+        </h2>
+
+        <div class="period-switch">
+          <button
+            type="button"
+            [class.active]="presencePeriod() === 'week'"
+            (click)="changePresencePeriod('week')"
+          >
+            Semaine
+          </button>
+
+          <button
+            type="button"
+            [class.active]="presencePeriod() === 'month'"
+            (click)="changePresencePeriod('month')"
+          >
+            Mois
+          </button>
+        </div>
+      </div>
+
       <div class="line-chart-wrapper">
         <canvas #lineCanvas></canvas>
       </div>
@@ -64,23 +99,55 @@
 
       <div class="quick-links">
         <a class="quick-link" routerLink="/sidenav/consultant">
-          <span class="quick-title">Consultants</span>
-          <span class="quick-subtitle">Voir la liste complète</span>
+          <div class="quick-icon">
+            <mat-icon fontIcon="groups"></mat-icon>
+          </div>
+
+          <div class="quick-content">
+            <span class="quick-title">Consultants</span>
+            <span class="quick-subtitle">Voir la liste complète</span>
+          </div>
+
+          <mat-icon class="quick-arrow" fontIcon="chevron_right"></mat-icon>
         </a>
 
         <a class="quick-link" routerLink="/sidenav/presences">
-          <span class="quick-title">Présences</span>
-          <span class="quick-subtitle">Consulter les présences</span>
+          <div class="quick-icon">
+            <mat-icon fontIcon="event_available"></mat-icon>
+          </div>
+
+          <div class="quick-content">
+            <span class="quick-title">Présences</span>
+            <span class="quick-subtitle">Consulter les présences</span>
+          </div>
+
+          <mat-icon class="quick-arrow" fontIcon="chevron_right"></mat-icon>
         </a>
 
         <a class="quick-link" routerLink="/sidenav/planning">
-          <span class="quick-title">Planning</span>
-          <span class="quick-subtitle">Voir l’emploi du temps</span>
+          <div class="quick-icon">
+            <mat-icon fontIcon="calendar_month"></mat-icon>
+          </div>
+
+          <div class="quick-content">
+            <span class="quick-title">Planning</span>
+            <span class="quick-subtitle">Voir l’emploi du temps</span>
+          </div>
+
+          <mat-icon class="quick-arrow" fontIcon="chevron_right"></mat-icon>
         </a>
 
         <a class="quick-link" routerLink="/sidenav/annonces">
-          <span class="quick-title">Annonces</span>
-          <span class="quick-subtitle">Voir toutes les actualités</span>
+          <div class="quick-icon">
+            <mat-icon fontIcon="campaign"></mat-icon>
+          </div>
+
+          <div class="quick-content">
+            <span class="quick-title">Annonces</span>
+            <span class="quick-subtitle">Voir toutes les actualités</span>
+          </div>
+
+          <mat-icon class="quick-arrow" fontIcon="chevron_right"></mat-icon>
         </a>
       </div>
     </div>
@@ -89,9 +156,13 @@
     <div class="card section-card">
       <h2>Dernières annonces</h2>
 
-      <div *ngFor="let a of annonces().slice(0, 3)" class="item item-column">
-        <div class="annonce-title">{{ a.titre }}</div>
-        <small class="annonce-category">{{ a.categorie }}</small>
+      <div *ngFor="let annonce of annonces().slice(0, 3)" class="item item-column">
+        <div class="annonce-title">{{ annonce.title }}</div>
+        <small class="annonce-category">{{ annonce.content?.[0]?.subtitre }}</small>
+      </div>
+
+      <div class="annonces-footer">
+        <span>{{ annonces().length }} annonces disponibles</span>
       </div>
 
       <button class="btn" routerLink="/sidenav/annonces">Voir tout</button>

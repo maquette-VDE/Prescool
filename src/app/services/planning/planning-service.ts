@@ -7,12 +7,13 @@ import { DayPilot } from '@daypilot/daypilot-lite-angular';
 import { UserEvent } from '../../interfaces/events';
 import { UserItem } from '../../interfaces/userItem';
 import { PaginatedResponse } from '../../interfaces/paginatedResponse';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class PlanningService {
   private readonly http = inject(HttpClient);
   private readonly API_BASE =
-    'https://prez-cool-staging.appsolutions224.com/api/v1';
+    environment.apiBaseUrl;
   private readonly STUDENTS_AND_CONSULTANTS_ROLES = ['student', 'consultant'];
 
   getUsersDayPilotData(
