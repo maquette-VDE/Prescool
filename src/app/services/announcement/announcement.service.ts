@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AnnouncementService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://prez-cool-staging.appsolutions224.com/docs#/';
+  private apiUrl = 'https://prez-cool-staging.appsolutions224.com/api/v1/announcements/';
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('access_token'); 
