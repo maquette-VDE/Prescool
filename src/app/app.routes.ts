@@ -22,7 +22,7 @@ import { planningResolver } from './resolvers/planning/planning-resolver';
 import { instructorsResolver } from './resolvers/instructors/instructors-resolver';
 import { dashboardResolver } from './resolvers/dashboard/dashboard-resolver';
 import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-resolver';
-import { dashboardWeeklyResolver } from './resolvers/dashboard/dashboard-weekly-resolver';
+import { ProjetDetail } from './projet-detail/projet-detail';
 
 // Guards
 import { roleGuard } from './guards/role-guard';
@@ -54,12 +54,6 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: Dashboard,
-        resolve: {
-          dashboardStats: dashboardResolver,
-          evenements: dashboardEvenementsResolver,
-          weeklyStats: dashboardWeeklyResolver,
-        },
-        runGuardsAndResolvers: 'always',
         data: {
           title: 'Tableau de bord',
           subtitle: 'Aperçu global de votre activité',
@@ -123,13 +117,8 @@ export const routes: Routes = [
       { 
         path: 'consultant', 
         component: Consultant,
-        data: { title: 'Consultants', subtitle: 'Liste des membres' ,},canActivate: [instructorGuard],
-        resolve: {
-          consultants: consultantResolver,
-          evenements: dashboardEvenementsResolver,
-          weeklyStats: dashboardWeeklyResolver,
-        },
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+        data: { title: 'Consultants', subtitle: 'Liste des membres' },
+        canActivate: [instructorGuard],
       },
         {
           path: 'consultant',
@@ -161,21 +150,16 @@ export const routes: Routes = [
       {
         path: 'equipes',
         component: Equipes,
-        data: { 
-          title: 'Équipes', 
-          subtitle: 'Gestion des groupes' 
-        },
+        data: { title: 'Projets', subtitle: '' },
       },
+
       {
-        path: 'aide',
-        component: Aide,
-        data: { 
-          title: 'Aide', 
-          subtitle: "Centre d'assistance" 
-        },
-      },
-      // Redirection par défaut à l'intérieur de la sidenav
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        path: 'equipes/:id',
+        component: ProjetDetail,
+        data: { title: 'Détails du projet', subtitle: '' }
+},
+
+
     ],
   },
 

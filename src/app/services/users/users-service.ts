@@ -55,7 +55,7 @@ export class UsersService {
       .append('role_names', UserRole.CONSULTANT)
       .append('role_names', UserRole.ETUDIANT);
 
-    return this.http.get<UsersApiResponse>(`${environment.apiBaseUrl}users`, {
+    return this.http.get<UsersApiResponse>(`${environment.apiBaseUrl}/users`, {
       params,
     });
   }
@@ -74,7 +74,7 @@ export class UsersService {
       .append('role_names', UserRole.CONSULTANT)
       .append('role_names', UserRole.ETUDIANT);
 
-    return this.http.get<UsersApiResponse>(`${environment.apiBaseUrl}users`, {
+    return this.http.get<UsersApiResponse>(`${environment.apiBaseUrl}/users`, {
       params,
     });
   }
@@ -86,7 +86,7 @@ export class UsersService {
       .append('role_names', UserRole.CONSULTANT)
       .append('role_names', UserRole.ETUDIANT);
 
-    return this.http.get<UsersApiResponse>(`${environment.apiBaseUrl}users`, {
+    return this.http.get<UsersApiResponse>(`${environment.apiBaseUrl}/users`, {
       params,
     });
   }
@@ -100,4 +100,15 @@ export class UsersService {
       .trim() // enlever espaces
       .toLowerCase(); // insensible à la casse
   }
+
+
+
+
+
+// Récupérer tous les utilisateurs (avec une limite haute pour être sûr d'avoir tout)
+getAllUsers(): Observable<UsersApiResponse> {
+  const url = `${environment.apiBaseUrl}/users?limit=100&page=0`;
+  return this.getUsers(url);
+}
+
 }

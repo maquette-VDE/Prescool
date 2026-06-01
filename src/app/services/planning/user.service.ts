@@ -9,8 +9,8 @@ import { ApiConfigService } from '../api-config.service';
 })
 export class UserService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://prez-cool-staging.appsolutions224.com/api/v1/users';
   private readonly apiConfig = inject(ApiConfigService);
+  private readonly apiUrl = this.apiConfig.buildUrl('users');
   getUserMe(): Observable<any> {
     return this.http.get(`${this.apiUrl}/me`);
   }

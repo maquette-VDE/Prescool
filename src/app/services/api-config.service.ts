@@ -1,21 +1,22 @@
-import { Injectable } from "@angular/core";
-import { environment } from "../../environments/environment";
+import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiConfigService {
-    private apiBaseUrl: string;
+  private apiBaseUrl: string;
 
-    constructor() {
-        this.apiBaseUrl = environment.apiBaseUrl;
-    }
+  constructor() {
+    this.apiBaseUrl = environment.apiBaseUrl;
+  }
 
-    getBaseUrl(): string {
-        return this.apiBaseUrl;
-    }
+  getBaseUrl(): string {
+    return this.apiBaseUrl;
+  }
 
-    buildUrl(endpoint: string): string {
-        return `${this.apiBaseUrl}${endpoint}`;
-    }
+  buildUrl(endpoint: string): string {
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    return `${this.apiBaseUrl}${cleanEndpoint}`;
+  }
 }

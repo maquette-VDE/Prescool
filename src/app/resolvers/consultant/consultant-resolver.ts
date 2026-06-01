@@ -38,7 +38,7 @@ export const consultantResolver: ResolveFn<UsersApiResponse> = (
 
   // CAS 2 : page consultant normale
   const urlApi =
-    `https://prez-cool-staging.appsolutions224.com/api/v1/users` +
+    `https://prez-cool-staging.appsolutions224.com/api/v1/users` +  
     `?role_names=${UserRole.CONSULTANT}` +
     `&role_names=${UserRole.ETUDIANT}` +
     `&limit=${limit}` +

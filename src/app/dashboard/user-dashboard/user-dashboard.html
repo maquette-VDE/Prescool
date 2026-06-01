@@ -1,0 +1,183 @@
+<div class="welcome">
+  <div>
+    <h1>Bonjour {{ firstName() }} 👋</h1>
+
+    <p>Voici votre activité personnelle de la semaine.</p>
+
+  </div>
+  <span class="welcome-date">
+    {{ currentDate }}
+  </span>
+</div>
+<div *ngIf="loading()" class="stats">
+  <div class="skeleton-card" *ngFor="let item of [1, 2, 3, 4, 5]"></div>
+</div>
+<div class="stats" *ngIf="!loading()">
+  <div class="card stat-card attendance-card" [ngClass]="statusClass()">
+    <h3>Mon statut aujourd’hui</h3>
+
+    <p class="attendance-status">
+      {{ todayStatus() }}
+    </p>
+
+    <div class="attendance-actions" *ngIf="!hasPointedToday()">
+      <button
+        class="attendance-btn present"
+        (click)="markAttendance('present')"
+      >
+        Présent
+      </button>
+
+      <button class="attendance-btn late" (click)="markAttendance('late')">
+        Retard
+      </button>
+
+      <button class="attendance-btn absent" (click)="markAttendance('absent')">
+        Absent
+      </button>
+    </div>
+  </div>
+
+  <div class="card stat-card stat-present">
+    <div class="stat-header">
+      <h3>Présences cette semaine</h3>
+      <mat-icon fontIcon="check_circle"></mat-icon>
+    </div>
+
+    <p class="value">{{ presentThisWeek() }}</p>
+  </div>
+
+  <div class="card stat-card stat-late">
+    <div class="stat-header">
+      <h3>Retards cette semaine</h3>
+      <mat-icon fontIcon="schedule"></mat-icon>
+    </div>
+    <p class="value">{{ lateThisWeek() }}</p>
+  </div>
+
+  <div class="card stat-card stat-absent">
+    <div class="stat-header">
+      <h3>Absences cette semaine</h3>
+      <mat-icon fontIcon="cancel"></mat-icon>
+    </div>
+    <p class="value">{{ absentThisWeek() }}</p>
+  </div>
+
+  <div class="card stat-card stat-rate">
+    <div class="stat-header">
+      <h3>Mon taux de présence</h3>
+      <mat-icon fontIcon="trending_up"></mat-icon>
+    </div>
+    <p class="value">{{ attendanceRate() }}%</p>
+  </div>
+</div>
+
+<div class="grid" *ngIf="!loading()">
+  <div class="card section-card">
+    <h2>Mon résumé</h2>
+
+    <div class="summary-list">
+      <div class="summary-item">
+        <span>Télétravail</span>
+        <strong>{{ remoteThisWeek() }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>En mission</span>
+        <strong>{{ enMissionThisWeek() }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Excusé</span>
+        <strong>{{ excusedThisWeek() }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card section-card">
+    <h2>Activité récente</h2>
+
+    <div class="activity-list">
+      <div class="activity-item" *ngFor="let activity of recentActivities()">
+        <div class="activity-icon" [ngClass]="activity.type">
+          <mat-icon [fontIcon]="activity.icon"></mat-icon>
+        </div>
+
+        <div class="activity-content">
+          <div class="activity-title">
+            {{ activity.title }}
+          </div>
+
+          <div class="activity-subtitle">
+            {{ activity.subtitle }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card section-card">
+    <h2>Accès rapides</h2>
+
+    <div class="quick-links">
+      <a class="quick-link" routerLink="/sidenav/presences">
+        <div class="quick-icon">
+          <mat-icon fontIcon="event_available"></mat-icon>
+        </div>
+
+        <div class="quick-content">
+          <span class="quick-title">Mes présences</span>
+          <span class="quick-subtitle">Consulter mon historique personnel</span>
+        </div>
+
+        <mat-icon class="quick-arrow" fontIcon="chevron_right"></mat-icon>
+      </a>
+
+      <a class="quick-link" routerLink="/sidenav/planning">
+        <div class="quick-icon">
+          <mat-icon fontIcon="calendar_month"></mat-icon>
+        </div>
+
+        <div class="quick-content">
+          <span class="quick-title">Mon planning</span>
+          <span class="quick-subtitle">Voir mon emploi du temps</span>
+        </div>
+
+        <mat-icon class="quick-arrow" fontIcon="chevron_right"></mat-icon>
+      </a>
+
+      <a class="quick-link" routerLink="/sidenav/annonces">
+        <div class="quick-icon">
+          <mat-icon fontIcon="campaign"></mat-icon>
+        </div>
+
+        <div class="quick-content">
+          <span class="quick-title">Annonces</span>
+          <span class="quick-subtitle">Voir les actualités importantes</span>
+        </div>
+
+        <mat-icon class="quick-arrow" fontIcon="chevron_right"></mat-icon>
+      </a>
+    </div>
+  </div>
+
+  <div class="card section-card annonces-card">
+  <h2>Dernières annonces</h2>
+
+  <div *ngFor="let a of annonces().slice(0, 3)" class="item item-column">
+    <div class="annonce-title">
+      {{ a.titre }}
+    </div>
+
+    <small class="annonce-category">
+      {{ a.categorie }}
+    </small>
+  </div>
+
+  <div class="annonces-footer">
+    <span>{{ annonces().length }} annonces disponibles</span>
+  </div>
+
+  <button class="btn" routerLink="/sidenav/annonces">Voir tout</button>
+</div>
+</div>

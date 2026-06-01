@@ -42,7 +42,11 @@
   }
 </div>
 
-@if (filteredItems().length > 0) {
+@if (loading()) {
+  <div class="fs-5 d-flex justify-content-center mt-5 text-secondary">
+    <p>Chargement...</p>
+  </div>
+} @else if (filteredItems().length > 0) {
   <table class="table table-hover table-sm mt-5 border-top border-bottom">
     <tbody>
       @for (consultant of filteredItems(); track consultant.id) {
@@ -64,29 +68,23 @@
           <td class="pt-3 pb-3">
             <div
               [class.text-success]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) ===
-                'present'
+                getDisplayStatus(consultant.id, eventsMap()) === 'present'
               "
               [class.text-danger]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) ===
-                'absent'
+                getDisplayStatus(consultant.id, eventsMap()) === 'absent'
               "
               [class.text-warning]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) === 'late'
+                getDisplayStatus(consultant.id, eventsMap()) === 'late'
               "
               [class.text-info]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) ===
-                'en_mission'
+                getDisplayStatus(consultant.id, eventsMap()) === 'en_mission'
               "
               [class.text-secondary]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) ===
-                'excused'
+                getDisplayStatus(consultant.id, eventsMap()) === 'excused'
               "
             >
               <span>
-                @switch (
-                  getDisplayStatus(consultant.id, eventsByConsultant())
-                ) {
+                @switch (getDisplayStatus(consultant.id, eventsMap())) {
                   @case ("present") {
                     <i class="bi bi-check-circle-fill me-2"></i>
                     <span class="text-success">Présent(e)</span>
@@ -107,6 +105,10 @@
                     <i class="bi bi-hourglass-split me-2"></i>
                     <span class="text-warning">En retard</span>
                   }
+                  @case ("no_event") {
+                    <i class="bi bi-dash-circle me-2"></i>
+                    <span class="text-secondary">Sans pointage</span>
+                  }
                   @default {
                     <span></span>
                   }
@@ -118,23 +120,19 @@
             <div
               class="d-flex gap-3 align-items-center"
               [class.text-success]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) ===
-                'present'
+                getDisplayStatus(consultant.id, eventsMap()) === 'present'
               "
               [class.text-danger]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) ===
-                'absent'
+                getDisplayStatus(consultant.id, eventsMap()) === 'absent'
               "
               [class.text-warning]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) === 'late'
+                getDisplayStatus(consultant.id, eventsMap()) === 'late'
               "
               [class.text-info]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) ===
-                'en_mission'
+                getDisplayStatus(consultant.id, eventsMap()) === 'en_mission'
               "
               [class.text-secondary]="
-                getDisplayStatus(consultant.id, eventsByConsultant()) ===
-                'excused'
+                getDisplayStatus(consultant.id, eventsMap()) === 'excused'
               "
             >
               <i

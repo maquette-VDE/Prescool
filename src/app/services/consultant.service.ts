@@ -1,5 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface Consultant {
   id: number;
@@ -12,10 +13,13 @@ export interface Consultant {
 export class ConsultantService {
   private http = inject(HttpClient);
 
+  private readonly API_URL = `${environment.apiBaseUrl}/consultants`;
+
   private consultantsSignal = signal<Consultant[]>([]);
+  
 
   loadConsultants() {
-    this.http.get<Consultant[]>('http://localhost:8080/api/consultants')
+    this.http.get<Consultant[]>(this.API_URL)
       .subscribe(data => this.consultantsSignal.set(data));
   }
 

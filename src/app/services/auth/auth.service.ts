@@ -18,7 +18,7 @@ export class AuthService {
   private router = inject(Router);
   private userSubject = new BehaviorSubject<any>(null);
   user$ = this.userSubject.asObservable();
-  
+
 
   // auth.service.ts
 
@@ -32,7 +32,7 @@ login(username: string, password: string) {
     'Content-Type': 'application/x-www-form-urlencoded',
     'Accept': 'application/json'
   });
- 
+
   return this.http.post<any>(this.apiConfig.buildUrl('auth/token'), body.toString(), { headers })
     .pipe(
       tap(response => {
@@ -52,7 +52,8 @@ login(username: string, password: string) {
   refreshToken(): Observable<{ accessToken: string }> {
     const refreshToken = localStorage.getItem('refresh_token');
 
-    return this.http.post<{ accessToken: string }>('auth/refresh',
+    return this.http.post<{ accessToken: string }>(
+  this.apiConfig.buildUrl('auth/refresh'),
       { refreshToken },
       { observe: 'response' }
     ).pipe(
@@ -73,7 +74,7 @@ login(username: string, password: string) {
   }
 
   logout(): void {
-    this.http.post(`${this.apiConfig.getBaseUrl}/users/me/logout`, {})
+    this.http.post(this.apiConfig.buildUrl('users/me/logout'), {})
       .subscribe({
         next: () => this.clearStorageAndRedirect(),
         error: () => this.clearStorageAndRedirect()
@@ -91,5 +92,10 @@ login(username: string, password: string) {
     if (savedUser) {
       this.userSubject.next(JSON.parse(savedUser));
     }
+  }
+
+  getUserRole(): string {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user.role_name || ''; 
   }
 }
