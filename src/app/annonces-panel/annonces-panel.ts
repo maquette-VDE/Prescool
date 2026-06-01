@@ -29,6 +29,9 @@ export class AnnoncesPanelComponent implements OnInit {
       error: (err) => console.error('Erreur lors de la récupération:', err)
     });
   }
+  fixImageUrl(url: string | undefined): string {
+    return this.announcementService.fixImageUrl(url);
+  }
 
   handleImageError(event: any) {
     event.target.src = 'https://placehold.co/600x400?text=Image+Indisponible';

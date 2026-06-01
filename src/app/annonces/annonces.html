@@ -2,7 +2,7 @@
   <div class="annonce-card">
 
     <div class="main-image-section" *ngIf="annonce.image_url" style="margin-bottom: 20px;">
-      <img [src]="annonce.image_url" alt="Couverture"
+      <img [src]="fixImageUrl(annonce.image_url)" alt="Couverture"
         style="width: 100%; border-radius: 12px; object-fit: cover; max-height: 400px;">
     </div>
 
@@ -31,7 +31,7 @@
 
             <div *ngIf="bloc.riche_marck" class="markdown-section mt-3">
               <div *ngIf="getMarkdownImageUrl(bloc.riche_marck); let imgUrl">
-                <img [src]="imgUrl" class="img-fluid rounded shadow-sm" alt="Image Markdown">
+                <img [src]="fixImageUrl(imgUrl)" class="img-fluid rounded shadow-sm" alt="Image Markdown">
               </div>
               <p *ngIf="!isOnlyImageMarkdown(bloc.riche_marck)" class="mt-2 text-muted">
                 {{ bloc.riche_marck }}
@@ -55,7 +55,7 @@
             </div>
 
             <div *ngIf="bloc.media_principale?.length > 0" class="mini-gallery mt-3">
-                <img *ngFor="let img of bloc.media_principale" [src]="img.url" 
+                <img *ngFor="let img of bloc.media_principale" [src]="fixImageUrl(img.url)" 
                      class="img-fluid rounded mb-2 shadow-sm" style="width: 100%;">
             </div>
           </div>
@@ -66,14 +66,14 @@
             <iframe [src]="bloc.video | safeUrl" frameborder="0" allowfullscreen></iframe>
           </div>
           <div *ngIf="bloc.photo?.length > 0" class="gallery-grid mt-2">
-              <img *ngFor="let img of bloc.photo" [src]="img.url" class="img-fluid rounded shadow-sm">
+              <img *ngFor="let img of bloc.photo" [src]="fixImageUrl(img.url)" class="img-fluid rounded shadow-sm">
           </div>
         </div>
 
         <div *ngIf="bloc.type === 'selecte.photo'" class="gallery-section">
           <div class="gallery-grid" *ngIf="bloc.photo && bloc.photo.length > 0">
             <div class="gallery-item" *ngFor="let img of bloc.photo">
-              <img [src]="img.url" alt="Image galerie"
+              <img [src]="fixImageUrl(img.url)" alt="Image galerie"
                 (error)="$any($event.target).src = 'assets/images/placeholder.jpg'"
                 class="img-fluid rounded shadow-sm">
             </div>
