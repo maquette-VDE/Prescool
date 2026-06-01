@@ -18,7 +18,16 @@ export class AnnouncementService {
     return this.http.get<any[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
+  fixImageUrl(url: string | undefined): string {
+    if (!url) return 'https://via.placeholder.com/400x200?text=Pas+d+image';
+    
+    if (url.includes('sslip.io')) {
+      return url.replace(/http:\/\/.*?.sslip.io/, 'https://strapi.appsolutions224.com');
+    }
+    return url;
+  }
+
   getAnnonceById(id: string | number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${id}`, { headers: this.getHeaders() });
+    return this.http.get<any>(`${`${this.apiUrl}${id}`}`, { headers: this.getHeaders() });
   }
 }
