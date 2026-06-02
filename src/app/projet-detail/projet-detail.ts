@@ -73,7 +73,6 @@ export class ProjetDetail implements OnInit {
         this.loadProjectData(id, numericId);
       }
 
-
     });
   }
 }
