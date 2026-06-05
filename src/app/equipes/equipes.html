@@ -30,10 +30,7 @@
   </div>
 
   <div class="position-relative">
-  <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-medium"
-          type="button" (click)="toggleOwnerMenu()">
-    Propriétaire : {{ selectedOwner() === 'TOUS' ? 'Tout le monde' : 'Moi' }} <i class="bi bi-chevron-down ms-1"></i>
-  </button>
+
 
   @if (isOwnerMenuOpen()) {
     <ul class="dropdown-menu show shadow-sm border position-absolute start-0 mt-1" style="display: block; z-index: 1000;">
@@ -136,6 +133,7 @@
         <div class="modal-body px-4">
           <div class="mb-3">
             <label class="form-label small fw-bold text-muted">NOM</label>
+
             <input type="text" class="form-control bg-light border-0 py-2" formControlName="name" placeholder="Nom du projet...">
           </div>
 
