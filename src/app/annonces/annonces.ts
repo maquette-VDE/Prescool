@@ -21,6 +21,7 @@ export class AnnonceComponent implements OnInit {
     private route: ActivatedRoute,
     private announcementService: AnnouncementService
   ) {}
+  
 
   
 
@@ -42,6 +43,10 @@ export class AnnonceComponent implements OnInit {
       });
     }
   }
+  fixImageUrl(url: string | undefined): string {
+  return this.announcementService.fixImageUrl(url);
+  }
+  
   getMarkdownImageUrl(text: string): string | null {
     if (!text || typeof text !== 'string') return null;
     const match = text.match(/\((https?:\/\/[^)]+)\)/);
