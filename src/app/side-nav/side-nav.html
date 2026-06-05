@@ -95,10 +95,7 @@
 
       <!-- Logout -->
       <li class="nav-item mt-4">
-        <a
-          class="nav-link d-flex align-items-center gap-3 text-muted"
-          (click)="onLogout()"
-        >
+        <a class="nav-link d-flex align-items-center gap-3 text-muted" (click)="onLogout()">
           <i class="bi bi-box-arrow-left"></i>
           <span>Se déconnecter</span>
         </a>
@@ -110,13 +107,8 @@
 <!-- NAV ITEM TEMPLATE -->
 <ng-template #navItem let-route="route" let-icon="icon" let-label="label">
   <li class="nav-item">
-    <a
-      class="nav-link d-flex align-items-center gap-3 text-muted"
-      [routerLink]="route"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: false }"
-      data-bs-dismiss="offcanvas"
-    >
+    <a class="nav-link d-flex align-items-center gap-3 text-muted" [routerLink]="route" routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: false }" data-bs-dismiss="offcanvas">
       <i class="bi {{ icon }}"></i>
       <span>{{ label }}</span>
     </a>
