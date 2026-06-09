@@ -33,7 +33,7 @@ export const routes: Routes = [
   { path: '', component: Login },
   { path: 'create-user', component: CreateUser },
   { path: 'confirm-expert', component: ConfirmeExpert },
-  { path: 'confirm-consultant', component: ConfirmeConsultant },
+  { path: 'confirm-consultant', component: ConfirmeConsultant },  
   { path: 'wait-confirmation', component: WaitConfirmation },
   { path: 'error', component: Erreur },
 

@@ -29,6 +29,7 @@ export interface CreateEventPayload {
   status: 'scheduled';
   attendance_status: 'present' | 'absent' | 'late';
   notes?: string;
+  description?: string;
   source: 'manual';
 }
 
@@ -40,6 +41,7 @@ export interface UpdateEventPayload {
   all_day?: boolean;
   attendance_status?: 'present' | 'absent' | 'late';
   notes?: string;
+  description?: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -86,6 +88,10 @@ export class PresencesService {
   deleteEvent(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API_BASE}/events/${id}`);
   }
+
+  getEventById(id: number): Observable<ApiEvent> {
+  return this.http.get<ApiEvent>(`${this.API_BASE}/events/${id}`);
+}
 
   static toStartISO(date: string): string {
     return `${date}T00:00:00.000Z`;

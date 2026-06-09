@@ -211,24 +211,57 @@
   <!-- =======================================================
        MODAL SUPPRESSION
        ======================================================= -->
-  <div class="delete-modal-overlay" *ngIf="deleteModal.isOpen" (click)="closeDeleteModal()">
-    <div class="delete-modal-content" (click)="$event.stopPropagation()">
-      <div class="delete-modal-header">
-        <h2 class="delete-modal-title">Supprimer l'événement</h2>
-        <button class="delete-modal-close" type="button" (click)="closeDeleteModal()">✕</button>
-      </div>
-      <div class="delete-modal-body">
-        <p class="delete-modal-message">Êtes-vous sûr(e) de vouloir supprimer cet événement ?</p>
-        <div class="delete-modal-event-info">
-          <span class="delete-modal-event-label">Événement :</span>
-          <span class="delete-modal-event-title">{{ deleteModal.eventTitle }}</span>
-        </div>
-      </div>
-      <div class="delete-modal-footer">
-        <button class="delete-modal-btn delete-modal-btn-cancel" type="button" (click)="closeDeleteModal()">Annuler</button>
-        <button class="delete-modal-btn delete-modal-btn-confirm" type="button" (click)="confirmDelete()">Supprimer</button>
+  <!-- =======================================================
+     MODAL SUPPRESSION
+     ======================================================= -->
+<div class="delete-modal-overlay" *ngIf="deleteModal.isOpen" (click)="closeDeleteModal()">
+  <div class="delete-modal-content" (click)="$event.stopPropagation()">
+
+    <div class="delete-modal-header">
+      <h2 class="delete-modal-title">Supprimer l'événement</h2>
+      <button class="delete-modal-close" type="button" (click)="closeDeleteModal()">✕</button>
+    </div>
+
+    <div class="delete-modal-body">
+      <p class="delete-modal-message">
+        Êtes-vous sûr(e) de vouloir supprimer cet événement ?
+      </p>
+
+      <div class="delete-modal-event-info">
+        <span class="delete-modal-event-label">Événement :</span>
+        <span class="delete-modal-event-title">{{ deleteModal.eventTitle }}</span>
+
+        <span class="delete-modal-event-label mt-2">Motif :</span>
+        <span class="delete-modal-event-title">
+          {{ deleteModal.event?.reason || 'Non renseigné' }}
+        </span>
+
+        @if (deleteModal.event?.status === 'late') {
+          <span class="delete-modal-event-label mt-2">Heure d'arrivée :</span>
+          <span class="delete-modal-event-title">
+            {{ deleteModal.event?.lateTime || 'Non renseignée' }}
+          </span>
+        }
+
+        @if (deleteModal.event?.status === 'present' && deleteModal.event?.depart) {
+          <span class="delete-modal-event-label mt-2">Départ anticipé :</span>
+          <span class="delete-modal-event-title">
+            {{ deleteModal.event?.heureDepart || 'Non renseignée' }}
+          </span>
+        }
       </div>
     </div>
+
+    <div class="delete-modal-footer">
+      <button class="delete-modal-btn delete-modal-btn-cancel" type="button" (click)="closeDeleteModal()">
+        Annuler
+      </button>
+      <button class="delete-modal-btn delete-modal-btn-confirm" type="button" (click)="confirmDelete()">
+        Supprimer
+      </button>
+    </div>
+
   </div>
+</div>
 
 </div>
