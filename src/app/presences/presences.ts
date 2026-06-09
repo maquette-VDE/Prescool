@@ -88,7 +88,7 @@ function toDayPilotEvent(e: PresenceEvent): DayPilot.EventData {
 }
 
 function fromApiEvent(api: ApiEvent): PresenceEvent {
-  const notes   = api.notes ?? '';
+  const notes = api.notes || api.description || '';
   const parsed  = parseNotes(notes);
 
   return {
@@ -201,7 +201,7 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
     onTimeRangeSelected: (args) => this.openStatusModal(args.start.toString('yyyy-MM-dd')),
     onEventClick: (args) => {
       const ev = this.events.find(e => e.id === String(args.e.id()));
-      if (ev) this.openDeleteModal(ev.id, buildLabel(ev));
+      if (ev) this.openDeleteModal(ev);
     },
     onBeforeEventRender: (args) => {
       const ev = this.events.find(e => e.id === String(args.data.id));
@@ -230,7 +230,7 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
     onTimeRangeSelected: (args) => this.openStatusModal(args.start.toString('yyyy-MM-dd')),
     onEventClick: (args) => {
       const ev = this.events.find(e => e.id === String(args.e.id()));
-      if (ev) this.openDeleteModal(ev.id, buildLabel(ev));
+      if (ev) this.openDeleteModal(ev);
     },
     onBeforeEventRender: (args) => {
       const ev = this.events.find(e => e.id === String(args.data.id));
@@ -255,7 +255,12 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
     heureDepart: '15:00',
   };
 
-  deleteModal = { isOpen: false, eventId: '', eventTitle: '' };
+  deleteModal = {
+  isOpen: false,
+  eventId: '',
+  eventTitle: '',
+  event: null as PresenceEvent | null,
+};
 
   ngOnInit(): void {
     this.userService.getUserMe()
@@ -290,11 +295,22 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (apiEvents) => {
-          console.log('API Events:', apiEvents);
-          this.events    = apiEvents.map(fromApiEvent);
-          this.isLoading = false;
-          setTimeout(() => this.refreshCalendar(), 0);
-        },
+  console.log('API Events:', apiEvents);
+
+  console.log('Notes reçues:', apiEvents.map(e => ({
+  id: e.id,
+  status: e.attendance_status,
+  notes: e.notes,
+  description: e.description
+})));
+
+  this.events = apiEvents.map(fromApiEvent);
+
+  console.log('Events convertis:', this.events);
+
+  this.isLoading = false;
+  setTimeout(() => this.refreshCalendar(), 0);
+},
         error: () => {
           this.errorMsg  = 'Erreur lors du chargement des présences.';
           this.isLoading = false;
@@ -399,9 +415,11 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
         all_day:           true,
         event_type:        'presence',
         notes,
+        description:       notes,
       };
 
       this.isLoading = true;
+      console.log('PAYLOAD ENVOYÉ UPDATE', payload);
       this.presencesService.updateEvent(existing.apiId, payload)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -420,10 +438,12 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
         status:            'scheduled',
         attendance_status: status,
         notes,
+        description:       notes,
         source:            'manual',
       };
 
       this.isLoading = true;
+      console.log('PAYLOAD ENVOYÉ CREATE', payload);
       this.presencesService.createEvent(payload)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -435,9 +455,33 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
     this.closeStatusModal();
   }
 
-  openDeleteModal(id: string, title: string): void {
-    this.deleteModal = { isOpen: true, eventId: id, eventTitle: title };
-  }
+  openDeleteModal(event: PresenceEvent): void {
+    console.log('EVENT OUVERT POUR SUPPRESSION:', event);
+  this.deleteModal = {
+    isOpen: true,
+    eventId: event.id,
+    eventTitle: `${STATUS_ICON[event.status]} ${STATUS_LABEL[event.status]}`,
+    event,
+  };
+  if (!event.apiId) return;
+
+  this.presencesService.getEventById(event.apiId)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (apiEvent) => {
+        const fullEvent = fromApiEvent(apiEvent);
+
+        this.deleteModal = {
+          ...this.deleteModal,
+          eventTitle: `${STATUS_ICON[fullEvent.status]} ${STATUS_LABEL[fullEvent.status]}`,
+          event: fullEvent,
+        };
+      },
+      error: () => {
+        console.warn('Impossible de charger le détail de l’événement');
+      },
+    });
+}
 
   closeDeleteModal(): void { this.deleteModal.isOpen = false; }
 

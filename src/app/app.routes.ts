@@ -29,11 +29,10 @@ import { roleGuard } from './guards/role-guard';
 import { instructorGuard } from './guards/instructor-guard';
 
 export const routes: Routes = [
-  // --- ROUTES PUBLIQUES / AUTH ---
-  { path: '', component: Login },
+  { path: '', component: Login },  
   { path: 'create-user', component: CreateUser },
   { path: 'confirm-expert', component: ConfirmeExpert },
-  { path: 'confirm-consultant', component: ConfirmeConsultant },
+  { path: 'confirm-consultant', component: ConfirmeConsultant },  
   { path: 'wait-confirmation', component: WaitConfirmation },
   { path: 'error', component: Erreur },
 
