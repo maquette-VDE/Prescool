@@ -13,10 +13,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1 class="h3 fw-bold mb-0">{{ p.name }}</h1>
-      <div class="d-flex gap-2">
-         <button class="btn btn-light border btn-sm">Partager</button>
-         <button class="btn btn-light border btn-sm"><i class="bi bi-link-45deg"></i></button>
-      </div>
+    
     </div>
 
     <div class="row g-4">
@@ -25,10 +22,37 @@
           <ul class="nav nav-tabs border-bottom-0 mb-3">
             <li class="nav-item"><a class="nav-link active fw-medium border-0 border-bottom border-primary border-3" href="#">Details</a></li>
           </ul>
-          <div class="p-5 border rounded-3 bg-light text-center">
-             <h5 class="fw-bold">Détails du projet</h5>
-             <p class="text-muted small">Espace de travail a detailler.</p>
-          </div>
+      <div class="p-5 border rounded-3 bg-light text-center position-relative">
+  <h5 class="fw-bold mb-3">Détails du projet</h5>
+
+  @if (!isEditingDescription()) {
+    <p class="text-secondary mb-4 text-break">
+      {{ project().description || 'Aucune description fournie pour ce projet.' }}
+    </p>
+
+    @if (isAdmin()) {
+      <button class="btn btn-sm btn-outline-secondary rounded-pill" (click)="isEditingDescription.set(true)">
+        <i class="bi bi-pencil me-1"></i> Modifier la description
+      </button>
+    }
+  } @else {
+    <div class="text-start mx-auto" style="max-width: 600px;">
+      <textarea #descInput
+                class="form-control bg-white border mb-3"
+                rows="4"
+                placeholder="Écrivez la description du projet...">{{ project().description }}</textarea>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-sm btn-light border" (click)="isEditingDescription.set(false)">
+          Annuler
+        </button>
+        <button class="btn btn-sm btn-dark" (click)="saveInlineDescription(descInput.value)">
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  }
+</div>
         </div>
       </div>
 
@@ -129,7 +153,7 @@
 
         <div class="mb-3">
   <label class="form-label small fw-bold text-uppercase text-muted" style="font-size: 0.65rem;">Rechercher un utilisateur</label>
-  
+
   <div class="input-group mb-2">
     <span class="input-group-text bg-white border-end-0">
       <i class="bi bi-search text-muted"></i>
@@ -137,14 +161,14 @@
     <input type="text"
            class="form-control form-control-sm border-start-0"
            placeholder="Tapez un nom ou email..."
-           [ngModel]="searchTerm()" 
+           [ngModel]="searchTerm()"
            (ngModelChange)="searchTerm.set($event)">
   </div>
 
   @if (searchTerm().length > 0) {
     <div class="list-group shadow-sm mb-3" style="max-height: 200px; overflow-y: auto;">
       @for (u of filteredUsers; track u.id) {
-        <button type="button" 
+        <button type="button"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 (click)="selectedUserId = u.id; searchTerm.set(u.first_name + ' ' + u.last_name)"
                 [class.active]="selectedUserId === u.id">

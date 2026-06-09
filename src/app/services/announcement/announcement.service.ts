@@ -1,0 +1,33 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AnnouncementService {
+  private http = inject(HttpClient);
+  private apiUrl = 'https://prez-cool-staging.appsolutions224.com/api/v1/announcements/';
+
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('access_token'); 
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
+  getAnnonces(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl, { headers: this.getHeaders() });
+  }
+
+  fixImageUrl(url: string | undefined): string {
+    if (!url) return 'https://via.placeholder.com/400x200?text=Pas+d+image';
+    
+    if (url.includes('sslip.io')) {
+      return url.replace(/http:\/\/.*?.sslip.io/, 'https://strapi.appsolutions224.com');
+    }
+    return url;
+  }
+
+  getAnnonceById(id: string | number): Observable<any> {
+    return this.http.get<any>(`${`${this.apiUrl}${id}`}`, { headers: this.getHeaders() });
+  }
+}
