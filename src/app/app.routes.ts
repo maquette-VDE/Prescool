@@ -25,10 +25,10 @@ import { dashboardEvenementsResolver } from './resolvers/evenements/evenements-r
 import { ProjetDetail } from './projet-detail/projet-detail';
 
 export const routes: Routes = [
-  { path: '', component: Login },
+  { path: '', component: Login },  
   { path: 'create-user', component: CreateUser },
   { path: 'confirm-expert', component: ConfirmeExpert },
-  { path: 'confirm-consultant', component: ConfirmeConsultant },
+  { path: 'confirm-consultant', component: ConfirmeConsultant },  
   { path: 'wait-confirmation', component: WaitConfirmation },
   { path: 'error', component: Erreur },
   {

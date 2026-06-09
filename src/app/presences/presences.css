@@ -775,3 +775,21 @@
   border-color: #8b1619;
 }
 
+.delete-modal-detail {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.4rem;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.delete-modal-detail span {
+  color: #666;
+}
+
+.delete-modal-detail strong {
+  color: #111;
+  font-weight: 600;
+}
+
