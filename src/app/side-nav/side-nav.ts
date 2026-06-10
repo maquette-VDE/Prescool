@@ -21,8 +21,9 @@ import { HeaderComponent } from '../header/header';
 export class SideNav {
   authService = inject(AuthService);
   user: any = null;
-
+  isSidebarOpen = false;   //
   onLogout() {
+    this.isSidebarOpen = false;
     this.authService.logout();
   }
   ngOnInit() {
@@ -31,10 +32,23 @@ export class SideNav {
     });
   }
 
+  
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
   hasRole(roleName: string): boolean {
   if (!this.user || !this.user.roles) return false;
   return this.user.roles.some((r: string) => 
     r.toLowerCase() === roleName.toLowerCase()
   );
 }
+
+  closeSidebarOnMobile() {
+    // Ferme automatiquement sur mobile
+    if (window.innerWidth < 992) {
+      this.isSidebarOpen = false;
+    }
+  }
 }
