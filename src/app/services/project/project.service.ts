@@ -15,7 +15,7 @@ export class ProjectService {
   private readonly API_URL = `${environment.apiBaseUrl}/projects`;
   private readonly TEAMS_URL = `${environment.apiBaseUrl}/teams`;
   private readonly ASSIGNMENTS_URL = `${environment.apiBaseUrl}/project-role-assignments`;
- // private readonly TEAM_ASSIGNMENTS_URL = 'https://prez-cool-staging.appsolutions224.com/api/v1/team-role-assignments';
+ // private readonly TEAM_ASSIGNMENTS_URL = `${environment.apiBaseUrl}/team-role-assignments`;
 
   /**
    * Récupère la liste des projets avec pagination
