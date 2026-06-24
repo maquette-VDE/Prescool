@@ -46,6 +46,18 @@ getProjectById(id: number | string): Observable<Project> {
     return this.http.post<Project>(this.API_URL, project);
   }
 
+    // Met à jour un projet existant
+
+  updateProject(id: number | string, project: Partial<Project>): Observable<Project> {
+    return this.http.put<Project>(`${this.API_URL}/${id}`, project);
+  }
+
+  // Supprime un projet
+  
+  deleteProject(id: number | string): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${id}`);
+  }
+
   // Récupérer les teams filtrées par projet
 getTeamById(teamId: number | string): Observable<any> {
  return this.http.get<any>(`${this.TEAMS_URL}/${teamId}`);

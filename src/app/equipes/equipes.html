@@ -30,10 +30,7 @@
   </div>
 
   <div class="position-relative">
-  <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-medium"
-          type="button" (click)="toggleOwnerMenu()">
-    Propriétaire : {{ selectedOwner() === 'TOUS' ? 'Tout le monde' : 'Moi' }} <i class="bi bi-chevron-down ms-1"></i>
-  </button>
+
 
   @if (isOwnerMenuOpen()) {
     <ul class="dropdown-menu show shadow-sm border position-absolute start-0 mt-1" style="display: block; z-index: 1000;">
@@ -64,20 +61,17 @@
           <tbody>
             @for (p of filteredProjects(); track p.id) {
               <tr class="align-middle border-bottom">
-               <td class="ps-4 py-3">
-                    <div class="d-flex align-items-center">
+                <td class="ps-4 py-3">
+                  <div class="d-flex align-items-center">
                     <div class="rounded-circle me-3 d-flex align-items-center justify-content-center text-muted shadow-sm"
-                   style="width: 32px; height: 32px; background-color: #e9ecef; font-size: 0.8rem; font-weight: bold;">
-                  {{ p.name.substring(0,2).toUpperCase() }}
+                         style="width: 32px; height: 32px; background-color: #e9ecef; font-size: 0.8rem; font-weight: bold;">
+                      {{ p.name.substring(0,2).toUpperCase() }}
                     </div>
-
-                      <a [routerLink]="['/sidenav/equipes', p.id]"
-                      class="fw-bold text-dark text-decoration-none project-link"
-                      style="cursor: pointer;">
-                   {{ p.name }}
-                      </a>
-                </div>
-            </td>
+                    <a [routerLink]="['/sidenav/equipes', p.id]" class="fw-bold text-dark text-decoration-none project-link" style="cursor: pointer;">
+                      {{ p.name }}
+                    </a>
+                  </div>
+                </td>
                 <td class="text-center">
                   <span class="badge rounded-pill px-3 py-1 text-uppercase"
                         [ngClass]="(p.status === 'active' || p.status === 'EN COURS') ? 'bg-success-subtle text-success' : 'bg-light text-dark border'"
@@ -88,9 +82,32 @@
                 <td class="text-center">
                   <i class="bi" [ngClass]="p.is_active ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted'"></i>
                 </td>
+
                 <td class="pe-4 text-end">
-                  <button class="btn btn-link text-muted p-0"><i class="bi bi-three-dots"></i></button>
-                </td>
+  <div class="dropdown d-inline-block position-relative">
+    <button class="btn btn-link text-muted p-0" type="button" (click)="dropMenu.classList.toggle('show')">
+      <i class="bi bi-three-dots-vertical"></i>
+    </button>
+
+    <ul #dropMenu class="dropdown-menu dropdown-menu-end shadow-sm border mt-1" style="z-index: 1050;">
+      <li>
+        <button class="dropdown-item text-dark d-flex align-items-center" type="button"
+                (click)="dropMenu.classList.remove('show'); openEditModal(p)">
+          <i class="bi bi-pencil me-2 text-secondary"></i> Modifier
+        </button>
+      </li>
+      <li><hr class="dropdown-divider"></li>
+
+      <li>
+        <button class="dropdown-item text-danger d-flex align-items-center" type="button"
+                (click)="dropMenu.classList.remove('show'); deleteExistingProject(p.id, p.name)">
+          <i class="bi bi-trash me-2"></i> Supprimer
+        </button>
+      </li>
+    </ul>
+  </div>
+</td>
+
               </tr>
             } @empty {
               <tr>
@@ -108,14 +125,15 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow rounded-4">
       <div class="modal-header border-0 ps-4 pt-4">
-        <h5 class="fw-bold">Créer un projet</h5>
+        <h5 class="fw-bold">{{ currentProjectId ? 'Modifier le projet' : 'Créer un projet' }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <form [formGroup]="projectForm" (ngSubmit)="saveProject()">
+
+      <form [formGroup]="projectForm" (ngSubmit)="currentProjectId ? updateExistingProject(currentProjectId) : saveProject()">
         <div class="modal-body px-4">
           <div class="mb-3">
             <label class="form-label small fw-bold text-muted">NOM</label>
-          
+
             <input type="text" class="form-control bg-light border-0 py-2" formControlName="name" placeholder="Nom du projet...">
           </div>
 

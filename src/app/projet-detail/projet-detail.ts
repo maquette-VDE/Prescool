@@ -31,6 +31,7 @@ export class ProjetDetail implements OnInit {
   showModal = signal<boolean>(false);
   selectedUserId: number | null = null;
   searchTerm = signal<string>("");
+  isEditingDescription = signal<boolean>(false);
 
  ngOnInit() {
   const id = this.route.snapshot.paramMap.get('id');
@@ -72,7 +73,6 @@ export class ProjetDetail implements OnInit {
         console.error("Erreur chargement users :", err);
         this.loadProjectData(id, numericId);
       }
-
 
     });
   }
@@ -210,6 +210,30 @@ get filteredUsers() {
     (u.last_name?.toLowerCase().includes(search)) ||
     (u.email?.toLowerCase().includes(search))
   );
+}
+
+// methode pour sauvegarder la description modifiée en inline editing
+
+saveInlineDescription(newDescription: string) {
+  const projectId = this.project()?.id;
+  if (!projectId) return;
+
+  //  appelle DE la méthode de mise à jour le service existant
+  this.projectService.updateProject(Number(projectId), { description: newDescription }).subscribe({
+    next: (updatedProject) => {
+      // Mettre à jour le signal local pour rafraîchir l'affichage
+      this.project.set({
+        ...this.project(),
+        description: updatedProject.description
+      });
+      // Quitter le mode édition
+      this.isEditingDescription.set(false);
+    },
+    error: (err) => {
+      console.error("Erreur lors de la mise à jour de la description :", err);
+      alert("Impossible de sauvegarder la description.");
+    }
+  });
 }
 }
 

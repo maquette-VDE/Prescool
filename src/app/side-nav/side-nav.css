@@ -65,3 +65,21 @@
   color: white;
   background-color: #fefefe;
 }
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.brand-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.brand-text-lg {
+  font-size: 1.05rem;
+}

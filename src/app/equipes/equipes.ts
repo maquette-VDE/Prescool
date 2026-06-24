@@ -27,8 +27,7 @@ export class Equipes implements OnInit {
   selectedOwner = signal<string>('TOUS');
   isStatusMenuOpen = signal<boolean>(false);
   isOwnerMenuOpen = signal<boolean>(false);
-
-
+  currentProjectId: number | null = null;
 
 
   projectForm: FormGroup;
@@ -119,13 +118,34 @@ loadProjects(email?: string) {
   });
 }
 
-  openCreateModal() {
+ openCreateModal() {
+    this.currentProjectId = null; //  pour repasser en mode création
+    this.projectForm.reset({ status: 'EN ATTENTE', is_active: true, description: '' });
+
     const modalElement = document.getElementById('createProjectModal');
     if (modalElement) {
       this.modalInstance = new bootstrap.Modal(modalElement);
       this.modalInstance.show();
     }
   }
+
+openEditModal(project: Project) {
+    this.currentProjectId = project.id;
+
+    this.projectForm.patchValue({
+      name: project.name,
+      description: project.description,
+      status: project.status,
+      is_active: project.is_active
+    });
+
+    const modalElement = document.getElementById('createProjectModal');
+    if (modalElement) {
+      this.modalInstance = new bootstrap.Modal(modalElement);
+      this.modalInstance.show();
+    }
+  }
+
 
   saveProject() {
     if (this.projectForm.valid) {
@@ -144,4 +164,66 @@ loadProjects(email?: string) {
     }
   }
 
+  // mettre a jour un projet
+
+  updateExistingProject(projectId: number) {
+    if (this.projectForm.valid) {
+      const updatedData: Partial<Project> = this.projectForm.value;
+
+      this.projectService.updateProject(projectId, updatedData).subscribe({
+        next: (updatedProject: Project) => {
+          console.log('Projet mis à jour avec succès :', updatedProject);
+
+          this.projectsList.update((currentList: Project[]) =>
+            currentList.map(p => p.id === projectId ? updatedProject : p)
+          );
+
+          this.projectForm.reset({ status: 'EN ATTENTE', is_active: true, description: '' });
+          this.currentProjectId = null;
+
+          if (this.modalInstance) {
+            this.modalInstance.hide();
+          }
+
+          alert("Le projet a bien été modifié !");
+        },
+        error: (err) => {
+          console.error('Erreur lors de la mise à jour :', err);
+          alert("Une erreur est survenue lors de la modification.");
+        }
+      });
+    } else {
+      console.warn("Formulaire invalide");
+    }
+  }
+
+  // Supprimer un projet
+
+  deleteExistingProject(projectId: number, projectName: string) {
+
+  if (confirm(`Êtes-vous sûr de vouloir supprimer le projet "${projectName}" ?`)) {
+
+    this.projectService.deleteProject(projectId).subscribe({
+      next: () => {
+        console.log(`Projet ${projectId} supprimé avec succès`);
+
+        //   On met à jour le Signal en filtrant la liste pour exclure le projet supprimé
+
+        this.projectsList.update((currentList: Project[]) =>
+          currentList.filter(p => p.id !== projectId)
+        );
+
+        alert("Le projet a bien été supprimé !");
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression :', err);
+        alert("Une erreur est survenue lors de la suppression du projet.");
+      }
+    });
+  }
 }
+}
+
+
+
+

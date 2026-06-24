@@ -3,7 +3,6 @@ import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgTemplateOutlet } from '@angular/common';
 import { AuthService } from '../services/auth/auth.service';
-
 import { HeaderComponent } from '../header/header';
 
 @Component({
