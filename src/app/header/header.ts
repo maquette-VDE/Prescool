@@ -6,6 +6,8 @@ import {
   computed,
   ChangeDetectorRef,
   signal,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/planning/user.service';
@@ -66,6 +68,11 @@ export class HeaderComponent implements OnInit {
   public userForm!: FormGroup;
   public errorMessage: string = '';
 
+  @Output() toggleSidebar = new EventEmitter<void>();
+ 
+  onToggleSidebar() {
+    this.toggleSidebar.emit();
+  }
   ngOnInit() {
     //  Charger l'utilisateur
     this.userService.getUserMe().subscribe({

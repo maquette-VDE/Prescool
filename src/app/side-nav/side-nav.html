@@ -1,32 +1,29 @@
-<div class="d-flex min-vh-100 bg-white">
-  <!-- SIDEBAR DESKTOP -->
-  <aside class="d-none d-lg-flex flex-column border-end bg-white"
-    style="width: 300px; position: sticky; top: 0; height: 100vh;">
+<div class="d-flex min-vh-100 bg-white" [class.sidebar-open]="isSidebarOpen">
+
+  <!-- SIDEBAR -->
+  <aside
+    class="sidebar d-flex flex-column border-end bg-white transition-all"
+    [class.open]="isSidebarOpen"
+  >
     <ng-container *ngTemplateOutlet="navContent"></ng-container>
   </aside>
 
-  <!-- CONTENU -->
-  <div class="flex-grow-1 d-flex flex-column">
-    <main class="content-area">
-      <div class="header-outer-wrapper p-0">
-        <app-header></app-header>
-      </div>
-    </main>
-    <!-- NAVBAR MOBILE -->
+  <!-- CONTENU PRINCIPAL -->
+  <div class="flex-grow-1 d-flex flex-column content-wrapper">
+    
+    <!-- HEADER -->
+    <div class="header-outer-wrapper p-0"> 
+      <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+    </div>
+
+    <!-- NAVBAR MOBILE -( pour de très petits écrans) -->
     <nav class="navbar navbar-light bg-white d-lg-none px-3 border-bottom">
-      <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+      <button class="btn p-0" (click)="toggleSidebar()">
         <i class="bi bi-list fs-3"></i>
       </button>
-      <a
-        class="brand-link ms-2"
-        [routerLink]="['/sidenav/dashboard']"
-        aria-label="Retour à l'accueil"
-      >
-        <img
-          src="prescool.jpeg"
-          alt="logo"
-          style="height: 30px;"
-        />
+      <a class="brand-link ms-2" [routerLink]="['/sidenav/dashboard']">
+        <img src="prescool.jpeg" alt="logo" style="height: 30px;" />
+        <span class="brand-text">Prescool</span>
       </a>
     </nav>
 
@@ -35,17 +32,6 @@
     </main>
   </div>
 </div>
-
-<!-- OFFCANVAS MOBILE -->
-<div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileMenu" style="width: 260px">
-  <div class="offcanvas-header justify-content-end p-2">
-    <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body p-0">
-    <ng-container *ngTemplateOutlet="navContent"></ng-container>
-  </div>
-</div>
-
 <!-- NAV CONTENT FACTORISÉ -->
 <ng-template #navContent>
   <div class="p-4">
@@ -56,8 +42,10 @@
         [routerLink]="['/sidenav/dashboard']"
         data-bs-dismiss="offcanvas"
         aria-label="Retour à l'accueil"
+        (click)="closeSidebarOnMobile()"
       >
         <img src="prescool.jpeg" alt="logo" style="width: 200px" />
+        <span class="brand-text brand-text-lg"(click)="closeSidebarOnMobile()" >Prescool</span>
       </a>
     </div>
 
@@ -67,40 +55,41 @@
 
     <ul class="nav flex-column gap-2">
       <!-- Dashboard -->
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-ui-radios-grid', label: 'Tableau de bord' }"></ng-container>
+      <ng-container 
+        *ngTemplateOutlet="navItem; context: { route: 'dashboard', icon: 'bi-ui-radios-grid', label: 'Tableau de bord' }"
+      ></ng-container>
 
       <!-- Consultant -->
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'consultant', icon: 'bi-person', label: 'Consultant' }"></ng-container>
+      <ng-container (click)="closeSidebarOnMobile()"
+        *ngTemplateOutlet="navItem; context: { route: 'consultant', icon: 'bi-person', label: 'Consultant' }"
+      ></ng-container>
 
       <!-- Planning (admin/instructor) -->
       @if (hasRole('admin') || hasRole('instructor')) {
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'planning', icon: 'bi-check2-square', label: 'Planning' }"></ng-container>
+      <ng-container (click)="closeSidebarOnMobile()"
+        *ngTemplateOutlet="navItem; context: { route: 'planning', icon: 'bi-check2-square', label: 'Planning' }"
+      ></ng-container>
       }
 
       <!-- Présences (student/consultant) -->
       @if (hasRole('student') || hasRole('consultant')) {
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"></ng-container>
+      <ng-container (click)="closeSidebarOnMobile()"
+        *ngTemplateOutlet="navItem; context: { route: 'presences', icon: 'bi-calendar2-week', label: 'Présences' }"
+      ></ng-container>
       }
 
       <!-- Annonces -->
-      <ng-container
-  *ngTemplateOutlet="navItem; context: { 
-    route: '/sidenav/annonces', 
-    icon: 'bi-chat-right-dots', 
-    label: 'Annonces' 
-  }"
-></ng-container>
+      <ng-container (click)="closeSidebarOnMobile()"
+        *ngTemplateOutlet="navItem; context: { route: 'annonces', icon: 'bi-chat-right-dots', label: 'Annonces' }"
+      ></ng-container>
 
       <!-- Aide -->
-      <ng-container
-        *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"></ng-container>
+      <ng-container (click)="closeSidebarOnMobile()"
+        *ngTemplateOutlet="navItem; context: { route: 'aide', icon: 'bi-question-circle', label: 'Aide' }"
+      ></ng-container>
 
       <!-- Equipes -->
-      <ng-container
+      <ng-container (click)="closeSidebarOnMobile()"
         *ngTemplateOutlet="navItem; context: { route: 'equipes', icon: 'bi-people-fill', label: 'Projets' }"
       ></ng-container>
 
