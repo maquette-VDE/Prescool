@@ -121,3 +121,44 @@
     Aucun résultat trouvé
   </div>
 }
+
+<div class="delete-modal-overlay" *ngIf="showEventDetailsModal" (click)="closeEventDetailsModal()">
+  <div class="delete-modal-content" (click)="$event.stopPropagation()">
+
+    <div class="delete-modal-header">
+      <h2 class="delete-modal-title">Détail de l'événement</h2>
+      <button class="delete-modal-close" type="button" (click)="closeEventDetailsModal()">✕</button>
+    </div>
+
+    <div class="delete-modal-body">
+      <div class="delete-modal-event-info">
+        <span class="delete-modal-event-label">Événement :</span>
+        <span class="delete-modal-event-title">
+          {{ selectedEvent?.attendance_status === 'late' ? '⏱ En retard' :
+             selectedEvent?.attendance_status === 'absent' ? '✕ Absent(e)' :
+             selectedEvent?.attendance_status === 'present' ? '✓ Présent(e)' :
+             selectedEvent?.title }}
+        </span>
+
+        <span class="delete-modal-event-label mt-2">Motif :</span>
+        <span class="delete-modal-event-title">
+          {{ eventReason }}
+        </span>
+
+        @if (selectedEvent?.attendance_status === 'late') {
+          <span class="delete-modal-event-label mt-2">Heure d'arrivée :</span>
+          <span class="delete-modal-event-title">
+            {{ eventLateTime }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="delete-modal-footer">
+      <button class="delete-modal-btn delete-modal-btn-cancel" type="button" (click)="closeEventDetailsModal()">
+        Fermer
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -90,8 +90,8 @@ export class PresencesService {
   }
 
   getEventById(id: number): Observable<ApiEvent> {
-  return this.http.get<ApiEvent>(`${this.API_BASE}/events/${id}`);
-}
+    return this.http.get<ApiEvent>(`${this.API_BASE}/events/${id}`);
+  }
 
   static toStartISO(date: string): string {
     return `${date}T00:00:00.000Z`;

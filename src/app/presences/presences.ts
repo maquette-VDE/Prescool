@@ -477,7 +477,7 @@ export class Presences implements OnInit, AfterViewInit, OnDestroy {
           event: fullEvent,
         };
       },
-      error: () => {
+      error: () => { 
         console.warn('Impossible de charger le détail de l’événement');
       },
     });
